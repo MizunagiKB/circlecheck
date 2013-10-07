@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+	<head>
+
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="description" content="Circle Checker" />
+		<meta name="author" content="MizunagiKB" />
+
+		<title id="id_title"></title>
+
+		<!-- Bootstrap -->
+		<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"            />
+		<style>
+			body {
+				padding-top: 60px;
+			}
+			#id_tpl_foot {
+				height: 60px;
+			}
+		</style>
+		<link rel="stylesheet" href="bootstrap/css/bootstrap-responsive.min.css" />
+
+	</head>
+
+	<body>
+
+		<div id="id_tpl_head" class="navbar navbar-inverse navbar-fixed-top">
+			<div class="navbar-inner">
+				<div class="container">
+					<button type="button" class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+						<span class="icon-bar"></span>
+					</button>
+					<a class="brand" href="{{EVENT_URL}}">{{EVENT_NAME}}</a>
+					<div class="nav-collapse collapse">
+						<ul class="nav">
+							<li id="id_menu_lst" class="active"><a href="#"><i class="icon-list"></i>&nbsp;一覧</a></li>
+							<li id="id_menu_fav" class=""><a href="#" ><i class="icon-star"></i>&nbsp;お気に入り(<span id="id_head_fav_count">0</span>)</a></li>
+							<li id="id_menu_cfg" class=""><a href="#" ><i class="icon-cog"></i>&nbsp;設定</a></li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Template Dialog -->
+		<div id="id_tpl_desc" class="modal hide fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+				<h4 id="myModalLabel">{{circle}}</h4>
+			</div>
+			<div class="modal-body">
+				<dl>
+					<dt><i class="icon-map-marker"></i>&nbsp;配置</dt>
+					<dd>{{layout}}<dd>
+					<dt><i class="icon-pencil"></i>&nbsp;執筆者</dt>
+					<dd>{{writer}}</dd>
+					<dt><i class="icon-home"></i>&nbsp;ウェブサイト</dt>
+					<dd>{{circle}}</dd>
+					<dd>{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}</dd>
+				</dl>
+			</div>
+			<div class="modal-footer">
+				<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><i class="icon-ok icon-white"></i>&nbsp;OK</button>
+			</div>
+		</div>
+
+
+		<div class="container">
+
+			<div id="id_notify_area_0">
+				<div class="alert alert-info">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>お知らせ</strong>&nbsp;現在、フォームからの読み込みと GET による読み込みを併用すると正常に動作しません。
+				</div>
+			</div>
+
+			<div id="id_notify_area_1">
+			</div>
+
+			<div id="id_view_lst"></div>
+
+			<div id="id_view_fav" style="display:none">
+				<div class="tabbable">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#id_tab_fav_0" data-toggle="tab">お気に入り</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="tab-pane active" id="id_tab_fav_0">
+							<table id="id_tbl_fav_0" class="table table-striped table-condensed">
+								<tr><th><i class="icon-remove"></i></th><th><i class="icon-map-marker"></i></th><th>サークル名 / 執筆者</th><th><i class="icon-info-sign"></i></th></tr>
+							</table>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div id="id_view_cfg">
+				<div class="tabbable">
+					<ul class="nav nav-tabs">
+						<li class="active"><a href="#id_tab_cfg_0" data-toggle="tab"><i class="icon-circle-arrow-down"></i>&nbsp;URL から読み込み</a></li>
+					</ul>
+					<div class="tab-content">
+						<div class="alert">
+							<button type="button" class="close" data-dismiss="alert">×</button>
+							<strong>注意</strong>&nbsp;サークルリストを読み込むと現在のお気に入りなどが消えてしまいます。
+						</div>
+						<div class="tab-pane active" id="id_tab_cfg_0">
+							<form method="get" action="#" class="form-horizontal">
+								<div class="control-group">
+									<label class="control-label" for="src_url">URL</label>
+									<div class="controls">
+										<input id="src_url" type="text" class="input-block-level" placeholder="" />
+									</div>
+								</div>
+								<div class="control-group">
+									<div class="controls">
+										<button id="id_btm_import_src" class="btn btn-primary"><i class="icon-circle-arrow-down icon-white"></i>&nbsp;指定した URL から JSON を読み込む</button>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+		</div>
+
+		<div id="id_tpl_foot">
+			<div class="container">
+				<p class="text-right">Programming and Design&nbsp;<a href="https://twitter.com/MizunagiKB">@MizunagiKB</a></p>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+
+			// ---------------------------------------------------- Global Object(s)
+			var GLOBAL	= new Object();
+
+			GLOBAL.CIRCLE_DATA	= null;
+			GLOBAL.FAV					= [];
+			GLOBAL.TPL_FAV_LIST	= [];
+
+
+
+			// =====================================================================
+			/*!
+			 */
+			function get_url_param()
+			{
+				var listResult	= [];
+				var hashes			= window.location.href.slice( window.location.href.indexOf( "?" ) + 1 ).split( "&" );
+
+
+				for( var n = 0; n < hashes.length; n ++ )
+				{
+					var listData	= hashes[ n ].split( "=" );
+
+					listResult.push( listData[ 0 ] );
+					listResult[ listData[ 0 ] ]	= listData[ 1 ];
+				}
+
+
+				return( listResult );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function sort_layout( objA, objB )
+			{
+				if( objA.layout > objB.layout ) return(  1 );
+				if( objA.layout < objB.layout ) return( -1 );
+
+
+				return( 0 );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function fav_search_idx( oCItem )
+			{
+				for( var n = 0; n < GLOBAL.FAV.length; n ++ )
+				{
+					if( oCItem.layout == GLOBAL.FAV[ n ].layout )
+					{
+						return( n );
+					}
+				}
+
+
+				return( -1 );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function fav_append( nGroup, nIndex )
+			{
+				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+				var nIdx		= fav_search_idx( oCItem );
+
+
+				if( nIdx == -1 )
+				{
+					GLOBAL.FAV.push( oCItem );
+					GLOBAL.FAV.sort( sort_layout );
+
+
+					var oCElement				= document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+					oCElement.className	= 'info';
+
+					$( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
+
+
+					var oCTbl	= document.getElementById( "id_tbl_fav_0" );
+					while( oCTbl.rows.length > 1 )
+					{
+						oCTbl.deleteRow( oCTbl.rows.length - 1 );
+					}
+
+					for( var i = 0; i < GLOBAL.FAV.length; i ++ )
+					{
+						var oCItem	= GLOBAL.FAV[ i ];
+						var oCRow		= document.getElementById( "id_tbl_fav_0" ).insertRow( -1 );
+
+						oCRow.id		= "id_row_fav_" + oCItem.grp + "_" + oCItem.idx;
+
+						for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
+						{
+							oCRow.insertCell( n ).innerHTML	= GLOBAL.TPL_FAV_LIST[ n ].render( oCItem );
+
+							console.log( oCItem.grp + "," + oCItem.idx );
+						}
+					}
+
+
+					storage_save();
+
+
+					render_head();
+				}
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function fav_remove( nGroup, nIndex )
+			{
+				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+				var nIdx		= fav_search_idx( oCItem );
+
+
+				if( nIdx != -1 )
+				{
+					var oCRow				= document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+
+					oCRow.parentNode.removeChild( oCRow ); 
+
+					var oCRow				= document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+
+					oCRow.className	= "";
+
+
+					$( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).removeClass( "disabled" );
+
+					GLOBAL.FAV.splice( nIdx, 1 );
+
+
+					storage_save();
+
+
+					render_head();
+				}
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function show_view( strId )
+			{
+				$( "#id_menu_lst" ).removeClass( "active" );
+				$( "#id_menu_fav" ).removeClass( "active" );
+				$( "#id_menu_cfg" ).removeClass( "active" );
+
+				$( "#id_view_lst" ).hide();
+				$( "#id_view_fav" ).hide();
+				$( "#id_view_cfg" ).hide();
+
+
+
+				switch( strId )
+				{
+					case "lst":
+					case "fav":
+					case "cfg":
+						$( "#id_menu_" + strId ).addClass( "active" );
+						$( "#id_view_" + strId ).show();
+						break;
+
+					default:
+						break;
+				}
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function import_from_url( strUrl )
+			{
+				$.getJSON(
+					strUrl,
+					function( oCJson )
+					{
+						GLOBAL.FAV					= [];
+						GLOBAL.CIRCLE_DATA	= oCJson;
+
+						init_appview(
+							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL
+						);
+
+						init_appdata(
+							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL,
+							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT
+						);
+
+
+						$( "#id_title" ).text( GLOBAL.EVENT_NAME )
+
+						$( "#id_tpl_head" ).html( GLOBAL.m_oCTplHead.render( GLOBAL.CIRCLE_DATA ) );
+
+
+						$( "#id_menu_lst" ).click( function( oCEvt ){ show_view( "lst" ); } );
+						$( "#id_menu_fav" ).click( function( oCEvt ){ show_view( "fav" ); } );
+						$( "#id_menu_cfg" ).click( function( oCEvt ){ show_view( "cfg" ); } );
+
+
+						resume();
+
+						show_view( "lst" );
+
+						$( "#src_url" ).val( strUrl );
+					}
+				);
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function evt_btn_fav_add( nGroup, nIndex )
+			{
+				fav_append( nGroup, nIndex );
+
+				console.log( "evt_btn_fav_add " + nGroup + ", " + nIndex )
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function evt_btn_fav_del( nGroup, nIndex )
+			{
+				fav_remove( nGroup, nIndex );
+
+				console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex )
+			}
+
+
+			// =====================================================================
+			/*!
+			 */
+			function evt_btn_desc( nGroup, nIndex )
+			{
+				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+
+
+				$( '#id_tpl_desc' ).html( GLOBAL.m_oCTplDesc.render( oCItem ) );
+				$( '#id_tpl_desc' ).modal( "show" );
+
+
+				console.log( "evt_btn_desc " + nGroup + ", " + nIndex )
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function evt_btn_mark( nGroup, nIndex )
+			{
+				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+
+				var oCRow		= document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+
+
+				if( oCRow.className != "" )
+				{
+					oCRow.className	= "";
+				} else {
+					oCRow.className	= "success";
+				}
+
+
+				console.log( "evt_btn_mark " + nGroup + ", " + nIndex )
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function evt_btn_import_url()
+			{
+				import_from_url( $( "#src_url" ).val() );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function render_head()
+			{
+				$( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
+				
+				console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function init_appview( oCListTbl )
+			{
+				var strUl_T	= '';
+				var strUl_V	= '';
+				var oCTpl_T	= Hogan.compile( '<li><a href="#lst_{{id}}" data-toggle="tab">{{name}}</a></li>' );
+				var oCTpl_V	= Hogan.compile(
+					''
+					+ '<div class="tab-pane" id="lst_{{id}}">'
+					+ '<table id="id_tbl_lst_{{id}}" class="table table-striped table-condensed">'
+					+ '<tr><th><i class="icon-star"></i></th><th><i class="icon-map-marker"></i></th><th>サークル名 / 執筆者</th><th><i class="icon-info-sign"></i></th></tr>'
+					+ '</table>'
+					+ '</div>'
+				);
+
+
+				for( var n = 0; n < oCListTbl.length; n ++ )
+				{
+					strUl_T	+= oCTpl_T.render( oCListTbl[ n ] );
+					strUl_V	+= oCTpl_V.render( oCListTbl[ n ] );
+				}
+
+
+				$( "#id_view_lst" ).html(
+					''
+					+ '<div class="tabbable">'
+					+ '<ul id="id_tab_circle_lst" class="nav nav-tabs">'
+					+ strUl_T
+					+ '</ul>'
+					+ '<div class="tab-content">'
+					+ strUl_V
+					+ '</div>'
+					+ '</div>'
+				);
+
+
+				$( "#id_tab_circle_lst a:first" ).tab( "show" );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function init_appdata( oCListTbl, oCListDat )
+			{
+				for( var i = 0; i < oCListTbl.length; i ++ )
+				{
+					for( var j = 0; j < oCListDat[ i ].length; j ++ )
+					{
+						var oCItem	= oCListDat[ i ][ j ];
+						var oCRow		= document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
+						
+
+						oCItem.grp	= i;
+						oCItem.idx	= j;
+						oCRow.id		= "id_row_lst_" + i + "_" + j;
+
+						for( var k = 0; k < GLOBAL.TPL_LST_LIST.length; k ++ )
+						{
+							oCRow.insertCell( k ).innerHTML	= GLOBAL.TPL_LST_LIST[ k ].render( oCItem );
+						}
+					}
+				}
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function storage_load()
+			{
+				if( !window.localStorage ) return;
+
+
+				var listResult			= [];
+				var strStorageData	= window.localStorage.getItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE ) || -1;
+
+
+				if( strStorageData != -1 )
+				{
+					listResult	= JSON.parse( strStorageData );
+				}
+				
+				
+				return( listResult );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function storage_save()
+			{
+				if( !window.localStorage ) return;
+
+
+				window.localStorage.setItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE, JSON.stringify( GLOBAL.FAV ) );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function resume()
+			{
+				if( !window.localStorage )
+				{
+					document.getElementById( "id_notify_area_1" ).innerHTML = (
+						''
+						+ '<div class="alert alert-block">'
+						+ '<button type="button" class="close" data-dismiss="alert">×</button>'
+						+ '<h4>ご利用の環境ではローカルストレージが使用出来ないようです。</h4>ローカルストレージが使用出来ない場合、お気に入りを保存する事が出来ません。'
+						+ '</div>'
+					);
+
+				} else {
+
+					var listFav	= storage_load();
+					var listTbl	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
+					var listDat	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
+
+					for( var grp = 0; grp < listTbl.length; grp ++ )
+					{
+						for( var idx = 0; idx < listDat[ grp ].length; idx ++ )
+						{
+							for( var n = 0; n < listFav.length; n ++ )
+							{
+								if( listDat[ grp ][ idx ].layout == listFav[ n ].layout )
+								{
+									fav_append( grp, idx );
+								}
+							}
+						}
+					}
+				}
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			window.onload	= function()
+			{
+				GLOBAL.m_oCTplHead		= Hogan.compile( $( "#id_tpl_head" ).html() );
+				GLOBAL.m_oCTplDesc		= Hogan.compile( $( "#id_tpl_desc" ).html() );
+
+
+				GLOBAL.TPL_LST_LIST		= [
+					Hogan.compile( '<button id="id_btn_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><i class="icon-star icon-white"></i></button>' ),
+					Hogan.compile( '{{layout}}' ),
+					Hogan.compile(
+						''
+						+ '<i class="icon-home"></i>&nbsp;'
+						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+						+ '<br />'
+						+ '<i class="icon-pencil"></i>&nbsp;<small>{{writer}}</small>'
+					),
+					Hogan.compile( '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><i class="icon-info-sign"></i></button>' )
+				];
+
+				GLOBAL.TPL_FAV_LIST	= [
+					Hogan.compile( '<button id="id_btn_fav_del_{{grp}}_{{idx}}" class="btn btn-danger" onclick="evt_btn_fav_del( {{grp}}, {{idx}} );"><i class="icon-remove icon-white"></i></button>' ),
+					Hogan.compile( '{{layout}}' ),
+					Hogan.compile(
+						''
+						+ '<i class="icon-home"></i>&nbsp;'
+						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+						+ '<br />'
+						+ '<i class="icon-pencil"></i>&nbsp;<small>{{writer}}</small>'
+					),
+					Hogan.compile(
+						''
+						+ '<div class="btn-group">'
+						+ '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><i class="icon-info-sign"></i></button>'
+						+ '<button id="id_btn_mark_{{grp}}_{{idx}}" class="btn" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><i class="icon-ok"></i></button>'
+						+ '</div>'
+					)
+				];
+
+
+				show_view( "cfg" );
+
+
+				//	クリックイベントを設定
+				$( "#id_btm_import_src" ).click( function( oCEvt ){ evt_btn_import_url(); } );
+
+				//	エンターキーでフォーム送信されてしまうのを抑制。
+				$( "#src_url" ).keypress(
+					function( oCEvt )
+					{
+						if( oCEvt.which == 13 )
+						{
+							return( false );
+						}
+					}
+				);
+
+
+				listArgv	= get_url_param();
+
+				if( listArgv[ "src_url" ] )
+				{
+					if( listArgv[ "src_url" ].length > 0 )
+					{
+						import_from_url( listArgv[ "src_url" ] );
+					}
+				}
+			}
+
+		</script>
+
+		<!-- jQuery-2.0.0 http://jquery.com/ -->
+		<script type="text/javascript" src="jquery/js/jquery.min.js"></script>
+
+		<!-- Bootstrap http://twitter.github.io/bootstrap/index.html -->
+		<script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
+
+		<!-- Hogan.js http://twitter.github.io/hogan.js/ -->
+		<script type="text/javascript" src="hogan/js/hogan.min.js"></script>
+
+		<!-- holder.js http://twitter.github.io/hogan.js/ -->
+		<script type="text/javascript" src="holder/js/holder.js"></script>
+
+	</body>
+</html>
