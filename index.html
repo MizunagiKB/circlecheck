@@ -72,9 +72,9 @@
 		<div class="container">
 
 			<div id="id_notify_area_0">
-				<div class="alert alert-info">
+				<div class="alert alert-warn">
 					<button type="button" class="close" data-dismiss="alert">×</button>
-					<strong>お知らせ</strong>&nbsp;現在、フォームからの読み込みと GET による読み込みを併用すると正常に動作しません。
+					<strong><i class="icon-warning-sign"></i></strong>&nbsp;現在、フォームからの読み込みと GET による読み込みを併用すると正常に動作しません。
 				</div>
 			</div>
 
@@ -343,6 +343,8 @@
 
 						show_view( "lst" );
 
+						render_info();
+
 						$( "#src_url" ).val( strUrl );
 					}
 				);
@@ -421,6 +423,30 @@
 				$( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
 				
 				console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
+			}
+
+			// =====================================================================
+			/*!
+			 */
+			function render_info()
+			{
+			  var strInfo = '';
+				var oCTpl   = Hogan.compile(
+  				''
+  				+ '<div class="alert alert-info">'
+  				+ '<button type="button" class="close" data-dismiss="alert">×</button>'
+  				+ '<strong><i class="icon-info-sign"></i></strong>&nbsp;{{{text}}}'
+  				+ '</div>'
+				);
+				var oCItem	= GLOBAL.CIRCLE_DATA.INFORMATION;
+				
+				
+				for( var n = 0; n < oCItem.length; n ++ )
+				{
+				  strInfo += oCTpl.render( oCItem[ n ] );
+				}
+
+        $( "#id_notify_area_1" ).html( strInfo );
 			}
 
 			// =====================================================================
