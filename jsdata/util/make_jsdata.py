@@ -9,14 +9,13 @@ import	collections
 
 dictLayout	= {}
 
-# { "layout" : "戦姫01", "circle" : "わたがし", "writer" : "かかお", "url" : "http://watagashi.net" },
-
 oCReader = csv.reader(open(sys.argv[ 1 ], "rb"), delimiter = ',')
 
 for tplRecord in oCReader:
 	
 	dictRecord	= collections.OrderedDict()
 	
+	# CSV はこのルールで出力
 	for idx, kwd in ((3, "layout"), (0, "circle"), (1, "writer"), (2, "url")):
 		s	= tplRecord[ idx ].strip()
 		if( s != "　" and len( s ) > 0 ):
@@ -41,13 +40,3 @@ for k, listItem in dictLayout.items():
 	print "<!-- %s -->" % k.encode( "utf-8" )
 	print ",\n".join( listBuffer )
 	print
-
-#	pass
-	
-
-
-#for strLine in string.split( hFile.read(), "\n" ):
-
-#	strCircle, strWriter, strUrl, strLayout, x	= string.split( strLine, "\t" )
-
-#	print '{ "layout" : "%s", "circle" : "%s", "writer" : "%s", "url" : "%s" },' % ( strLayout, strCircle, strWriter, strUrl, )
