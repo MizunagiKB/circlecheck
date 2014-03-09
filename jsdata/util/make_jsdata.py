@@ -16,12 +16,20 @@ for tplRecord in oCReader:
 	dictRecord	= collections.OrderedDict()
 	
 	# CSV はこのルールで出力
-	for idx, kwd in ((3, "layout"), (0, "circle"), (1, "writer"), (2, "url")):
+	for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url")):
+
+
+		if(tplRecord[0] == ""):
+			break
+
 		s	= tplRecord[ idx ].strip()
 		if( s != "　" and len( s ) > 0 ):
 			dictRecord[ kwd ]	= s
 
-	strLB	= dictRecord[ "layout" ].decode( "utf-8" )[ 0 ]
+	try:
+		strLB	= dictRecord[ "layout" ].decode( "utf-8" )[ 0 ]
+	except:
+		continue
 #	print strLB
 
 
