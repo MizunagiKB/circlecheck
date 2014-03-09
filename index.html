@@ -44,32 +44,24 @@
 			</div>
 		</nav>
 
-		<!-- Template Dialog -->
-		<div id="id_tpl_desc" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-		  <div class="modal-dialog">
-  		  <div class="modal-content">
-    			<div class="modal-header">
-    				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-    				<h4 class="modal-title" id="myModalLabel">{{circle}}</h4>
-    			</div>
-    			<div class="modal-body">
-    				<dl>
-    					<dt><span class="glyphicon glyphicon-map-marker"></span>&nbsp;配置</dt>
-    					<dd>{{layout}}<dd>
-    					<dt><span class="glyphicon glyphicon-pencil"></span>&nbsp;執筆者</dt>
-    					<dd>{{writer}}</dd>
-    					<dt><span class="glyphicon glyphicon-home"></span>&nbsp;ウェブサイト</dt>
-    					<dd>{{circle}}</dd>
-    					<dd>{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}</dd>
-    				</dl>
-    			</div>
-    			<div class="modal-footer">
-    				<button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
-    			</div>
+        <!-- Template Dialog -->
+        <div id="id_tpl_desc" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">サークル情報</h4>
+                    </div>
+                    <div class="modal-body">
+                        <h2>配置場所&nbsp;<span class="label label-default">{{layout}}</span></h2>
+                        {{{circle_table_item}}}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
+                    </div>
+                </div>
+            </div>
         </div>
-      </div>
-		</div>
-
 
 		<div class="container">
 
@@ -232,7 +224,7 @@
 						{
 							oCRow.insertCell( n ).innerHTML	= GLOBAL.TPL_FAV_LIST[ n ].render( oCItem );
 
-							console.log( oCItem.grp + "," + oCItem.idx );
+							//console.log( oCItem.grp + "," + oCItem.idx );
 						}
 					}
 
@@ -355,7 +347,7 @@
 			{
 				fav_append( nGroup, nIndex );
 
-				console.log( "evt_btn_fav_add " + nGroup + ", " + nIndex )
+				//console.log( "evt_btn_fav_add " + nGroup + ", " + nIndex );
 			}
 
 			// =====================================================================
@@ -365,7 +357,7 @@
 			{
 				fav_remove( nGroup, nIndex );
 
-				console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex )
+				//console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex );
 			}
 
 
@@ -374,14 +366,52 @@
 			 */
 			function evt_btn_desc( nGroup, nIndex )
 			{
-				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+				var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var oCTpl = Hogan.compile(
+                    ''
+                    + '<table class="table table-striped table-condensed">'
+                    + '<tr>'
+                    + '<th>サークル名</th><th>執筆者</th>'
+                    + '</tr>'
+                    + '{{#circle_list}}'
+                    + '<tr>'
+                    + '<td>'
+                    + '<div>'
+                    + '<span class="glyphicon glyphicon-home"></span>&nbsp;{{circle}}'
+                    + '<br />'
+                    + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}'
+                    + '</div>'
+                    + '</td>'
+                    + '<td><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}</td>'
+                    + '</tr>'
+                    + '{{/circle_list}}'
+                    + '{{^circle_list}}'
+                    + '<tr>'
+                    + '<td>'
+                    + '<div>'
+                    + '<span class="glyphicon glyphicon-home"></span>&nbsp;{{circle}}'
+                    + '<br />'
+                    + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}'
+                    + '</div>'
+                    + '</td>'
+                    + '<td><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}</td>'
+                    + '</tr>'
+                    + '{{/circle_list}}'
+                    + '</table>'
+                );
 
-
-				$( '#id_tpl_desc' ).html( GLOBAL.m_oCTplDesc.render( oCItem ) );
+				$( '#id_tpl_desc' ).html(
+				    GLOBAL.m_oCTplDesc.render(
+				        {
+				            "layout": oCItem.layout,
+				            "circle_table_item": oCTpl.render(oCItem)
+				        }
+				    )
+				);
 				$( '#id_tpl_desc' ).modal( "show" );
 
-
-				console.log( "evt_btn_desc " + nGroup + ", " + nIndex )
+                //console.log( "evt_btn_desc " + nGroup + ", " + nIndex );
+                //console.log( oCItem );
 			}
 
 			// =====================================================================
@@ -402,7 +432,7 @@
 				}
 
 
-				console.log( "evt_btn_mark " + nGroup + ", " + nIndex )
+                //console.log( "evt_btn_mark " + nGroup + ", " + nIndex );
 			}
 
 			// =====================================================================
@@ -420,7 +450,7 @@
 			{
 				$( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
 				
-				console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
+				//console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
 			}
 
 			// =====================================================================
@@ -596,10 +626,24 @@
 					Hogan.compile( '{{layout}}' ),
 					Hogan.compile(
 						''
-						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-						+ '<br />'
-						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;<small>{{writer}}</small>'
+						+ '{{#circle_list}}'
+						    + '<div>'
+    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+    						+ '<br />'
+    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+    						+ '<small>{{writer}}</small>'
+						    + '</div>'
+                        + '{{/circle_list}}'
+						+ '{{^circle_list}}'
+						    + '<div>'
+    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+    						+ '<br />'
+    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+    						+ '<small>{{writer}}</small>'
+						    + '</div>'
+                        + '{{/circle_list}}'
 					),
 					Hogan.compile( '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
 				];
@@ -609,10 +653,24 @@
 					Hogan.compile( '{{layout}}' ),
 					Hogan.compile(
 						''
-						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-						+ '<br />'
-						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;<small>{{writer}}</small>'
+						+ '{{#circle_list}}'
+						    + '<div>'
+    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+    						+ '<br />'
+    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+    						+ '<small>{{writer}}</small>'
+						    + '</div>'
+                        + '{{/circle_list}}'
+						+ '{{^circle_list}}'
+						    + '<div>'
+    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+    						+ '<br />'
+    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+    						+ '<small>{{writer}}</small>'
+						    + '</div>'
+                        + '{{/circle_list}}'
 					),
 					Hogan.compile(
 						''
