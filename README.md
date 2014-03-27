@@ -41,4 +41,3 @@ circlecheck は以下のライブラリを使用しています
 - jQuery
 - Bootstrap
 - Hogan.js
-- Holder.js
