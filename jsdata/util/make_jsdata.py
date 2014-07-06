@@ -9,7 +9,7 @@ import	collections
 
 dictLayout	= {}
 
-oCReader = csv.reader(open(sys.argv[ 1 ], "rb"), delimiter = ',')
+oCReader = csv.reader(open(sys.argv[ 1 ], "rb"), delimiter = '\t')
 
 for tplRecord in oCReader:
 	
@@ -38,13 +38,23 @@ for tplRecord in oCReader:
 	else:
 		dictLayout[ strLB ]	= [ dictRecord ]
 
-for k, listItem in dictLayout.items():
+nIx = 0
+for ss in u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ":
 
-	listBuffer	= []
+    k = ss
+    listItem = dictLayout[ss]
 
-	for o in sorted( listItem, key = lambda obj: obj[ "layout" ] ):
-		listBuffer.append( json.dumps( o, ensure_ascii = False ) )
+    """
+    for k, listItem in dictLayout.items():
+    """
 
-	print "<!-- %s -->" % k.encode( "utf-8" )
-	print ",\n".join( listBuffer )
-	print
+    listBuffer	= []
+
+    for o in sorted( listItem, key = lambda obj: obj[ "layout" ] ):
+        listBuffer.append( "\t" + json.dumps( o, ensure_ascii = False ) )
+    
+    print "\"%d\": [" % (nIx,)
+    #print "<!-- %s -->" % k.encode( "utf-8" )
+    print ",\n".join( listBuffer )
+    print "],"
+    nIx += 1
