@@ -46,8 +46,9 @@
             <div id="nav-collapse" class="collapse navbar-collapse">
                 <ul class="nav navbar-nav">
                     <li id="id_menu_lst" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
-                    <li id="id_menu_fav" class=""><a href="#" ><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り(<span id="id_head_fav_count">0</span>)</a></li>
-                    <li id="id_menu_cfg" class=""><a href="#" ><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
+                    <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
+                    <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り(<span id="id_head_fav_count">0</span>)</a></li>
+                    <li id="id_menu_cfg" class=""><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
                 </ul>
             </div>
         </nav>
@@ -84,6 +85,32 @@
             </div>
 
             <div id="id_view_lst"></div>
+
+            <div id="id_view_fnd">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#id_tab_fnd_0" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;キーワード検索</a></li>
+                </ul>
+                <div class="tab-content">
+                    <p>
+                        <div class="alert alert-danger alert-dismissable">
+                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+                            <strong>注意</strong>&nbsp;現在調整中のため不具合が存在する可能性があります。
+                        </div>
+                        <div class="tab-pane fade in active" id="id_frm_fnd_0">
+                            <form method="get" action="#" role="form">
+                                <div class="form-group">
+                                    <label for="keyword">キーワード</label>
+                                    <input id="keyword" type="text" class="form-control" placeholder="" />
+                                </div>
+                            </form>
+                        </div>
+
+                        <table id="id_tbl_fnd_0" class="table table-condensed">
+                            <tr><th><span class="glyphicon glyphicon-remove"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>
+                        </table>
+                    </p>
+                </div>
+            </div>
 
             <div id="id_view_fav" style="display:none">
                 <ul class="nav nav-tabs">
@@ -140,7 +167,7 @@
 
             GLOBAL.CIRCLE_DATA = null;
             GLOBAL.FAV = [];
-            GLOBAL.TPL_FAV_LIST	= [];
+            GLOBAL.TPL_FAV_LIST = [];
 
 
             // =====================================================================
@@ -148,231 +175,307 @@
              */
             function get_url_param()
             {
-                var listResult = [];
-                var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
+                var listResult  = [];
+                var hashes          = window.location.href.slice( window.location.href.indexOf( "?" ) + 1 ).split( "&" );
 
 
-                for(var n = 0; n < hashes.length; n++)
+                for( var n = 0; n < hashes.length; n ++ )
                 {
-                    var listData = hashes[n].split("=");
+                    var listData    = hashes[ n ].split( "=" );
 
-                    listResult.push(listData[0]);
-                    listResult[listData[0]]	= listData[1];
+                    listResult.push( listData[ 0 ] );
+                    listResult[ listData[ 0 ] ] = listData[ 1 ];
                 }
 
-                return(listResult);
+
+                return( listResult );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function sort_layout( objA, objB )
+            {
+                if( objA.layout > objB.layout ) return(  1 );
+                if( objA.layout < objB.layout ) return( -1 );
+
+
+                return( 0 );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function fav_search_idx( oCItem )
+            {
+                for( var n = 0; n < GLOBAL.FAV.length; n ++ )
+                {
+                    if( oCItem.layout == GLOBAL.FAV[ n ].layout )
+                    {
+                        return( n );
+                    }
+                }
+
+
+                return( -1 );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function fav_append( nGroup, nIndex )
+            {
+                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var nIdx = fav_search_idx( oCItem );
+
+
+                if( nIdx == -1 )
+                {
+                    GLOBAL.FAV.push( oCItem );
+                    GLOBAL.FAV.sort( sort_layout );
+
+
+                    var oCElement               = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+                    oCElement.className = 'info';
+
+                    $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
+
+
+                    var oCTbl   = document.getElementById( "id_tbl_fav_0" );
+                    while( oCTbl.rows.length > 1 )
+                    {
+                        oCTbl.deleteRow( oCTbl.rows.length - 1 );
+                    }
+
+                    for( var i = 0; i < GLOBAL.FAV.length; i ++ )
+                    {
+                        var oCItem  = GLOBAL.FAV[ i ];
+                        var oCRow       = document.getElementById( "id_tbl_fav_0" ).insertRow( -1 );
+
+                        oCRow.id        = "id_row_fav_" + oCItem.grp + "_" + oCItem.idx;
+
+                        for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
+                        {
+                            oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_FAV_LIST[ n ].render( oCItem );
+
+                            //console.log( oCItem.grp + "," + oCItem.idx );
+                        }
+                    }
+
+
+                    storage_save();
+
+
+                    render_head();
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function fav_remove( nGroup, nIndex )
+            {
+                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var nIdx        = fav_search_idx( oCItem );
+
+
+                if( nIdx != -1 )
+                {
+                    var oCRow               = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+
+                    oCRow.parentNode.removeChild( oCRow ); 
+
+                    var oCRow               = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+
+                    oCRow.className = "";
+
+
+                    $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).removeClass( "disabled" );
+
+                    GLOBAL.FAV.splice( nIdx, 1 );
+
+
+                    storage_save();
+
+
+                    render_head();
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function show_view( strId )
+            {
+                $( "#id_menu_lst" ).removeClass( "active" );
+                $( "#id_menu_fnd" ).removeClass( "active" );
+                $( "#id_menu_fav" ).removeClass( "active" );
+                $( "#id_menu_cfg" ).removeClass( "active" );
+
+                $( "#id_view_lst" ).hide();
+                $( "#id_view_fnd" ).hide();
+                $( "#id_view_fav" ).hide();
+                $( "#id_view_cfg" ).hide();
+
+                switch( strId )
+                {
+                    case "lst":
+                    case "fnd":
+                    case "fav":
+                    case "cfg":
+                        $( "#id_menu_" + strId ).addClass( "active" );
+                        $( "#id_view_" + strId ).show();
+                        break;
+
+                    default:
+                        break;
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function import_from_url( strUrl )
+            {
+                $.getJSON(
+                    strUrl,
+                    function( oCJson )
+                    {
+                        GLOBAL.FAV                  = [];
+                        GLOBAL.CIRCLE_DATA  = oCJson;
+
+                        init_appview(
+                            GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL
+                        );
+
+                        init_appdata(
+                            GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL,
+                            GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT
+                        );
+
+
+                        $( "#id_title" ).text( GLOBAL.EVENT_NAME )
+
+                        $( "#id_tpl_head" ).html( GLOBAL.m_oCTplHead.render( GLOBAL.CIRCLE_DATA ) );
+
+
+                        $( "#id_menu_lst" ).click( function( oCEvt ){ show_view( "lst" ); } );
+                        $( "#id_menu_fnd" ).click( function( oCEvt ){ show_view( "fnd" ); } );
+                        $( "#id_menu_fav" ).click( function( oCEvt ){ show_view( "fav" ); } );
+                        $( "#id_menu_cfg" ).click( function( oCEvt ){ show_view( "cfg" ); } );
+
+
+                        resume();
+
+                        show_view( "lst" );
+
+                        render_info();
+
+                        $( "#src_url" ).val( strUrl );
+                    }
+                );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function evt_keyword()
+            {
+                var strKeyword = $("#keyword").val();
+
+                var oCTBL = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
+                var oCDAT = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
+
+
+                var oCTbl   = document.getElementById( "id_tbl_fnd_0" );
+                while( oCTbl.rows.length > 1 )
+                {
+                    oCTbl.deleteRow( oCTbl.rows.length - 1 );
+                }
+
+
+                if(strKeyword)
+                {
+                    for( var i = 0; i < oCTBL.length; i ++ )
+                    {
+                        for( var j = 0; j < oCDAT[ i ].length; j ++ )
+                        {
+                            var oCItem = oCDAT[ i ][ j ];
+                            var listTarget = [];
+
+//                            console.log(oCDAT[i][j]);
+
+                            if(oCItem.circle_list)
+                            {
+                                listTarget = oCItem.circle_list;
+                            } else {
+                                listTarget = [oCItem];
+                            }
+
+
+                            for( var k = 0; k < listTarget.length; k ++ )
+                            {
+                                var bFound = false;
+
+                                if(listTarget[k].circle)
+                                {
+                                    if(listTarget[k].circle.indexOf(strKeyword, 0) != -1) bFound = true;
+                                }
+
+                                if(listTarget[k].writer)
+                                {
+                                    if(listTarget[k].writer.indexOf(strKeyword, 0) != -1) bFound = true;
+                                }
+
+
+                                if(bFound == true)
+                                {
+                                    var oCRow       = document.getElementById( "id_tbl_fnd_0" ).insertRow( -1 );
+
+                                    oCRow.id        = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
+
+                                    for( var n = 0; n < GLOBAL.TPL_LST_LIST.length; n ++ )
+                                    {
+                                        oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_LST_LIST[ n ].render( oCItem );
+                                    }
+
+//                                    console.log(oCItem.circle_list[0].circle);
+                                }
+                            }
+                        }
+                    }
+                }
+//                console.log($( "#keyword" ).val());
             }
 
 
-			// =====================================================================
-			/*!
-			 */
-			function sort_layout( objA, objB )
-			{
-				if( objA.layout > objB.layout ) return(  1 );
-				if( objA.layout < objB.layout ) return( -1 );
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_fav_add( nGroup, nIndex )
+            {
+                fav_append( nGroup, nIndex );
 
-				return( 0 );
-			}
+                //console.log( "evt_btn_fav_add " + nGroup + ", " + nIndex );
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function fav_search_idx( oCItem )
-			{
-				for( var n = 0; n < GLOBAL.FAV.length; n ++ )
-				{
-					if( oCItem.layout == GLOBAL.FAV[ n ].layout )
-					{
-						return( n );
-					}
-				}
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_fav_del( nGroup, nIndex )
+            {
+                fav_remove( nGroup, nIndex );
+
+                //console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex );
+            }
 
 
-				return( -1 );
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function fav_append( nGroup, nIndex )
-			{
-				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
-				var nIdx		= fav_search_idx( oCItem );
-
-
-				if( nIdx == -1 )
-				{
-					GLOBAL.FAV.push( oCItem );
-					GLOBAL.FAV.sort( sort_layout );
-
-
-					var oCElement				= document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
-					oCElement.className	= 'info';
-
-					$( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
-
-
-					var oCTbl	= document.getElementById( "id_tbl_fav_0" );
-					while( oCTbl.rows.length > 1 )
-					{
-						oCTbl.deleteRow( oCTbl.rows.length - 1 );
-					}
-
-					for( var i = 0; i < GLOBAL.FAV.length; i ++ )
-					{
-						var oCItem	= GLOBAL.FAV[ i ];
-						var oCRow		= document.getElementById( "id_tbl_fav_0" ).insertRow( -1 );
-
-						oCRow.id		= "id_row_fav_" + oCItem.grp + "_" + oCItem.idx;
-
-						for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
-						{
-							oCRow.insertCell( n ).innerHTML	= GLOBAL.TPL_FAV_LIST[ n ].render( oCItem );
-
-							//console.log( oCItem.grp + "," + oCItem.idx );
-						}
-					}
-
-
-					storage_save();
-
-
-					render_head();
-				}
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function fav_remove( nGroup, nIndex )
-			{
-				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
-				var nIdx		= fav_search_idx( oCItem );
-
-
-				if( nIdx != -1 )
-				{
-					var oCRow				= document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
-
-					oCRow.parentNode.removeChild( oCRow ); 
-
-					var oCRow				= document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
-
-					oCRow.className	= "";
-
-
-					$( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).removeClass( "disabled" );
-
-					GLOBAL.FAV.splice( nIdx, 1 );
-
-
-					storage_save();
-
-
-					render_head();
-				}
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function show_view( strId )
-			{
-				$( "#id_menu_lst" ).removeClass( "active" );
-				$( "#id_menu_fav" ).removeClass( "active" );
-				$( "#id_menu_cfg" ).removeClass( "active" );
-
-				$( "#id_view_lst" ).hide();
-				$( "#id_view_fav" ).hide();
-				$( "#id_view_cfg" ).hide();
-
-
-
-				switch( strId )
-				{
-					case "lst":
-					case "fav":
-					case "cfg":
-						$( "#id_menu_" + strId ).addClass( "active" );
-						$( "#id_view_" + strId ).show();
-						break;
-
-					default:
-						break;
-				}
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function import_from_url( strUrl )
-			{
-				$.getJSON(
-					strUrl,
-					function( oCJson )
-					{
-						GLOBAL.FAV					= [];
-						GLOBAL.CIRCLE_DATA	= oCJson;
-
-						init_appview(
-							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL
-						);
-
-						init_appdata(
-							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL,
-							GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT
-						);
-
-
-						$( "#id_title" ).text( GLOBAL.EVENT_NAME )
-
-						$( "#id_tpl_head" ).html( GLOBAL.m_oCTplHead.render( GLOBAL.CIRCLE_DATA ) );
-
-
-						$( "#id_menu_lst" ).click( function( oCEvt ){ show_view( "lst" ); } );
-						$( "#id_menu_fav" ).click( function( oCEvt ){ show_view( "fav" ); } );
-						$( "#id_menu_cfg" ).click( function( oCEvt ){ show_view( "cfg" ); } );
-
-
-						resume();
-
-						show_view( "lst" );
-
-						render_info();
-
-						$( "#src_url" ).val( strUrl );
-					}
-				);
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function evt_btn_fav_add( nGroup, nIndex )
-			{
-				fav_append( nGroup, nIndex );
-
-				//console.log( "evt_btn_fav_add " + nGroup + ", " + nIndex );
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function evt_btn_fav_del( nGroup, nIndex )
-			{
-				fav_remove( nGroup, nIndex );
-
-				//console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex );
-			}
-
-
-			// =====================================================================
-			/*!
-			 */
-			function evt_btn_desc( nGroup, nIndex )
-			{
-				var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_desc( nGroup, nIndex )
+            {
+                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
                 var oCTpl = Hogan.compile(
                     ''
                     + '<table class="table table-striped table-condensed">'
@@ -406,316 +509,319 @@
                     + '</table>'
                 );
 
-				$( '#id_tpl_desc' ).html(
-				    GLOBAL.m_oCTplDesc.render(
-				        {
-				            "layout": oCItem.layout,
-				            "circle_table_item": oCTpl.render(oCItem)
-				        }
-				    )
-				);
-				$( '#id_tpl_desc' ).modal( "show" );
+                $( '#id_tpl_desc' ).html(
+                    GLOBAL.m_oCTplDesc.render(
+                        {
+                            "layout": oCItem.layout,
+                            "circle_table_item": oCTpl.render(oCItem)
+                        }
+                    )
+                );
+                $( '#id_tpl_desc' ).modal( "show" );
 
                 //console.log( "evt_btn_desc " + nGroup + ", " + nIndex );
                 //console.log( oCItem );
-			}
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function evt_btn_mark( nGroup, nIndex )
-			{
-				var oCItem	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_mark( nGroup, nIndex )
+            {
+                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
 
-				var oCRow		= document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+                var oCRow       = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
 
 
-				if( oCRow.className != "" )
-				{
-					oCRow.className	= "";
-				} else {
-					oCRow.className	= "success";
-				}
+                if( oCRow.className != "" )
+                {
+                    oCRow.className = "";
+                } else {
+                    oCRow.className = "success";
+                }
 
 
                 //console.log( "evt_btn_mark " + nGroup + ", " + nIndex );
-			}
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function evt_btn_import_url()
-			{
-				import_from_url( $( "#src_url" ).val() );
-			}
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_import_url()
+            {
+                import_from_url( $( "#src_url" ).val() );
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function render_head()
-			{
-				$( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
-				
-				//console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
-			}
+            // =====================================================================
+            /*!
+             */
+            function render_head()
+            {
+                $( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
+                
+                //console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function render_info()
-			{
+            // =====================================================================
+            /*!
+             */
+            function render_info()
+            {
                 var strInfo = '';
 
-				var oCTpl = Hogan.compile(
-  				''
-  				+ '<div class="alert alert-info alert-dismissable">'
-  				+ '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-  				+ '<strong><span class="glyphicon glyphicon-info-sign"></span></strong>&nbsp;{{{text}}}'
-  				+ '</div>'
-				);
-				var oCItem	= GLOBAL.CIRCLE_DATA.INFORMATION;
-				
-				for( var n = 0; n < oCItem.length; n ++ )
-				{
-				  strInfo += oCTpl.render( oCItem[ n ] );
-				}
+                var oCTpl = Hogan.compile(
+                ''
+                + '<div class="alert alert-info alert-dismissable">'
+                + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
+                + '<strong><span class="glyphicon glyphicon-info-sign"></span></strong>&nbsp;{{{text}}}'
+                + '</div>'
+                );
+                var oCItem  = GLOBAL.CIRCLE_DATA.INFORMATION;
+                
+                for( var n = 0; n < oCItem.length; n ++ )
+                {
+                  strInfo += oCTpl.render( oCItem[ n ] );
+                }
 
                 $( "#id_notify_area_1" ).html( strInfo );
-			}
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function init_appview( oCListTbl )
-			{
-				var strUl_T	= '';
-				var strUl_V	= '';
-				var oCTpl_T	= Hogan.compile( '<li><a href="#lst_{{id}}" data-toggle="tab">{{name}}</a></li>' );
-				var oCTpl_V	= Hogan.compile(
-					''
-					+ '<div class="tab-pane fade" id="lst_{{id}}">'
-					+ '<table id="id_tbl_lst_{{id}}" class="table table-striped table-condensed">'
-					+ '<tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>'
-					+ '</table>'
-					+ '</div>'
-				);
-
-
-				for( var n = 0; n < oCListTbl.length; n ++ )
-				{
-					strUl_T	+= oCTpl_T.render( oCListTbl[ n ] );
-					strUl_V	+= oCTpl_V.render( oCListTbl[ n ] );
-				}
+            // =====================================================================
+            /*!
+             */
+            function init_appview( oCListTbl )
+            {
+                var strUl_T = '';
+                var strUl_V = '';
+                var oCTpl_T = Hogan.compile( '<li><a href="#lst_{{id}}" data-toggle="tab">{{name}}</a></li>' );
+                var oCTpl_V = Hogan.compile(
+                    ''
+                    + '<div class="tab-pane fade" id="lst_{{id}}">'
+                    + '<table id="id_tbl_lst_{{id}}" class="table table-striped table-condensed">'
+                    + '<tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>'
+                    + '</table>'
+                    + '</div>'
+                );
 
 
-				$( "#id_view_lst" ).html(
-					''
-					+ '<ul id="id_tab_circle_lst" class="nav nav-tabs">'
-					+ strUl_T
-					+ '</ul>'
-					+ '<div id="id_view_lst_content" class="tab-content">'
-					+ '<p>'
-					+ strUl_V
-					+ '</p>'
-					+ '</div>'
-				);
+                for( var n = 0; n < oCListTbl.length; n ++ )
+                {
+                    strUl_T += oCTpl_T.render( oCListTbl[ n ] );
+                    strUl_V += oCTpl_V.render( oCListTbl[ n ] );
+                }
 
 
-				$( "#id_tab_circle_lst a:first" ).tab( "show" );
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function init_appdata( oCListTbl, oCListDat )
-			{
-				for( var i = 0; i < oCListTbl.length; i ++ )
-				{
-					for( var j = 0; j < oCListDat[ i ].length; j ++ )
-					{
-						var oCItem	= oCListDat[ i ][ j ];
-						var oCRow		= document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
-						
-
-						oCItem.grp	= i;
-						oCItem.idx	= j;
-						oCRow.id		= "id_row_lst_" + i + "_" + j;
-
-						for( var k = 0; k < GLOBAL.TPL_LST_LIST.length; k ++ )
-						{
-							oCRow.insertCell( k ).innerHTML	= GLOBAL.TPL_LST_LIST[ k ].render( oCItem );
-						}
-					}
-				}
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function storage_load()
-			{
-				if( !window.localStorage ) return;
+                $( "#id_view_lst" ).html(
+                    ''
+                    + '<ul id="id_tab_circle_lst" class="nav nav-tabs">'
+                    + strUl_T
+                    + '</ul>'
+                    + '<div id="id_view_lst_content" class="tab-content">'
+                    + '<p>'
+                    + strUl_V
+                    + '</p>'
+                    + '</div>'
+                );
 
 
-				var listResult			= [];
-				var strStorageData	= window.localStorage.getItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE ) || -1;
+                $( "#id_tab_circle_lst a:first" ).tab( "show" );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function init_appdata( oCListTbl, oCListDat )
+            {
+                for( var i = 0; i < oCListTbl.length; i ++ )
+                {
+                    for( var j = 0; j < oCListDat[ i ].length; j ++ )
+                    {
+                        var oCItem  = oCListDat[ i ][ j ];
+                        var oCRow       = document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
+                        
+
+                        oCItem.grp  = i;
+                        oCItem.idx  = j;
+                        oCRow.id        = "id_row_lst_" + i + "_" + j;
+
+                        for( var k = 0; k < GLOBAL.TPL_LST_LIST.length; k ++ )
+                        {
+                            oCRow.insertCell( k ).innerHTML = GLOBAL.TPL_LST_LIST[ k ].render( oCItem );
+                        }
+                    }
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function storage_load()
+            {
+                if( !window.localStorage ) return;
 
 
-				if( strStorageData != -1 )
-				{
-					listResult	= JSON.parse( strStorageData );
-				}
-				
-				
-				return( listResult );
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			function storage_save()
-			{
-				if( !window.localStorage ) return;
+                var listResult          = [];
+                var strStorageData  = window.localStorage.getItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE ) || -1;
 
 
-				window.localStorage.setItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE, JSON.stringify( GLOBAL.FAV ) );
-			}
+                if( strStorageData != -1 )
+                {
+                    listResult  = JSON.parse( strStorageData );
+                }
+                
+                
+                return( listResult );
+            }
 
-			// =====================================================================
-			/*!
-			 */
-			function resume()
-			{
-				if( !window.localStorage )
-				{
-					document.getElementById( "id_notify_area_1" ).innerHTML = (
-						''
-						+ '<div class="alert alert-block">'
-						+ '<button type="button" class="close" data-dismiss="alert">×</button>'
-						+ '<h4>ご利用の環境ではローカルストレージが使用出来ないようです。</h4>ローカルストレージが使用出来ない場合、お気に入りを保存する事が出来ません。'
-						+ '</div>'
-					);
-
-				} else {
-
-					var listFav	= storage_load();
-					var listTbl	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
-					var listDat	= GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
-
-					for( var grp = 0; grp < listTbl.length; grp ++ )
-					{
-						for( var idx = 0; idx < listDat[ grp ].length; idx ++ )
-						{
-							for( var n = 0; n < listFav.length; n ++ )
-							{
-								if( listDat[ grp ][ idx ].layout == listFav[ n ].layout )
-								{
-									fav_append( grp, idx );
-								}
-							}
-						}
-					}
-				}
-			}
-
-			// =====================================================================
-			/*!
-			 */
-			window.onload	= function()
-			{
-				GLOBAL.m_oCTplHead		= Hogan.compile( $( "#id_tpl_head" ).html() );
-				GLOBAL.m_oCTplDesc		= Hogan.compile( $( "#id_tpl_desc" ).html() );
+            // =====================================================================
+            /*!
+             */
+            function storage_save()
+            {
+                if( !window.localStorage ) return;
 
 
-				GLOBAL.TPL_LST_LIST		= [
-					Hogan.compile( '<button id="id_btn_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
-					Hogan.compile( '{{layout}}' ),
-					Hogan.compile(
-						''
-						+ '{{#circle_list}}'
-						    + '<div>'
-    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-    						+ '{{#writer}}<br />'
-    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-    						+ '<small>{{writer}}</small>{{/writer}}'
-						    + '</div>'
+                window.localStorage.setItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE, JSON.stringify( GLOBAL.FAV ) );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function resume()
+            {
+                if( !window.localStorage )
+                {
+                    document.getElementById( "id_notify_area_1" ).innerHTML = (
+                        ''
+                        + '<div class="alert alert-block">'
+                        + '<button type="button" class="close" data-dismiss="alert">×</button>'
+                        + '<h4>ご利用の環境ではローカルストレージが使用出来ないようです。</h4>ローカルストレージが使用出来ない場合、お気に入りを保存する事が出来ません。'
+                        + '</div>'
+                    );
+
+                } else {
+
+                    var listFav = storage_load();
+                    var listTbl = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
+                    var listDat = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
+
+                    for( var grp = 0; grp < listTbl.length; grp ++ )
+                    {
+                        for( var idx = 0; idx < listDat[ grp ].length; idx ++ )
+                        {
+                            for( var n = 0; n < listFav.length; n ++ )
+                            {
+                                if( listDat[ grp ][ idx ].layout == listFav[ n ].layout )
+                                {
+                                    fav_append( grp, idx );
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            window.onload = function()
+            {
+                GLOBAL.m_oCTplHead      = Hogan.compile( $( "#id_tpl_head" ).html() );
+                GLOBAL.m_oCTplDesc      = Hogan.compile( $( "#id_tpl_desc" ).html() );
+
+
+                GLOBAL.TPL_LST_LIST     = [
+                    Hogan.compile( '<button id="id_btn_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
+                    Hogan.compile( '{{layout}}' ),
+                    Hogan.compile(
+                        ''
+                        + '{{#circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
                         + '{{/circle_list}}'
-						+ '{{^circle_list}}'
-						    + '<div>'
-    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-    						+ '{{#writer}}<br />'
-    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-    						+ '<small>{{writer}}</small>{{/writer}}'
-						    + '</div>'
+                        + '{{^circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
                         + '{{/circle_list}}'
-					),
-					Hogan.compile( '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
-				];
+                    ),
+                    Hogan.compile( '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
+                ];
 
-				GLOBAL.TPL_FAV_LIST	= [
-					Hogan.compile( '<button id="id_btn_fav_del_{{grp}}_{{idx}}" class="btn btn-danger" onclick="evt_btn_fav_del( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-remove"></span></button>' ),
-					Hogan.compile( '{{layout}}' ),
-					Hogan.compile(
-						''
-						+ '{{#circle_list}}'
-						    + '<div>'
-    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-    						+ '{{#writer}}<br />'
-    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-    						+ '<small>{{writer}}</small>{{/writer}}'
-						    + '</div>'
+                GLOBAL.TPL_FAV_LIST = [
+                    Hogan.compile( '<button id="id_btn_fav_del_{{grp}}_{{idx}}" class="btn btn-danger" onclick="evt_btn_fav_del( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-remove"></span></button>' ),
+                    Hogan.compile( '{{layout}}' ),
+                    Hogan.compile(
+                        ''
+                        + '{{#circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
                         + '{{/circle_list}}'
-						+ '{{^circle_list}}'
-						    + '<div>'
-    						+ '<span class="glyphicon glyphicon-home"></span>&nbsp;'
-    						+ '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-    						+ '{{#writer}}<br />'
-    						+ '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-    						+ '<small>{{writer}}</small>{{/writer}}'
-						    + '</div>'
+                        + '{{^circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
                         + '{{/circle_list}}'
-					),
-					Hogan.compile(
-						''
-						+ '<div class="btn-group">'
-						+ '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>'
-						+ '<button id="id_btn_mark_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-ok"></span></button>'
-						+ '</div>'
-					)
-				];
+                    ),
+                    Hogan.compile(
+                        ''
+                        + '<div class="btn-group">'
+                        + '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>'
+                        + '<button id="id_btn_mark_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-ok"></span></button>'
+                        + '</div>'
+                    )
+                ];
 
 
-				show_view( "cfg" );
+                show_view( "cfg" );
 
 
-				//	クリックイベントを設定
-				$( "#id_btm_import_src" ).click( function( oCEvt ){ evt_btn_import_url(); } );
+                //  クリックイベントを設定
+                $( "#id_btm_import_src" ).click( function( oCEvt ){ evt_btn_import_url(); } );
 
-				//	エンターキーでフォーム送信されてしまうのを抑制。
-				$( "#src_url" ).keypress(
-					function( oCEvt )
-					{
-						if( oCEvt.which == 13 )
-						{
-							return( false );
-						}
-					}
-				);
+                $("#keyword").keyup(function(oCEvt){ evt_keyword(); });
+
+                //  エンターキーでフォーム送信されてしまうのを抑制。
+                $( "#src_url" ).keypress(
+                    function( oCEvt )
+                    {
+                        if( oCEvt.which == 13 )
+                        {
+                            return( false );
+                        }
+                    }
+                );
 
 
-				listArgv	= get_url_param();
+                listArgv    = get_url_param();
+                //listArgv["src_url"] = "jsdata/gurucomi_4.json";
 
-				if( listArgv[ "src_url" ] )
-				{
-					if( listArgv[ "src_url" ].length > 0 )
-					{
-						import_from_url( listArgv[ "src_url" ] );
-					}
-				}
-			}
+                if( listArgv[ "src_url" ] )
+                {
+                    if( listArgv[ "src_url" ].length > 0 )
+                    {
+                        import_from_url( listArgv[ "src_url" ] );
+                    }
+                }
+            }
 
         </script>
 
