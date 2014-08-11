@@ -47,7 +47,7 @@
                 <ul class="nav navbar-nav">
                     <li id="id_menu_lst" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
                     <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
-                    <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り(<span id="id_head_fav_count">0</span>)</a></li>
+                    <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="badge">0</span></a></li>
                     <li id="id_menu_cfg" class=""><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
                 </ul>
             </div>
@@ -74,12 +74,14 @@
 
         <div class="container">
 
+            <!--
             <div id="id_notify_area_0">
                 <div class="alert alert-warning alert-dismissable">
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
                     <strong><span class="glyphicon glyphicon-warning-sign"></span></strong>&nbsp;現在、フォームからの読み込みと GET による読み込みを併用すると正常に動作しません。
                 </div>
             </div>
+                -->
 
             <div id="id_notify_area_1">
             </div>
@@ -92,10 +94,6 @@
                 </ul>
                 <div class="tab-content">
                     <p>
-                        <div class="alert alert-danger alert-dismissable">
-                            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-                            <strong>注意</strong>&nbsp;現在調整中のため不具合が存在する可能性があります。
-                        </div>
                         <div class="tab-pane fade in active" id="id_frm_fnd_0">
                             <form method="get" action="#" role="form">
                                 <div class="form-group">
@@ -103,6 +101,12 @@
                                     <input id="keyword" type="text" class="form-control" placeholder="" />
                                 </div>
                             </form>
+                        </div>
+
+                        <div class="progress">
+                            <div id="id_search_progress" class="progress-bar" role="progressbar" style="-webkit-transition: width 0.1s; transition: width 0.1s; width: 0%;">
+                                <span class="sr-only"></span>
+                            </div>
                         </div>
 
                         <table id="id_tbl_fnd_0" class="table table-condensed">
@@ -168,39 +172,39 @@
             GLOBAL.CIRCLE_DATA = null;
             GLOBAL.FAV = [];
             GLOBAL.TPL_FAV_LIST = [];
-
+            GLOBAL.KEYWORD_DELAY = 15;
+            GLOBAL.CURRENT_KEYWORD = "";
+            GLOBAL.CURRENT_KEYWORD_DELAY = 0;
 
             // =====================================================================
             /*!
              */
             function get_url_param()
             {
-                var listResult  = [];
-                var hashes          = window.location.href.slice( window.location.href.indexOf( "?" ) + 1 ).split( "&" );
+                var listResult = [];
+                var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
 
 
-                for( var n = 0; n < hashes.length; n ++ )
+                for(var n = 0; n < hashes.length; n++)
                 {
-                    var listData    = hashes[ n ].split( "=" );
+                    var listData = hashes[n].split("=");
 
-                    listResult.push( listData[ 0 ] );
-                    listResult[ listData[ 0 ] ] = listData[ 1 ];
+                    listResult.push(listData[0]);
+                    listResult[listData[0]] = listData[1];
                 }
 
-
-                return( listResult );
+                return(listResult);
             }
 
             // =====================================================================
             /*!
              */
-            function sort_layout( objA, objB )
+            function sort_layout(objA, objB)
             {
-                if( objA.layout > objB.layout ) return(  1 );
-                if( objA.layout < objB.layout ) return( -1 );
+                if(objA.layout > objB.layout) return(1);
+                if(objA.layout < objB.layout) return(-1);
 
-
-                return( 0 );
+                return(0);
             }
 
             // =====================================================================
@@ -335,14 +339,14 @@
             // =====================================================================
             /*!
              */
-            function import_from_url( strUrl )
+            function import_from_url(strUrl)
             {
                 $.getJSON(
                     strUrl,
-                    function( oCJson )
+                    function(oCJson)
                     {
-                        GLOBAL.FAV                  = [];
-                        GLOBAL.CIRCLE_DATA  = oCJson;
+                        GLOBAL.FAV = [];
+                        GLOBAL.CIRCLE_DATA = oCJson;
 
                         init_appview(
                             GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL
@@ -353,101 +357,121 @@
                             GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT
                         );
 
+                        $("#id_title").text(GLOBAL.EVENT_NAME);
 
-                        $( "#id_title" ).text( GLOBAL.EVENT_NAME )
+                        $("#id_tpl_head").html(GLOBAL.m_oCTplHead.render(GLOBAL.CIRCLE_DATA));
 
-                        $( "#id_tpl_head" ).html( GLOBAL.m_oCTplHead.render( GLOBAL.CIRCLE_DATA ) );
-
-
-                        $( "#id_menu_lst" ).click( function( oCEvt ){ show_view( "lst" ); } );
-                        $( "#id_menu_fnd" ).click( function( oCEvt ){ show_view( "fnd" ); } );
-                        $( "#id_menu_fav" ).click( function( oCEvt ){ show_view( "fav" ); } );
-                        $( "#id_menu_cfg" ).click( function( oCEvt ){ show_view( "cfg" ); } );
-
+                        $("#id_menu_lst").click(function(oCEvt){show_view("lst");});
+                        $("#id_menu_fnd").click(function(oCEvt){show_view("fnd");});
+                        $("#id_menu_fav").click(function(oCEvt){show_view("fav");});
+                        $("#id_menu_cfg").click(function(oCEvt){show_view("cfg");});
 
                         resume();
 
-                        show_view( "lst" );
+                        show_view("lst");
 
                         render_info();
 
-                        $( "#src_url" ).val( strUrl );
+                        $("#src_url").val(strUrl);
                     }
                 );
             }
 
-            // =====================================================================
+            // ===============================================================
             /*!
              */
-            function evt_keyword()
+            function search_keyword(strKeyword, oCItem)
             {
-                var strKeyword = $("#keyword").val();
+                var bFound = false;
+                var listCItem;
 
-                var oCTBL = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
-                var oCDAT = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
-
-
-                var oCTbl   = document.getElementById( "id_tbl_fnd_0" );
-                while( oCTbl.rows.length > 1 )
+                if(oCItem.circle_list)
                 {
-                    oCTbl.deleteRow( oCTbl.rows.length - 1 );
+                    listCItem = oCItem.circle_list;
+                } else {
+                    listCItem = [oCItem];
                 }
 
-
-                if(strKeyword)
+                for(var i = 0; i < listCItem.length; i ++)
                 {
-                    for( var i = 0; i < oCTBL.length; i ++ )
+                    var oCItem = listCItem[i];
+
+                    if(oCItem.circle)
                     {
-                        for( var j = 0; j < oCDAT[ i ].length; j ++ )
+                        if(oCItem.circle.indexOf(strKeyword, 0) != -1) bFound = true;
+                    }
+
+                    if(oCItem.writer)
+                    {
+                        if(oCItem.writer.indexOf(strKeyword, 0) != -1) bFound = true;
+                    }
+                }
+                
+                return(bFound);
+            }
+
+            // ===============================================================
+            /*!
+             */
+            function evt_keyword_timer()
+            {
+                if(GLOBAL.CURRENT_KEYWORD_DELAY > 0)
+                {
+                    GLOBAL.CURRENT_KEYWORD_DELAY --;
+
+                    var fProgress = (GLOBAL.KEYWORD_DELAY - GLOBAL.CURRENT_KEYWORD_DELAY) * 100;
+                    fProgress /= GLOBAL.KEYWORD_DELAY;
+
+                    $("#id_search_progress").css("width", fProgress + "%");
+
+                    if(GLOBAL.CURRENT_KEYWORD_DELAY == 0)
+                    {
+                        var strKeyword = $("#keyword").val();
+
+                        var oCTBL = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
+                        var oCDAT = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
+                        var docTable = document.getElementById("id_tbl_fnd_0");
+
+                        while( docTable.rows.length > 1 )
                         {
-                            var oCItem = oCDAT[ i ][ j ];
-                            var listTarget = [];
-
-//                            console.log(oCDAT[i][j]);
-
-                            if(oCItem.circle_list)
+                            docTable.deleteRow( docTable.rows.length - 1 );
+                        }
+        
+                        if(strKeyword)
+                        {
+                            for( var i = 0; i < oCTBL.length; i ++ )
                             {
-                                listTarget = oCItem.circle_list;
-                            } else {
-                                listTarget = [oCItem];
-                            }
-
-
-                            for( var k = 0; k < listTarget.length; k ++ )
-                            {
-                                var bFound = false;
-
-                                if(listTarget[k].circle)
+                                for( var j = 0; j < oCDAT[ i ].length; j ++ )
                                 {
-                                    if(listTarget[k].circle.indexOf(strKeyword, 0) != -1) bFound = true;
-                                }
-
-                                if(listTarget[k].writer)
-                                {
-                                    if(listTarget[k].writer.indexOf(strKeyword, 0) != -1) bFound = true;
-                                }
-
-
-                                if(bFound == true)
-                                {
-                                    var oCRow       = document.getElementById( "id_tbl_fnd_0" ).insertRow( -1 );
-
-                                    oCRow.id        = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
-
-                                    for( var n = 0; n < GLOBAL.TPL_LST_LIST.length; n ++ )
+                                    var oCItem = oCDAT[ i ][ j ];
+        
+                                    if(search_keyword(strKeyword, oCItem) == true)
                                     {
-                                        oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_LST_LIST[ n ].render( oCItem );
+                                        var oCRow = docTable.insertRow( -1 );
+        
+                                        oCRow.id = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
+        
+                                        for( var n = 0; n < GLOBAL.TPL_LST_LIST.length; n ++ )
+                                        {
+                                            oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_LST_LIST[ n ].render( oCItem );
+                                        }
                                     }
-
-//                                    console.log(oCItem.circle_list[0].circle);
                                 }
                             }
                         }
                     }
                 }
-//                console.log($( "#keyword" ).val());
             }
 
+            // ===============================================================
+            /*!
+             */
+            function evt_keyword()
+            {
+                GLOBAL.CURRENT_KEYWORD_DELAY = GLOBAL.KEYWORD_DELAY;
+
+                $("#id_search_progress").css("width", "0%");
+            }
 
             // =====================================================================
             /*!
@@ -549,7 +573,7 @@
              */
             function evt_btn_import_url()
             {
-                import_from_url( $( "#src_url" ).val() );
+                import_from_url($("#src_url").val());
             }
 
             // =====================================================================
@@ -726,8 +750,8 @@
              */
             window.onload = function()
             {
-                GLOBAL.m_oCTplHead      = Hogan.compile( $( "#id_tpl_head" ).html() );
-                GLOBAL.m_oCTplDesc      = Hogan.compile( $( "#id_tpl_desc" ).html() );
+                GLOBAL.m_oCTplHead = Hogan.compile($("#id_tpl_head").html());
+                GLOBAL.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
 
                 GLOBAL.TPL_LST_LIST     = [
@@ -790,37 +814,28 @@
                     )
                 ];
 
+                show_view("cfg");
 
-                show_view( "cfg" );
+                // クリックイベントを設定
+                $("#id_btm_import_src").click(function(oCEvt){evt_btn_import_url();});
 
+                $("#keyword").keyup(function(oCEvt){evt_keyword();});
 
-                //  クリックイベントを設定
-                $( "#id_btm_import_src" ).click( function( oCEvt ){ evt_btn_import_url(); } );
+                // エンターキーでフォーム送信されてしまうのを抑制。
+                $("form").submit(function(){return(false)});
 
-                $("#keyword").keyup(function(oCEvt){ evt_keyword(); });
+                listArgv = get_url_param();
+                //listArgv["src_url"] = "jsdata/sample.json.sample";
 
-                //  エンターキーでフォーム送信されてしまうのを抑制。
-                $( "#src_url" ).keypress(
-                    function( oCEvt )
-                    {
-                        if( oCEvt.which == 13 )
-                        {
-                            return( false );
-                        }
-                    }
-                );
-
-
-                listArgv    = get_url_param();
-                //listArgv["src_url"] = "jsdata/gurucomi_4.json";
-
-                if( listArgv[ "src_url" ] )
+                if(listArgv["src_url"])
                 {
-                    if( listArgv[ "src_url" ].length > 0 )
+                    if(listArgv["src_url"].length > 0)
                     {
-                        import_from_url( listArgv[ "src_url" ] );
+                        import_from_url(listArgv["src_url"]);
                     }
                 }
+
+                setInterval(evt_keyword_timer, 100);
             }
 
         </script>
