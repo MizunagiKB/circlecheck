@@ -12,9 +12,9 @@ dictLayout	= {}
 oCReader = csv.reader(open(sys.argv[ 1 ], "rb"), delimiter = '\t')
 
 for tplRecord in oCReader:
-	
+
 	dictRecord	= collections.OrderedDict()
-	
+
 	# CSV はこのルールで出力
 	for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url")):
 
@@ -39,7 +39,9 @@ for tplRecord in oCReader:
 		dictLayout[ strLB ]	= [ dictRecord ]
 
 nIx = 0
-for ss in u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ":
+#for ss in u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみ":
+#for ss in u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ":
+for ss in u"展":
 
     k = ss
     listItem = dictLayout[ss]
@@ -52,7 +54,7 @@ for ss in u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶ�
 
     for o in sorted( listItem, key = lambda obj: obj[ "layout" ] ):
         listBuffer.append( "\t" + json.dumps( o, ensure_ascii = False ) )
-    
+
     print "\"%d\": [" % (nIx,)
     #print "<!-- %s -->" % k.encode( "utf-8" )
     print ",\n".join( listBuffer )
