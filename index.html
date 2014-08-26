@@ -12,7 +12,7 @@
         <title id="id_title"></title>
 
         <!-- Bootstrap -->
-        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css"            />
+        <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" />
 
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -239,13 +239,13 @@
                     GLOBAL.FAV.sort( sort_layout );
 
 
-                    var oCElement               = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+                    var oCElement = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
                     oCElement.className = 'info';
 
                     $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
 
 
-                    var oCTbl   = document.getElementById( "id_tbl_fav_0" );
+                    var oCTbl = document.getElementById( "id_tbl_fav_0" );
                     while( oCTbl.rows.length > 1 )
                     {
                         oCTbl.deleteRow( oCTbl.rows.length - 1 );
@@ -253,10 +253,10 @@
 
                     for( var i = 0; i < GLOBAL.FAV.length; i ++ )
                     {
-                        var oCItem  = GLOBAL.FAV[ i ];
-                        var oCRow       = document.getElementById( "id_tbl_fav_0" ).insertRow( -1 );
+                        var oCItem = GLOBAL.FAV[ i ];
+                        var oCRow = document.getElementById( "id_tbl_fav_0" ).insertRow( -1 );
 
-                        oCRow.id        = "id_row_fav_" + oCItem.grp + "_" + oCItem.idx;
+                        oCRow.id = "id_row_fav_" + oCItem.grp + "_" + oCItem.idx;
 
                         for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
                         {
@@ -266,9 +266,7 @@
                         }
                     }
 
-
                     storage_save();
-
 
                     render_head();
                 }
@@ -279,28 +277,25 @@
              */
             function fav_remove( nGroup, nIndex )
             {
-                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
-                var nIdx        = fav_search_idx( oCItem );
+                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var nIdx = fav_search_idx( oCItem );
 
 
                 if( nIdx != -1 )
                 {
-                    var oCRow               = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+                    var oCRow = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
 
-                    oCRow.parentNode.removeChild( oCRow ); 
+                    oCRow.parentNode.removeChild( oCRow );
 
-                    var oCRow               = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+                    var oCRow = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
 
                     oCRow.className = "";
-
 
                     $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).removeClass( "disabled" );
 
                     GLOBAL.FAV.splice( nIdx, 1 );
 
-
                     storage_save();
-
 
                     render_head();
                 }
@@ -406,7 +401,7 @@
                         if(oCItem.writer.indexOf(strKeyword, 0) != -1) bFound = true;
                     }
                 }
-                
+
                 return(bFound);
             }
 
@@ -436,7 +431,7 @@
                         {
                             docTable.deleteRow( docTable.rows.length - 1 );
                         }
-        
+
                         if(strKeyword)
                         {
                             for( var i = 0; i < oCTBL.length; i ++ )
@@ -444,13 +439,13 @@
                                 for( var j = 0; j < oCDAT[ i ].length; j ++ )
                                 {
                                     var oCItem = oCDAT[ i ][ j ];
-        
+
                                     if(search_keyword(strKeyword, oCItem) == true)
                                     {
                                         var oCRow = docTable.insertRow( -1 );
-        
+
                                         oCRow.id = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
-        
+
                                         for( var n = 0; n < GLOBAL.TPL_LST_LIST.length; n ++ )
                                         {
                                             oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_LST_LIST[ n ].render( oCItem );
@@ -552,10 +547,9 @@
              */
             function evt_btn_mark( nGroup, nIndex )
             {
-                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
 
-                var oCRow       = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
-
+                var oCRow = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
 
                 if( oCRow.className != "" )
                 {
@@ -582,7 +576,7 @@
             function render_head()
             {
                 $( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
-                
+
                 //console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
             }
 
@@ -600,8 +594,8 @@
                 + '<strong><span class="glyphicon glyphicon-info-sign"></span></strong>&nbsp;{{{text}}}'
                 + '</div>'
                 );
-                var oCItem  = GLOBAL.CIRCLE_DATA.INFORMATION;
-                
+                var oCItem = GLOBAL.CIRCLE_DATA.INFORMATION;
+
                 for( var n = 0; n < oCItem.length; n ++ )
                 {
                   strInfo += oCTpl.render( oCItem[ n ] );
@@ -627,13 +621,11 @@
                     + '</div>'
                 );
 
-
                 for( var n = 0; n < oCListTbl.length; n ++ )
                 {
                     strUl_T += oCTpl_T.render( oCListTbl[ n ] );
                     strUl_V += oCTpl_V.render( oCListTbl[ n ] );
                 }
-
 
                 $( "#id_view_lst" ).html(
                     ''
@@ -646,7 +638,6 @@
                     + '</p>'
                     + '</div>'
                 );
-
 
                 $( "#id_tab_circle_lst a:first" ).tab( "show" );
             }
@@ -662,7 +653,7 @@
                     {
                         var oCItem  = oCListDat[ i ][ j ];
                         var oCRow       = document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
-                        
+
 
                         oCItem.grp  = i;
                         oCItem.idx  = j;
@@ -683,17 +674,14 @@
             {
                 if( !window.localStorage ) return;
 
-
-                var listResult          = [];
-                var strStorageData  = window.localStorage.getItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE ) || -1;
-
+                var listResult = [];
+                var strStorageData = window.localStorage.getItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE ) || -1;
 
                 if( strStorageData != -1 )
                 {
-                    listResult  = JSON.parse( strStorageData );
+                    listResult = JSON.parse( strStorageData );
                 }
-                
-                
+
                 return( listResult );
             }
 
@@ -703,7 +691,6 @@
             function storage_save()
             {
                 if( !window.localStorage ) return;
-
 
                 window.localStorage.setItem( GLOBAL.CIRCLE_DATA.DATA_SOURCE, JSON.stringify( GLOBAL.FAV ) );
             }
@@ -754,7 +741,7 @@
                 GLOBAL.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
 
-                GLOBAL.TPL_LST_LIST     = [
+                GLOBAL.TPL_LST_LIST = [
                     Hogan.compile( '<button id="id_btn_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
                     Hogan.compile( '{{layout}}' ),
                     Hogan.compile(
@@ -842,10 +829,10 @@
 
         <!-- jQuery-1.11.0 http://jquery.com/ -->
         <script type="text/javascript" src="jquery/js/jquery-1.11.0.min.js"></script>
-        
+
         <!-- Bootstrap http://twitter.github.io/bootstrap/index.html -->
         <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
-        
+
         <!-- Hogan.js http://twitter.github.io/hogan.js/ -->
         <script type="text/javascript" src="hogan/js/hogan.min.js"></script>
 
