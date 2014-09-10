@@ -90,7 +90,7 @@
 
             <div id="id_view_fnd">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#id_tab_fnd_0" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;キーワード検索</a></li>
+                    <li class="active"><a href="#id_tab_fnd_0" data-toggle="tab"><span class="glyphicon glyphicon-search"></span>&nbsp;キーワード検索</a></li>
                 </ul>
                 <div class="tab-content">
                     <p>
@@ -98,7 +98,13 @@
                             <form method="get" action="#" role="form">
                                 <div class="form-group">
                                     <label for="keyword">キーワード</label>
-                                    <input id="keyword" type="text" class="form-control" placeholder="" />
+
+                                    <div class="input-group">
+                                        <input id="keyword" type="text" class="form-control" placeholder="" />
+                                        <span class="input-group-btn">
+                                            <button id="id_btn_search" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</button>
+                                        </span>
+                                    </div>
                                 </div>
                             </form>
                         </div>
@@ -109,8 +115,12 @@
                             </div>
                         </div>
 
+                        <div id="id_search_result">
+                            <p class="text-center">キーワードを入力して <kbd>enter</kbd> か検索ボタンを押してください。</p>
+                        </div>
+
                         <table id="id_tbl_fnd_0" class="table table-condensed">
-                            <tr><th><span class="glyphicon glyphicon-remove"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>
+                            <tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>
                         </table>
                     </p>
                 </div>
@@ -118,7 +128,7 @@
 
             <div id="id_view_fav" style="display:none">
                 <ul class="nav nav-tabs">
-                    <li class="active"><a href="#id_tab_fav_0" data-toggle="tab">お気に入り</a></li>
+                    <li class="active"><a href="#id_tab_fav_0" data-toggle="tab"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り</a></li>
                 </ul>
                 <div class="tab-content">
                     <p>
@@ -145,10 +155,14 @@
                             <form method="get" action="#" role="form">
                                 <div class="form-group">
                                     <label for="src_url">URL</label>
-                                    <input id="src_url" type="text" class="form-control" placeholder="" />
-                                </div>
-                                <div class="form-group">
-                                    <button id="id_btm_import_src" class="btn btn-primary"><span class="glyphicon glyphicon-circle-arrow-down"></span>&nbsp;指定した URL から JSON を読み込む</button>
+
+                                    <div class="input-group">
+                                        <input id="src_url" type="text" class="form-control" placeholder="" />
+                                        <span class="input-group-btn">
+                                            <button id="id_btn_import_src" class="btn btn-primary" type="button"><span class="glyphicon glyphicon-circle-arrow-down"></span>&nbsp;読込</button>
+                                        </span>
+                                    </div>
+
                                 </div>
                             </form>
                         </div>
@@ -161,6 +175,7 @@
         <div id="id_tpl_foot">
             <div class="container">
                 <p class="text-right">Programming and Design&nbsp;<a href="https://twitter.com/MizunagiKB">@MizunagiKB</a></p>
+                <p class="text-right">GitHub&nbsp;<a href="https://github.com/MizunagiKB/circlecheck">MizunagiKB / circlecheck</a></p>
             </div>
         </div>
 
@@ -183,7 +198,6 @@
             {
                 var listResult = [];
                 var hashes = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
-
 
                 for(var n = 0; n < hashes.length; n++)
                 {
@@ -210,40 +224,53 @@
             // =====================================================================
             /*!
              */
-            function fav_search_idx( oCItem )
+            function fav_search_idx(oCItem)
             {
-                for( var n = 0; n < GLOBAL.FAV.length; n ++ )
+                for(var n = 0; n < GLOBAL.FAV.length; n ++)
                 {
-                    if( oCItem.layout == GLOBAL.FAV[ n ].layout )
+                    if(oCItem.layout == GLOBAL.FAV[ n ].layout)
                     {
-                        return( n );
+                        return(n);
                     }
                 }
 
+                return(-1);
+            }
 
-                return( -1 );
+            function update_row_class(strId, strClass)
+            {
+                var oCRow = document.getElementById(strId);
+
+                if(oCRow != null)
+                {
+                    oCRow.className = strClass;
+                }
+
+                return(oCRow)
             }
 
             // =====================================================================
             /*!
              */
-            function fav_append( nGroup, nIndex )
+            function fav_append(nGroup, nIndex)
             {
-                var oCItem  = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
-                var nIdx = fav_search_idx( oCItem );
-
+                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
+                var nIdx = fav_search_idx(oCItem);
 
                 if( nIdx == -1 )
                 {
                     GLOBAL.FAV.push( oCItem );
                     GLOBAL.FAV.sort( sort_layout );
 
+                    if(update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "info") != null)
+                    {
+                        $( "#id_btn_fnd_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
+                    }
 
-                    var oCElement = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
-                    oCElement.className = 'info';
-
-                    $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
-
+                    if(update_row_class("id_row_lst_" + nGroup + "_" + nIndex, "info") != null)
+                    {
+                        $( "#id_btn_lst_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
+                    }
 
                     var oCTbl = document.getElementById( "id_tbl_fav_0" );
                     while( oCTbl.rows.length > 1 )
@@ -287,11 +314,15 @@
 
                     oCRow.parentNode.removeChild( oCRow );
 
-                    var oCRow = document.getElementById( "id_row_lst_" + nGroup + "_" + nIndex );
+                    if(update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "") != null)
+                    {
+                        $( "#id_btn_fnd_fav_add_" + nGroup + "_" + nIndex ).removeClass("disabled");
+                    }
 
-                    oCRow.className = "";
-
-                    $( "#id_btn_fav_add_" + nGroup + "_" + nIndex ).removeClass( "disabled" );
+                    if(update_row_class("id_row_lst_" + nGroup + "_" + nIndex, "") != null)
+                    {
+                        $( "#id_btn_lst_fav_add_" + nGroup + "_" + nIndex ).removeClass("disabled");
+                    }
 
                     GLOBAL.FAV.splice( nIdx, 1 );
 
@@ -422,7 +453,7 @@
                     if(GLOBAL.CURRENT_KEYWORD_DELAY == 0)
                     {
                         var strKeyword = $("#keyword").val();
-
+                        var nFoundCount = 0;
                         var oCTBL = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL;
                         var oCDAT = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT;
                         var docTable = document.getElementById("id_tbl_fnd_0");
@@ -446,14 +477,39 @@
 
                                         oCRow.id = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
 
-                                        for( var n = 0; n < GLOBAL.TPL_LST_LIST.length; n ++ )
+                                        for( var n = 0; n < GLOBAL.TPL_FND_LIST.length; n ++ )
                                         {
-                                            oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_LST_LIST[ n ].render( oCItem );
+                                            oCRow.insertCell( n ).innerHTML = GLOBAL.TPL_FND_LIST[ n ].render( oCItem );
                                         }
+
+                                        var nIdx = fav_search_idx(oCItem);
+
+                                        if(nIdx != -1)
+                                        {
+                                            if(update_row_class(oCRow.id, "info") != null)
+                                            {
+                                                $( "#id_btn_fnd_fav_add_" + oCItem.grp + "_" + oCItem.idx ).addClass( "disabled" );
+                                            }
+                                        }
+
+                                        nFoundCount += 1;
                                     }
                                 }
                             }
                         }
+
+                        if(nFoundCount > 0)
+                        {
+                            $("#id_search_result").html(
+                                '<p class="text-center">' + nFoundCount + ' 件 見つかりました。</p>'
+                            );
+
+                        } else {
+                            $("#id_search_result").html(
+                                '<p class="text-center">見つかりませんでした。</p>'
+                            );
+                        }
+
                     }
                 }
             }
@@ -461,7 +517,20 @@
             // ===============================================================
             /*!
              */
-            function evt_keyword()
+            function evt_keyword(oCEvt)
+            {
+                if(oCEvt.keyCode == 0x0D)
+                {
+                    GLOBAL.CURRENT_KEYWORD_DELAY = GLOBAL.KEYWORD_DELAY;
+
+                    $("#id_search_progress").css("width", "0%");
+                }
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function evt_btn_search()
             {
                 GLOBAL.CURRENT_KEYWORD_DELAY = GLOBAL.KEYWORD_DELAY;
 
@@ -481,9 +550,9 @@
             // =====================================================================
             /*!
              */
-            function evt_btn_fav_del( nGroup, nIndex )
+            function evt_btn_fav_del(nGroup, nIndex)
             {
-                fav_remove( nGroup, nIndex );
+                fav_remove(nGroup, nIndex);
 
                 //console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex );
             }
@@ -528,7 +597,7 @@
                     + '</table>'
                 );
 
-                $( '#id_tpl_desc' ).html(
+                $("#id_tpl_desc").html(
                     GLOBAL.m_oCTplDesc.render(
                         {
                             "layout": oCItem.layout,
@@ -536,7 +605,7 @@
                         }
                     )
                 );
-                $( '#id_tpl_desc' ).modal( "show" );
+                $("#id_tpl_desc").modal("show");
 
                 //console.log( "evt_btn_desc " + nGroup + ", " + nIndex );
                 //console.log( oCItem );
@@ -545,19 +614,18 @@
             // =====================================================================
             /*!
              */
-            function evt_btn_mark( nGroup, nIndex )
+            function evt_btn_mark(nGroup, nIndex)
             {
-                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
+                var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
 
-                var oCRow = document.getElementById( "id_row_fav_" + nGroup + "_" + nIndex );
+                var oCRow = document.getElementById("id_row_fav_" + nGroup + "_" + nIndex);
 
-                if( oCRow.className != "" )
+                if(oCRow.className != "")
                 {
                     oCRow.className = "";
                 } else {
                     oCRow.className = "success";
                 }
-
 
                 //console.log( "evt_btn_mark " + nGroup + ", " + nIndex );
             }
@@ -575,7 +643,7 @@
              */
             function render_head()
             {
-                $( "#id_head_fav_count" ).text( GLOBAL.FAV.length );
+                $("#id_head_fav_count").text(GLOBAL.FAV.length);
 
                 //console.log( "GLOBAL.FAV.length " + GLOBAL.FAV.length );
             }
@@ -651,13 +719,12 @@
                 {
                     for( var j = 0; j < oCListDat[ i ].length; j ++ )
                     {
-                        var oCItem  = oCListDat[ i ][ j ];
-                        var oCRow       = document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
+                        var oCItem = oCListDat[ i ][ j ];
+                        var oCRow = document.getElementById( "id_tbl_lst_" + i ).insertRow( -1 );
 
-
+                        oCRow.id = "id_row_lst_" + i + "_" + j;
                         oCItem.grp  = i;
                         oCItem.idx  = j;
-                        oCRow.id        = "id_row_lst_" + i + "_" + j;
 
                         for( var k = 0; k < GLOBAL.TPL_LST_LIST.length; k ++ )
                         {
@@ -740,9 +807,8 @@
                 GLOBAL.m_oCTplHead = Hogan.compile($("#id_tpl_head").html());
                 GLOBAL.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
-
                 GLOBAL.TPL_LST_LIST = [
-                    Hogan.compile( '<button id="id_btn_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
+                    Hogan.compile( '<button id="id_btn_lst_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
                     Hogan.compile( '{{layout}}' ),
                     Hogan.compile(
                         ''
@@ -765,7 +831,34 @@
                             + '</div>'
                         + '{{/circle_list}}'
                     ),
-                    Hogan.compile( '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
+                    Hogan.compile( '<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
+                ];
+
+                GLOBAL.TPL_FND_LIST = [
+                    Hogan.compile( '<button id="id_btn_fnd_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>' ),
+                    Hogan.compile( '{{layout}}' ),
+                    Hogan.compile(
+                        ''
+                        + '{{#circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
+                        + '{{/circle_list}}'
+                        + '{{^circle_list}}'
+                            + '<div>'
+                            + '<span class="glyphicon glyphicon-home"></span>&nbsp;'
+                            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                            + '{{#writer}}<br />'
+                            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                            + '<small>{{writer}}</small>{{/writer}}'
+                            + '</div>'
+                        + '{{/circle_list}}'
+                    ),
+                    Hogan.compile( '<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>' )
                 ];
 
                 GLOBAL.TPL_FAV_LIST = [
@@ -795,8 +888,8 @@
                     Hogan.compile(
                         ''
                         + '<div class="btn-group">'
-                        + '<button id="id_btn_desc_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>'
-                        + '<button id="id_btn_mark_{{grp}}_{{idx}}" class="btn btn-default" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-ok"></span></button>'
+                        + '<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>'
+                        + '<button class="btn btn-default" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-ok"></span></button>'
                         + '</div>'
                     )
                 ];
@@ -804,9 +897,10 @@
                 show_view("cfg");
 
                 // クリックイベントを設定
-                $("#id_btm_import_src").click(function(oCEvt){evt_btn_import_url();});
+                $("#id_btn_search").click(function(oCEvt){evt_btn_search();});
+                $("#id_btn_import_src").click(function(oCEvt){evt_btn_import_url();});
 
-                $("#keyword").keyup(function(oCEvt){evt_keyword();});
+                $("#keyword").keyup(function(oCEvt){evt_keyword(oCEvt);});
 
                 // エンターキーでフォーム送信されてしまうのを抑制。
                 $("form").submit(function(){return(false)});
