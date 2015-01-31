@@ -1,8 +1,13 @@
 {
 	"EVENT_URL" 			: "http://localhost/",
 	"DATA_SOURCE"			: "jsdata/sample.json",
+	"DATA_SOURCE_PREV"		: "#",
+	"DATA_SOURCE_NEXT"		: "#",
+
 	"EVENT_NAME" 			: "sample_event",
-    "INFORMATION"			: [],
+    "INFORMATION"			: [
+    ],
+
 	"CIRCLE_LIST_TBL"	: [
 		{ "id" : 0, "name" : "SAMPLE A" },
 		{ "id" : 1, "name" : "SAMPLE B" }
@@ -10,16 +15,8 @@
 
 	"CIRCLE_LIST_DAT"	: {
     "0" : [
-    	{ "layout" : "A1", "circle" : "AAA_CIRCLE", "writer" : "AAA" },
-    	{ "layout" : "A2", "circle" : "BBB_CIRCLE", "writer" : "BBB", "url" : ["http://localhost/1/", "http://localhost/2/"] },
-    	{
-    	    "layout" : "A3",
-    	    "circle_list": [
-    	        {"circle": "BBB_CIRCLE1", "writer" : "BBB1", "url" : "http://localhost/1/"},
-    	        {"circle": "BBB_CIRCLE2", "writer" : "BBB2", "url" : "http://localhost/2/"}
-            ]
-        },
-    	{ "layout" : "A4", "circle" : "AAA3_CIRCLE", "writer" : "BBB", "url" : ["http://localhost/1/", "http://localhost/2/"] }
+    	{ "layout" : "A1", "circle" : "AAA_CIRCLE", "writer" : "AAA", "url" : "" },
+    	{ "layout" : "A2", "circle" : "BBB_CIRCLE", "writer" : "BBB", "url" : "http://localhost/" }
     ],
     "1" : [
     	{ "layout" : "B1", "circle" : "CCC_CIRCLE", "writer" : "CCC", "url" : "http://localhost/" },
