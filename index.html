@@ -44,7 +44,9 @@
                 <a class="navbar-brand" href="{{EVENT_URL}}">{{EVENT_NAME}}</a>
             </div>
             <div id="nav-collapse" class="collapse navbar-collapse">
-                <ul class="nav navbar-nav">
+                <ul class="nav navbar-nav navbar-left">
+                    <li id="id_menu_prev" class=""><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
+                    <li id="id_menu_next" class=""><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
                     <li id="id_menu_lst" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
                     <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
                     <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="badge">0</span></a></li>
@@ -64,6 +66,24 @@
                     <div class="modal-body">
                         <h2>配置場所&nbsp;<span class="label label-default">{{layout}}</span></h2>
                         {{{circle_table_item}}}
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Template Dialog -->
+        <div id="id_tpl_empty" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                        <h4 class="modal-title" id="myModalLabel">通知</h4>
+                    </div>
+                    <div class="modal-body">
+                        データが存在しません
                     </div>
                     <div class="modal-footer">
                         <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
@@ -383,6 +403,26 @@
                         $("#id_title").text(GLOBAL.EVENT_NAME);
 
                         $("#id_tpl_head").html(GLOBAL.m_oCTplHead.render(GLOBAL.CIRCLE_DATA));
+
+                        if(GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV)
+                        {
+                            if(GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV == "#")
+                            {
+                                $("#id_menu_prev").click(function(oCEvt){$("#id_tpl_empty").modal("show");});
+                            } else {
+                                $("#id_menu_prev").click(function(oCEvt){import_from_url(GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV);});
+                            }
+                        }
+
+                        if(GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT)
+                        {
+                            if(GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT == "#")
+                            {
+                                $("#id_menu_next").click(function(oCEvt){$("#id_tpl_empty").modal("show");});
+                            } else {
+                                $("#id_menu_next").click(function(oCEvt){import_from_url(GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT);});
+                            }
+                        }
 
                         $("#id_menu_lst").click(function(oCEvt){show_view("lst");});
                         $("#id_menu_fnd").click(function(oCEvt){show_view("fnd");});
