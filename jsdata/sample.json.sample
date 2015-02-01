@@ -1,26 +1,35 @@
 {
-	"EVENT_URL" 			: "http://localhost/",
-	"DATA_SOURCE"			: "jsdata/sample.json",
-	"DATA_SOURCE_PREV"		: "#",
-	"DATA_SOURCE_NEXT"		: "#",
+    "EVENT_URL" 			: "http://localhost/",
+    "DATA_SOURCE"			: "jsdata/sample.json",
+    "DATA_SOURCE_PREV"		: "#",
+    "DATA_SOURCE_NEXT"		: "#",
 
-	"EVENT_NAME" 			: "sample_event",
+    "EVENT_NAME" 			: "sample_event",
     "INFORMATION"			: [
     ],
 
-	"CIRCLE_LIST_TBL"	: [
-		{ "id" : 0, "name" : "SAMPLE A" },
-		{ "id" : 1, "name" : "SAMPLE B" }
-	],
-
-	"CIRCLE_LIST_DAT"	: {
-    "0" : [
-    	{ "layout" : "A1", "circle" : "AAA_CIRCLE", "writer" : "AAA", "url" : "" },
-    	{ "layout" : "A2", "circle" : "BBB_CIRCLE", "writer" : "BBB", "url" : "http://localhost/" }
+    "CIRCLE_LIST_TBL"	: [
+        { "id" : 0, "name" : "SAMPLE A" },
+        { "id" : 1, "name" : "SAMPLE B" }
     ],
-    "1" : [
-    	{ "layout" : "B1", "circle" : "CCC_CIRCLE", "writer" : "CCC", "url" : "http://localhost/" },
-    	{ "layout" : "B2", "circle" : "DDD_CIRCLE", "writer" : "DDD", "url" : "http://localhost/" }
-    ]
-	}
+
+    "CIRCLE_LIST_DAT"	: {
+        "0" : [
+            { "layout" : "A1", "circle" : "AAA_CIRCLE", "writer" : "AAA", "url" : "" },
+            { "layout" : "A2", "circle" : "BBB_CIRCLE", "writer" : "BBB", "url" : "http://localhost/" },
+
+            { "layout" : "A3",
+                "circle_list": [
+                    {"circle": "CCC_a_CIRCLE", "url": ""},
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"},
+                    {"circle": "配列形式にすると複数表示可能です。"},
+                    {"circle": "アイコンも変更出来ます。（bootstrapのものが使用できます）", "icon": "exclamation-sign"}
+                ]
+            }
+        ],
+        "1" : [
+            { "layout" : "B1", "circle" : "CCC_CIRCLE", "writer" : "CCC", "url" : "http://localhost/" },
+            { "layout" : "B2", "circle" : "DDD_CIRCLE", "writer" : "DDD", "url" : "http://localhost/" }
+        ]
+    }
 }
