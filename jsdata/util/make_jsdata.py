@@ -1,99 +1,94 @@
 # -*- coding: utf-8 -*-
 ##
 import sys
-import string
 import csv
 import json
-import collections
+import re
 
 #
+LAYOUT_PARSE_1 = re.compile("(.*)[0-9]{2},[0-9]{2}")
+LAYOUT_PARSE_2 = re.compile("(.*)[0-9]{2}")
 COMITIA_A = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
 COMITIA_B = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも"
 COMITIA_C = u"展"
-
-dictLayout = {}
-
-oCReader = csv.reader(open(sys.argv[1], "rb"), delimiter="\t")
-
-for tplRecord in oCReader:
-
-    dictRecord = {}
-    # collections.OrderedDict()
-
-    for idx, kwd in ((0, "layout"), (1, "circle"), (3, "writer"), (2, "url")):
-        s = tplRecord[idx].strip().decode("utf-8")
-        if(s != u"　" and len(s) > 0):
-            dictRecord[kwd] = s
-
-    strLayout_1 = tplRecord[2].strip()
-    strLayout_2 = tplRecord[3].strip().replace("/", ",")
-
-# dictRecord[ "url" ] = ""
-# dictRecord[ "layout" ] = strLayout_1 + strLayout_2
-
-    try:
-        strLB = dictRecord["layout"][0]
-    except:
-        # print dictRecord
-        pass
-
-    # print strLB
-
-    dictRecord = {"layout": dictRecord["layout"], "circle_list": dictRecord}
-    del dictRecord["circle_list"]["layout"]
-
-    if(strLB in dictLayout):
-        dictLayout[strLB].append(dictRecord)
-    else:
-        dictLayout[strLB] = [dictRecord]
+LYRICALMAGICAL = u"なのは"
+LOVELIVE = [u"ラブ"]
 
 
-def check_key(v):
-    x = int(v["layout"][1:].split(",")[0])
-    return(x)
+def circle_list(dictLayout):
 
+    nIndex = 0
 
-nIndex = 0
+    for k in LOVELIVE:
 
-for k, listItem in dictLayout.items():
-    # print k
-    pass
+        listItem = dictLayout[k]
+        listBuffer = []
 
-# sys.exit()
-
-for k in COMITIA_C:
-
-    listItem = dictLayout[k]
-
-    listBuffer = []
-    # print k, type(listItem)
-
-    for o in sorted(listItem, key=lambda obj: obj["layout"]):
-        # listBuffer.append( "    " + json.dumps( o, ensure_ascii = False ) )
-        listBuffer.append(
-            "    {\"layout\": \"%s\",\n"
-            "        \"circle_list\": [\n"
-            "            %s\n"
-            "        ]\n"
-            "    }" % (
-                o["layout"],
-                json.dumps(o["circle_list"], ensure_ascii=False)
+        for o in sorted(listItem, key=lambda obj: obj["layout"]):
+            listBuffer.append(
+                "    {\"layout\": \"%s\",\n"
+                "        \"circle_list\": [\n"
+                "            %s\n"
+                "        ]\n"
+                "    }" % (
+                    o["layout"],
+                    json.dumps(o["circle_list"], ensure_ascii=False)
+                )
             )
-        )
 
-    # print "<!-- %s -->" % k.encode( "utf-8" )
-    exportBuffer = ""
-    exportBuffer += "\"%d\" : [\n" % (nIndex,)
-    exportBuffer += ",\n".join(listBuffer)
-    exportBuffer += "\n"
-    exportBuffer += "],\n"
+        exportBuffer = ""
+        exportBuffer += "\"%d\" : [\n" % (nIndex,)
+        exportBuffer += ",\n".join(listBuffer)
+        exportBuffer += "\n"
+        exportBuffer += "],\n"
 
-    print exportBuffer.encode("utf-8")
+        nIndex += 1
 
-    nIndex += 1
-    # pass
+        print exportBuffer.encode("utf-8")
 
-# for strLine in string.split( hFile.read(), "\n" ):
 
-    # strCircle, strWriter, strUrl, strLayout, x	= string.split( strLine, "\t" )
-    # print '{ "layout" : "%s", "circle" : "%s", "writer" : "%s", "url" : "%s" },' % ( strLayout, strCircle, strWriter, strUrl, )
+def parse_layout(s):
+
+    oCResult = LAYOUT_PARSE_1.search(s)
+    if(oCResult is None):
+        oCResult = LAYOUT_PARSE_2.search(s)
+        if(oCResult is None):
+            print "paser_layout error", s
+            sys.exit(-1)
+
+    return(oCResult.group(1))
+
+
+def main():
+
+    dictLayout = {}
+
+    with open(sys.argv[1], "r") as hFile:
+        oCReader = csv.reader(hFile, delimiter="\t")
+
+        for r in oCReader:
+            dictRecord = {
+                "circle_list": {}
+            }
+            strLayoutBlock = ""
+
+            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "url"), (3, "writer")):
+                s = r[idx].strip().decode("utf-8")
+                if(s != u"　" and len(s) > 0):
+                    dictRecord["circle_list"][kwd] = s
+
+            dictRecord["layout"] = dictRecord["circle_list"]["layout"]
+            del dictRecord["circle_list"]["layout"]
+
+            strLayoutBlock = parse_layout(dictRecord["layout"])
+
+            if(strLayoutBlock not in dictLayout):
+                dictLayout[strLayoutBlock] = []
+
+            dictLayout[strLayoutBlock].append(dictRecord)
+
+        circle_list(dictLayout)
+
+
+if(__name__ == "__main__"):
+    main()
