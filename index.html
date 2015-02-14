@@ -178,6 +178,7 @@
                                     </div>
                                 </div>
                             </form>
+                            <a id="id_browser_type" rel="external" href="">モバイル版に変更</a>
                         </div>
                     </p>
                 </div>
@@ -285,28 +286,11 @@
                         $( "#id_btn_lst_fav_add_" + nGroup + "_" + nIndex ).addClass( "disabled" );
                     }
 
-                    var listTable = [];
-                    
-                    listTable.push('<tr><th><span class="glyphicon glyphicon-remove"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>');
-
-                    for( var i = 0; i < GLOBAL.FAV.length; i ++ )
-                    {
-                        var oCItem = GLOBAL.FAV[ i ];
-
-                        listTable.push('<tr id="id_row_fav_' + oCItem.grp + '_' + oCItem.idx + '">');
-
-                        for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
-                        {
-                            listTable.push('<td>' + GLOBAL.TPL_FAV_LIST[n].render(oCItem) + '</td>');
-                        }
-                        listTable.push('</tr>')
-                    }
-
-                    $("#id_tbl_fav_0").html(listTable.join(''));
-
                     storage_save();
 
                     render_head();
+
+                    render_fav();
                 }
             }
 
@@ -396,6 +380,8 @@
 
                         $("#id_title").text(GLOBAL.EVENT_NAME);
 
+                        $("#id_browser_type").attr("href", "./index.m.html" + "?src_url=" + strUrl);
+
                         $("#id_tpl_head").html(GLOBAL.m_oCTplHead.render(GLOBAL.CIRCLE_DATA));
 
                         // データチェック用の関数を定義（ここでしか使用しないため、関数内で定義）
@@ -437,6 +423,8 @@
                         show_view("lst");
 
                         render_info();
+
+                        render_fav();
 
                         $("#src_url").val(strUrl);
 
@@ -607,7 +595,6 @@
                 //console.log( "evt_btn_fav_del " + nGroup + ", " + nIndex );
             }
 
-
             // =====================================================================
             /*!
              */
@@ -720,6 +707,40 @@
                 }
 
                 $( "#id_notify_area_1" ).html( strInfo );
+            }
+
+            // =====================================================================
+            /*!
+             */
+            function render_fav()
+            {
+                var listTable = [];
+
+                listTable.push(
+                    ''
+                    + '<thead>'
+                    + '<tr><th>Check</th><th>配置</th><th>サークル名 / 執筆者</th><th>Info</th></tr>'
+                    + '</thead>'
+                );
+
+                listTable.push('<tbody>');
+
+                for( var i = 0; i < GLOBAL.FAV.length; i ++ )
+                {
+                    var oCItem = GLOBAL.FAV[ i ];
+
+                    listTable.push('<tr id="id_row_fav_' + oCItem.grp + '_' + oCItem.idx + '">');
+
+                    for( var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n ++ )
+                    {
+                        listTable.push('<td>' + GLOBAL.TPL_FAV_LIST[n].render(oCItem) + '</td>');
+                    }
+                    listTable.push('</tr>')
+                }
+
+                listTable.push('</tbody>');
+
+                $("#id_tbl_fav_0").html(listTable.join(''));
             }
 
             // =====================================================================
