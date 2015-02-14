@@ -43,7 +43,7 @@
 
                 <div id="id_view_fnd">fnd</div>
                 <div id="id_view_fav">
-                    <table id="id_tbl_fav_0" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table">
+                    <table id="id_tbl_fav_0" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table" data-mode="columntoggle">
                     </table>
                 </div>
                 <div id="id_view_cfg">
@@ -650,7 +650,7 @@
                 var oCTpl_V = Hogan.compile(
                     ''
                     + '<div id="lst_{{id}}" style="display: none;">'
-                    + '<table id="id_tbl_lst_{{id}}" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table">'
+                    + '<table id="id_tbl_lst_{{id}}" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table" data-mode="columntoggle">'
                     + '</table>'
                     + '</div>'
                 );
