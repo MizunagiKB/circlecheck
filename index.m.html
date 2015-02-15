@@ -504,7 +504,7 @@
 
                 var oCTpl = Hogan.compile(
                     ''
-                    + '<table id="id_tpl_desc_tbl" class="table-stripe ui-responsive" data-role="table" data-mode="columntoggle">'
+                    + '<table id="id_tpl_desc_tbl" class="table-stripe" data-role="table">'
                     + '<thead>'
                         + '<tr class="ui-bar-d">'
                         + '<th>サークル名</th><th>執筆者</th>'
@@ -550,7 +550,7 @@
 
                 $("#id_tpl_desc_tbl").table().table("refresh");
 
-                $("#id_tpl_desc").popup().popup("open");
+                $("#id_tpl_desc").popup({"transition": "fade"}).popup("open");
 
                 //console.log( "evt_btn_desc " + nGroup + ", " + nIndex );
                 //console.log( oCItem );
