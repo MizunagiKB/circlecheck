@@ -36,14 +36,14 @@
 
             <div role="main" class="ui-content">
                 <div id="id_view_lst">
-                    <a class="ui-btn ui-btn-b ui-corner-all ui-shadow" data-theme="b" href="#id_view_mnu">配置&nbsp;<span id="id_layout_name"></span></a>
+                    <a class="ui-btn ui-btn-b ui-corner-all" data-theme="b" href="#id_view_mnu">配置&nbsp;<span id="id_layout_name"></span></a>
                     <div id="id_view_lst_tbl">
                     </div>
                 </div>
 
                 <div id="id_view_fnd">fnd</div>
                 <div id="id_view_fav">
-                    <table id="id_tbl_fav_0" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table" data-mode="columntoggle">
+                    <table id="id_tbl_fav_0" class="table-stripe ui-responsive" data-role="table" data-mode="columntoggle">
                     </table>
                 </div>
                 <div id="id_view_cfg">
@@ -58,18 +58,18 @@
 
             <div id="id_view_mnu" data-role="panel" data-position="left" data-display="reveal" data-theme="b">
             </div>
-        </div>
 
-        <div id="id_tpl_desc" data-role="page">
-            <div data-role="header" data-theme="b">
-                <h1>Dialog</h1>
+            <div id="id_tpl_desc" data-role="popup" data-overlay-theme="b" data-theme="b" data-dismissible="false">
+                <div data-role="header" data-theme="a">
+                    <h1>サークル情報</h1>
+                </div>
+                <div role="main" class="ui-content">
+                    <h1>{{layout}}</h1>
+                    {{{circle_table_item}}}
+                    <a href="#" class="ui-btn ui-corner-all" data-rel="back" data-transition="fade">Close</a>
+                </div>
             </div>
-            <div role="main" class="ui-content">
-                <p><a href="#id_page_main" data-rel="back" class="ui-btn ui-shadow ui-corner-all ui-btn-inline ui-icon-back ui-btn-icon-left">Back to page "one"</a></p>
-            </div>
-            <div data-role="footer">
-                <h4>Page Footer</h4>
-            </div>
+
         </div>
 
         <script type="text/javascript">
@@ -501,13 +501,16 @@
             function evt_btn_desc( nGroup, nIndex )
             {
                 var oCItem = GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT[ nGroup ][ nIndex ];
-                /*
+
                 var oCTpl = Hogan.compile(
                     ''
-                    + '<table class="table table-striped table-condensed">'
-                    + '<tr>'
-                    + '<th>サークル名</th><th>執筆者</th>'
-                    + '</tr>'
+                    + '<table id="id_tpl_desc_tbl" class="table-stripe ui-responsive" data-role="table" data-mode="columntoggle">'
+                    + '<thead>'
+                        + '<tr class="ui-bar-d">'
+                        + '<th>サークル名</th><th>執筆者</th>'
+                        + '</tr>'
+                    + '</thead>'
+                    + '<tbody>'
                     + '{{#circle_list}}'
                     + '<tr>'
                     + '<td>'
@@ -532,6 +535,7 @@
                     + '<td><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}</td>'
                     + '</tr>'
                     + '{{/circle_list}}'
+                    + '</tbody>'
                     + '</table>'
                 );
 
@@ -543,11 +547,10 @@
                         }
                     )
                 );
-//                $("#id_tpl_desc").modal("show");
 
-//                $("#id_tpl_desc").dialog().popup("open");
-*/
-                $('<a href="#id_tpl_desc" data-rel="dialog">&nbsp;</a>').click().remove();
+                $("#id_tpl_desc_tbl").table().table("refresh");
+
+                $("#id_tpl_desc").popup().popup("open");
 
                 //console.log( "evt_btn_desc " + nGroup + ", " + nIndex );
                 //console.log( oCItem );
@@ -621,7 +624,12 @@
             {
                 var listTable = [];
 
-                listTable.push('<tr><th><span class="glyphicon glyphicon-remove"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>');
+                listTable.push(
+                    ''
+                    + '<thead>'
+                    + '<tr><th>Check</th><th>配置</th><th>サークル名 / 執筆者</th><th>Info</th></tr>'
+                    + '</thead>'
+                );
 
                 for( var i = 0; i < GLOBAL.FAV.length; i ++ )
                 {
@@ -650,7 +658,7 @@
                 var oCTpl_V = Hogan.compile(
                     ''
                     + '<div id="lst_{{id}}" style="display: none;">'
-                    + '<table id="id_tbl_lst_{{id}}" class="ui-body-d ui-shadow table-stripe ui-responsive" data-role="table" data-mode="columntoggle">'
+                    + '<table id="id_tbl_lst_{{id}}" class="table-stripe ui-responsive" data-role="table" data-mode="columntoggle">'
                     + '</table>'
                     + '</div>'
                 );
@@ -899,6 +907,7 @@
                 $("form").submit(function(){return(false)});
 
                 listArgv = get_url_param();
+                listArgv["src_url"] = "jsdata/lyricalmagical_18.json";
                 //listArgv["src_url"] = "jsdata/sample.json.sample";
 
                 if(listArgv["src_url"])
