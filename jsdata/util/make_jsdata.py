@@ -6,20 +6,21 @@ import json
 import re
 
 #
-LAYOUT_PARSE_1 = re.compile("(.*)[0-9]{2},[0-9]{2}")
-LAYOUT_PARSE_2 = re.compile("(.*)[0-9]{2}")
+LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}・[0-9]{1,2}")
+LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
 COMITIA_A = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
 COMITIA_B = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも"
 COMITIA_C = u"展"
 LYRICALMAGICAL = u"なのは"
 LOVELIVE = [u"ラブ"]
+KOBE_KANCOLLE = [u"須磨", u"有馬", u"兵庫", u"長田", u"湊", u"元町", u"神戸", u"葺合", u"灘" ]
 
 
 def circle_list(dictLayout):
 
     nIndex = 0
 
-    for k in LOVELIVE:
+    for k in KOBE_KANCOLLE:
 
         listItem = dictLayout[k]
         listBuffer = []
@@ -64,7 +65,7 @@ def main():
     dictLayout = {}
 
     with open(sys.argv[1], "r") as hFile:
-        oCReader = csv.reader(hFile, delimiter="\t")
+        oCReader = csv.reader(hFile, delimiter=",")
 
         for r in oCReader:
             dictRecord = {
@@ -72,7 +73,7 @@ def main():
             }
             strLayoutBlock = ""
 
-            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "url"), (3, "writer")):
+            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url")):
                 s = r[idx].strip().decode("utf-8")
                 if(s != u"　" and len(s) > 0):
                     dictRecord["circle_list"][kwd] = s
