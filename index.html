@@ -400,16 +400,18 @@
                             return(bResult);
                         }
 
+                        var strHref_base = window.location.href.split("?")[0];
+
                         if(is_valid_param(GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV) == true)
                         {
-                            $("#id_menu_prev").click(function(oCEvt){import_from_url(GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV);});
+                            $("#id_menu_prev").click(function(oCEvt){window.location.href = strHref_base + "?src_url=" + GLOBAL.CIRCLE_DATA.DATA_SOURCE_PREV});
                         } else {
                             $("#id_menu_prev").click(function(oCEvt){$("#id_tpl_empty").modal("show");});
                         }
 
                         if(is_valid_param(GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT) == true)
                         {
-                            $("#id_menu_next").click(function(oCEvt){import_from_url(GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT);});
+                            $("#id_menu_next").click(function(oCEvt){window.location.href = strHref_base + "?src_url=" + GLOBAL.CIRCLE_DATA.DATA_SOURCE_NEXT});
                         } else {
                             $("#id_menu_next").click(function(oCEvt){$("#id_tpl_empty").modal("show");});
                         }
@@ -689,19 +691,59 @@
             // =====================================================================
             /*!
              */
+            function check_event_schedule()
+            {
+                var aryResult = [];
+
+                if(is_valid_param(GLOBAL.CIRCLE_DATA.EVENT_ST) != true) return(aryResult);
+                if(is_valid_param(GLOBAL.CIRCLE_DATA.EVENT_EN) != true) return(aryResult);
+
+                var oCDate = new Date();
+                var oCDateSt = new Date(GLOBAL.CIRCLE_DATA.EVENT_ST);
+                var oCDateEn = new Date(GLOBAL.CIRCLE_DATA.EVENT_EN);
+
+                var strDateTimeSt = oCDateSt.getFullYear() + "年" + (oCDateSt.getMonth() + 1) + "月" + oCDateSt.getDate() + "日&nbsp;" + ("0" + oCDateSt.getHours()).slice(-2) + ":" + ("0" + oCDateSt.getMinutes()).slice(-2);
+                var strDateTimeEn = oCDateEn.getFullYear() + "年" + (oCDateEn.getMonth() + 1) + "月" + oCDateEn.getDate() + "日&nbsp;" + ("0" + oCDateEn.getHours()).slice(-2) + ":" + ("0" + oCDateEn.getMinutes()).slice(-2);
+
+                if(oCDate.getTime() < oCDateSt.getTime())
+                {
+                    aryResult.push(
+                        {
+                            "alert": "info", "icon": "info-sign",
+                            "text": "開催予定日&nbsp;[&nbsp;" + strDateTimeSt + "&nbsp;]"
+                        }
+                    );
+                } else if(oCDate.getTime() < oCDateEn.getTime()) {
+                    aryResult.push({"alert": "info", "icon": "info-sign", "text": "本日開催&nbsp;[&nbsp;" + strDateTimeSt + "&nbsp;-&nbsp;" + strDateTimeEn + "&nbsp;]"});
+                } else {
+                    aryResult.push({"alert": "danger", "icon": "exclamation-sign", "text": "このイベントは終了しました"});
+                }
+
+                return(aryResult);
+            }
+
+            // =====================================================================
+            /*!
+             */
             function render_info()
             {
                 var strInfo = '';
 
                 var oCTpl = Hogan.compile(
                 ''
-                + '<div class="alert alert-info alert-dismissable">'
+                + '<div class="alert alert-{{#alert}}{{alert}}{{/alert}}{{^alert}}info{{/alert}} alert-dismissable">'
                 + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-                + '<strong><span class="glyphicon glyphicon-info-sign"></span></strong>&nbsp;{{{text}}}'
+                + '<strong><span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}info-sign{{/icon}}"></span></strong>&nbsp;{{{text}}}'
                 + '</div>'
                 );
-                var oCItem = GLOBAL.CIRCLE_DATA.INFORMATION;
 
+                var oCItem = check_event_schedule();
+                for( var n = 0; n < oCItem.length; n ++ )
+                {
+                  strInfo += oCTpl.render( oCItem[ n ] );
+                }
+
+                var oCItem = GLOBAL.CIRCLE_DATA.INFORMATION;
                 for( var n = 0; n < oCItem.length; n ++ )
                 {
                   strInfo += oCTpl.render( oCItem[ n ] );
