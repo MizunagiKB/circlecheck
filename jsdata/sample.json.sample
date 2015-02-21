@@ -5,6 +5,8 @@
     "DATA_SOURCE_NEXT"		: "#",
 
     "EVENT_NAME" 			: "sample_event",
+    "EVENT_ST"              : "9999-01-01T00:00:00+09:00",
+    "EVENT_EN"              : "9999-12-31T23:59:59+09:00",
     "INFORMATION"			: [
     ],
 
