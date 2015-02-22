@@ -47,8 +47,8 @@
                 <div data-role="navbar">
                     <ul>
                         <li><a id="id_menu_lst" class="ui-btn-top ui-nodisc-icon" data-icon="bullets" href="#">一覧</a></li>
-                        <li><a id="id_menu_fnd" class="ui-btn-top ui-nodisc-icon" data-icon="search" href="#">検索</a></li>
                         <li><a id="id_menu_fav" class="ui-btn-top ui-nodisc-icon" data-icon="star" href="#">お気に入り<span id="id_head_fav_count" class="ui-li-count ui-body-b">0</span></a></li>
+                        <li><a id="id_menu_fnd" class="ui-btn-top ui-nodisc-icon" data-icon="search" href="#">検索</a></li>
                     </ul>
                 </div>
             </div>
@@ -147,8 +147,8 @@
              */
             function sort_layout(objA, objB)
             {
-                if(objA.layout > objB.layout) return(1);
-                if(objA.layout < objB.layout) return(-1);
+                if(objA.sortkey > objB.sortkey) return(1);
+                if(objA.sortkey < objB.sortkey) return(-1);
 
                 return(0);
             }

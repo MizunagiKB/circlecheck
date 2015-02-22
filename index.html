@@ -49,8 +49,8 @@
                     <li id="id_menu_prev" class=""><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
                     <li id="id_menu_next" class=""><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
                     <li id="id_menu_lst" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
-                    <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
                     <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="badge">0</span></a></li>
+                    <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
                     <li id="id_menu_cfg" class=""><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
                 </ul>
             </div>
@@ -230,8 +230,8 @@
              */
             function sort_layout(objA, objB)
             {
-                if(objA.layout > objB.layout) return(1);
-                if(objA.layout < objB.layout) return(-1);
+                if(objA.sortkey > objB.sortkey) return(1);
+                if(objA.sortkey < objB.sortkey) return(-1);
 
                 return(0);
             }
