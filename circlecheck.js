@@ -7,14 +7,17 @@ var E_CCHECK;
     E_CCHECK[E_CCHECK["FAV"] = 1] = "FAV";
     E_CCHECK[E_CCHECK["FND"] = 2] = "FND";
     E_CCHECK[E_CCHECK["CFG"] = 3] = "CFG";
+    E_CCHECK[E_CCHECK["MAP"] = 4] = "MAP";
 })(E_CCHECK || (E_CCHECK = {}));
 var E_CCHECK_LIST = [
     E_CCHECK.CAT,
     E_CCHECK.FAV,
     E_CCHECK.FND,
-    E_CCHECK.CFG
+    E_CCHECK.CFG,
+    E_CCHECK.MAP
 ];
 var GLOBAL = {
+    EVENT_MAP: null,
     CIRCLE_DATA: null,
     EVENT_NAME: "",
     FAV: [],
@@ -155,6 +158,19 @@ function import_from_url(strUrl) {
         $("#id_menu_" + E_CCHECK[E_CCHECK.FAV]).click(function (oCEvt) { show_view(E_CCHECK.FAV); });
         $("#id_menu_" + E_CCHECK[E_CCHECK.FND]).click(function (oCEvt) { show_view(E_CCHECK.FND); });
         $("#id_menu_" + E_CCHECK[E_CCHECK.CFG]).click(function (oCEvt) { show_view(E_CCHECK.CFG); });
+        $("#id_menu_" + E_CCHECK[E_CCHECK.MAP]).click(function (oCEvt) { show_view(E_CCHECK.MAP); });
+        if (GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION) {
+            GLOBAL.EVENT_MAP = new Microsoft.Maps.Map(document.getElementById("id_bing_map"), {
+                credentials: "AnFn8oGtujPjISREG74t6AjvDUiHBPJxXT0Dai0p2WlPyZtIB9FoBnFwyNGnKkFr",
+                center: new Microsoft.Maps.Location(GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION.latitude, GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION.longitude),
+                mapTypeId: Microsoft.Maps.MapTypeId.road,
+                enableSearchLogo: false,
+                enableClickableLogo: false,
+                showDashboard: true,
+                zoom: 16
+            });
+            GLOBAL.EVENT_MAP.entities.push(new Microsoft.Maps.Pushpin(GLOBAL.EVENT_MAP.getCenter()));
+        }
         resume();
         show_view(E_CCHECK.CAT);
         render_info();

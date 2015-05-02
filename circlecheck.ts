@@ -22,6 +22,15 @@ declare module Ijquery {
 
 declare var $: Ijquery.jquery;
 
+declare module IMicrosoft {
+    export interface microsoft
+    {
+        Maps;
+    }
+}
+
+declare var Microsoft: IMicrosoft.microsoft;
+
 
 // -------------------------------------------------------------- interface(s)
 interface ICIRCLE_LIST_TBL_ITEM
@@ -56,18 +65,21 @@ enum E_CCHECK
     CAT = 0,
     FAV = 1,
     FND = 2,
-    CFG = 3
+    CFG = 3,
+    MAP = 4
 }
 var E_CCHECK_LIST: Array<E_CCHECK> = [
     E_CCHECK.CAT,
     E_CCHECK.FAV,
     E_CCHECK.FND,
-    E_CCHECK.CFG
+    E_CCHECK.CFG,
+    E_CCHECK.MAP
 ];
 
 
 // ---------------------------------------------------------- Global Object(s)
 var GLOBAL = {
+    EVENT_MAP: null,
     CIRCLE_DATA: null,
     EVENT_NAME: "",
     FAV: [],
@@ -296,6 +308,30 @@ function import_from_url(strUrl: string): void
             $("#id_menu_" + E_CCHECK[E_CCHECK.FAV]).click(function(oCEvt){show_view(E_CCHECK.FAV);});
             $("#id_menu_" + E_CCHECK[E_CCHECK.FND]).click(function(oCEvt){show_view(E_CCHECK.FND);});
             $("#id_menu_" + E_CCHECK[E_CCHECK.CFG]).click(function(oCEvt){show_view(E_CCHECK.CFG);});
+            $("#id_menu_" + E_CCHECK[E_CCHECK.MAP]).click(function(oCEvt){show_view(E_CCHECK.MAP);});
+
+            if(GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION)
+            {
+                GLOBAL.EVENT_MAP = new Microsoft.Maps.Map(
+                    document.getElementById("id_bing_map"),
+                    {
+                        credentials: "AnFn8oGtujPjISREG74t6AjvDUiHBPJxXT0Dai0p2WlPyZtIB9FoBnFwyNGnKkFr",
+                        center: new Microsoft.Maps.Location(
+                            GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION.latitude,
+                            GLOBAL.CIRCLE_DATA.EVENT_MAP_LOCATION.longitude
+                        ),
+                        mapTypeId: Microsoft.Maps.MapTypeId.road,
+                        enableSearchLogo: false,
+                        enableClickableLogo: false,
+                        showDashboard: true,
+                        zoom: 16
+                    }
+                );
+
+                GLOBAL.EVENT_MAP.entities.push(
+                    new Microsoft.Maps.Pushpin(GLOBAL.EVENT_MAP.getCenter())
+                );
+            }
 
             resume();
 
