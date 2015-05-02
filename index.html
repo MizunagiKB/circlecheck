@@ -50,10 +50,10 @@
                 <ul class="nav navbar-nav navbar-left">
                     <li id="id_menu_prev" class=""><a href="#"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
                     <li id="id_menu_next" class=""><a href="#"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
-                    <li id="id_menu_lst" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
-                    <li id="id_menu_fav" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="badge">0</span></a></li>
-                    <li id="id_menu_fnd" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
-                    <li id="id_menu_cfg" class=""><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
+                    <li id="id_menu_CAT" class="active"><a href="#"><span class="glyphicon glyphicon-list"></span>&nbsp;一覧</a></li>
+                    <li id="id_menu_FAV" class=""><a href="#"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="badge">0</span></a></li>
+                    <li id="id_menu_FND" class=""><a href="#"><span class="glyphicon glyphicon-search"></span>&nbsp;検索</a></li>
+                    <li id="id_menu_CFG" class=""><a href="#"><span class="glyphicon glyphicon-cog"></span>&nbsp;設定</a></li>
                 </ul>
             </div>
         </nav>
@@ -109,9 +109,23 @@
             <div id="id_notify_area_1">
             </div>
 
-            <div id="id_view_lst"></div>
+            <div id="id_view_CAT"></div>
 
-            <div id="id_view_fnd">
+            <div id="id_view_FAV" style="display:none">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#id_tab_fav_0" data-toggle="tab"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り</a></li>
+                </ul>
+                <div class="tab-content">
+                    <p>
+                        <div class="tab-pane fade in active" id="id_tab_fav_0">
+                            <table id="id_tbl_fav_0" class="table table-striped table-condensed">
+                            </table>
+                        </div>
+                    </p>
+                </div>
+            </div>
+
+            <div id="id_view_FND">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#id_tab_fnd_0" data-toggle="tab"><span class="glyphicon glyphicon-search"></span>&nbsp;キーワード検索</a></li>
                 </ul>
@@ -149,21 +163,7 @@
                 </div>
             </div>
 
-            <div id="id_view_fav" style="display:none">
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#id_tab_fav_0" data-toggle="tab"><span class="glyphicon glyphicon-star"></span>&nbsp;お気に入り</a></li>
-                </ul>
-                <div class="tab-content">
-                    <p>
-                        <div class="tab-pane fade in active" id="id_tab_fav_0">
-                            <table id="id_tbl_fav_0" class="table table-striped table-condensed">
-                            </table>
-                        </div>
-                    </p>
-                </div>
-            </div>
-
-            <div id="id_view_cfg">
+            <div id="id_view_CFG">
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#id_tab_cfg_0" data-toggle="tab"><span class="glyphicon glyphicon-circle-arrow-down"></span>&nbsp;URL から読み込み</a></li>
                 </ul>

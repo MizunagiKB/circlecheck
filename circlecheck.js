@@ -1,12 +1,26 @@
+// ===========================================================================
 /*!
  */
+var E_CCHECK;
+(function (E_CCHECK) {
+    E_CCHECK[E_CCHECK["CAT"] = 0] = "CAT";
+    E_CCHECK[E_CCHECK["FAV"] = 1] = "FAV";
+    E_CCHECK[E_CCHECK["FND"] = 2] = "FND";
+    E_CCHECK[E_CCHECK["CFG"] = 3] = "CFG";
+})(E_CCHECK || (E_CCHECK = {}));
+var E_CCHECK_LIST = [
+    E_CCHECK.CAT,
+    E_CCHECK.FAV,
+    E_CCHECK.FND,
+    E_CCHECK.CFG
+];
 var GLOBAL = {
     CIRCLE_DATA: null,
     EVENT_NAME: "",
     FAV: [],
-    TPL_LST_LIST: [],
-    TPL_FAV_LIST: [],
-    TPL_FND_LIST: [],
+    COLUMN_CAT: [],
+    COLUMN_FAV: [],
+    COLUMN_FND: [],
     KEYWORD_DELAY: 15,
     CURRENT_KEYWORD: "",
     CURRENT_KEYWORD_DELAY: 0,
@@ -35,7 +49,7 @@ function sort_layout(objA, objB) {
     return (0);
 }
 /*!
- *  @brief データチェック用の関数を定義（ここでしか使用しないため、関数内で定義）
+ *  @brief データチェック用の関数定義
  */
 function is_valid_param(param) {
     var bResult = false;
@@ -73,11 +87,11 @@ function fav_append(nGroup, nIndex) {
     if (nIdx == -1) {
         GLOBAL.FAV.push(oCItem);
         GLOBAL.FAV.sort(sort_layout);
-        if (update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "info") != null) {
-            $("#id_btn_fnd_fav_add_" + nGroup + "_" + nIndex).addClass("disabled");
-        }
         if (update_row_class("id_row_lst_" + nGroup + "_" + nIndex, "info") != null) {
-            $("#id_btn_lst_fav_add_" + nGroup + "_" + nIndex).addClass("disabled");
+            $("#id_btn_fav_add_" + nGroup + "_" + nIndex + "_" + E_CCHECK[E_CCHECK.CAT]).addClass("disabled");
+        }
+        if (update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "info") != null) {
+            $("#id_btn_fav_add_" + nGroup + "_" + nIndex + "_" + E_CCHECK[E_CCHECK.FND]).addClass("disabled");
         }
         storage_save();
         render_head();
@@ -92,11 +106,11 @@ function fav_remove(nGroup, nIndex) {
     if (nIdx != -1) {
         var oCRow = document.getElementById("id_row_fav_" + nGroup + "_" + nIndex);
         oCRow.parentNode.removeChild(oCRow);
-        if (update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "") != null) {
-            $("#id_btn_fnd_fav_add_" + nGroup + "_" + nIndex).removeClass("disabled");
-        }
         if (update_row_class("id_row_lst_" + nGroup + "_" + nIndex, "") != null) {
-            $("#id_btn_lst_fav_add_" + nGroup + "_" + nIndex).removeClass("disabled");
+            $("#id_btn_fav_add_" + nGroup + "_" + nIndex + "_" + E_CCHECK[E_CCHECK.CAT]).removeClass("disabled");
+        }
+        if (update_row_class("id_row_fnd_" + nGroup + "_" + nIndex, "") != null) {
+            $("#id_btn_fav_add_" + nGroup + "_" + nIndex + "_" + E_CCHECK[E_CCHECK.FND]).removeClass("disabled");
         }
         GLOBAL.FAV.splice(nIdx, 1);
         storage_save();
@@ -105,26 +119,13 @@ function fav_remove(nGroup, nIndex) {
 }
 /*!
  */
-function show_view(strId) {
-    $("#id_menu_lst").removeClass("active");
-    $("#id_menu_fnd").removeClass("active");
-    $("#id_menu_fav").removeClass("active");
-    $("#id_menu_cfg").removeClass("active");
-    $("#id_view_lst").hide();
-    $("#id_view_fnd").hide();
-    $("#id_view_fav").hide();
-    $("#id_view_cfg").hide();
-    switch (strId) {
-        case "lst":
-        case "fnd":
-        case "fav":
-        case "cfg":
-            $("#id_menu_" + strId).addClass("active");
-            $("#id_view_" + strId).show();
-            break;
-        default:
-            break;
+function show_view(e_ccheck) {
+    for (var i = 0; i < E_CCHECK_LIST.length; i++) {
+        $("#id_menu_" + E_CCHECK[i]).removeClass("active");
+        $("#id_view_" + E_CCHECK[i]).hide();
     }
+    $("#id_menu_" + E_CCHECK[e_ccheck]).addClass("active");
+    $("#id_view_" + E_CCHECK[e_ccheck]).show();
 }
 /*!
  */
@@ -132,8 +133,8 @@ function import_from_url(strUrl) {
     $.getJSON(strUrl, function (oCJson) {
         GLOBAL.FAV = [];
         GLOBAL.CIRCLE_DATA = oCJson;
-        init_appview(GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL);
-        init_appdata(GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL, GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT);
+        init_tabhead(GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL);
+        init_tabdata(GLOBAL.CIRCLE_DATA.CIRCLE_LIST_TBL, GLOBAL.CIRCLE_DATA.CIRCLE_LIST_DAT);
         $("#id_title").text(GLOBAL.EVENT_NAME);
         $("#id_browser_type").attr("href", "./index.m.html" + "?src_url=" + strUrl);
         $("#id_tpl_head").html(GLOBAL.m_oCTplHead.render(GLOBAL.CIRCLE_DATA));
@@ -150,12 +151,12 @@ function import_from_url(strUrl) {
         else {
             $("#id_menu_next").click(function (oCEvt) { $("#id_tpl_empty").modal("show"); });
         }
-        $("#id_menu_lst").click(function (oCEvt) { show_view("lst"); });
-        $("#id_menu_fnd").click(function (oCEvt) { show_view("fnd"); });
-        $("#id_menu_fav").click(function (oCEvt) { show_view("fav"); });
-        $("#id_menu_cfg").click(function (oCEvt) { show_view("cfg"); });
+        $("#id_menu_" + E_CCHECK[E_CCHECK.CAT]).click(function (oCEvt) { show_view(E_CCHECK.CAT); });
+        $("#id_menu_" + E_CCHECK[E_CCHECK.FAV]).click(function (oCEvt) { show_view(E_CCHECK.FAV); });
+        $("#id_menu_" + E_CCHECK[E_CCHECK.FND]).click(function (oCEvt) { show_view(E_CCHECK.FND); });
+        $("#id_menu_" + E_CCHECK[E_CCHECK.CFG]).click(function (oCEvt) { show_view(E_CCHECK.CFG); });
         resume();
-        show_view("lst");
+        show_view(E_CCHECK.CAT);
         render_info();
         render_fav();
         $("#src_url").val(strUrl);
@@ -164,14 +165,14 @@ function import_from_url(strUrl) {
 }
 /*!
  */
-function search_keyword(strKeyword, oCItem) {
+function search_keyword(strKeyword, oCDatItem) {
     var bFound = false;
     var listCItem;
-    if (oCItem.circle_list) {
-        listCItem = oCItem.circle_list;
+    if (oCDatItem.circle_list) {
+        listCItem = oCDatItem.circle_list;
     }
     else {
-        listCItem = [oCItem];
+        listCItem = [oCDatItem];
     }
     for (var i = 0; i < listCItem.length; i++) {
         var oCItem = listCItem[i];
@@ -206,11 +207,12 @@ function evt_keyword_timer() {
                 for (var i = 0; i < oCTBL.length; i++) {
                     for (var j = 0; j < oCDAT[i].length; j++) {
                         var oCItem = oCDAT[i][j];
+                        oCItem.mode = E_CCHECK[E_CCHECK.FND];
                         if (search_keyword(strKeyword, oCItem) == true) {
                             var rowId = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
                             listTable.push('<tr id="' + rowId + '">');
-                            for (var n = 0; n < GLOBAL.TPL_FND_LIST.length; n++) {
-                                listTable.push('<td>' + GLOBAL.TPL_FND_LIST[n].render(oCItem) + '</td>');
+                            for (var k = 0; k < GLOBAL.COLUMN_FND.length; k++) {
+                                listTable.push('<td>' + GLOBAL.COLUMN_FND[k].render(oCItem) + '</td>');
                             }
                             listTable.push('</tr>');
                             var nIdx = fav_search_idx(oCItem);
@@ -224,9 +226,8 @@ function evt_keyword_timer() {
                 $("#id_tbl_fnd_0").html(listTable.join(''));
                 for (var i = 0; i < listFavItem.length; i++) {
                     var oCItem = listFavItem[i];
-                    var rowId = "id_row_fnd_" + oCItem.grp + "_" + oCItem.idx;
-                    if (update_row_class(rowId, "info") != null) {
-                        $("#id_btn_fnd_fav_add_" + oCItem.grp + "_" + oCItem.idx).addClass("disabled");
+                    if (update_row_class("id_row_fnd_" + oCItem.grp + "_" + oCItem.idx, "info") != null) {
+                        $("#id_btn_fav_add_" + oCItem.grp + "_" + oCItem.idx + "_" + E_CCHECK[E_CCHECK.FND]).addClass("disabled");
                     }
                 }
             }
@@ -379,8 +380,8 @@ function render_fav() {
     for (var i = 0; i < GLOBAL.FAV.length; i++) {
         var oCItem = GLOBAL.FAV[i];
         listTable.push('<tr id="id_row_fav_' + oCItem.grp + '_' + oCItem.idx + '">');
-        for (var n = 0; n < GLOBAL.TPL_FAV_LIST.length; n++) {
-            listTable.push('<td>' + GLOBAL.TPL_FAV_LIST[n].render(oCItem) + '</td>');
+        for (var n = 0; n < GLOBAL.COLUMN_FAV.length; n++) {
+            listTable.push('<td>' + GLOBAL.COLUMN_FAV[n].render(oCItem) + '</td>');
         }
         listTable.push('</tr>');
     }
@@ -388,12 +389,12 @@ function render_fav() {
 }
 /*!
  */
-function init_appview(oCListTbl) {
+function init_tabhead(oCListTbl) {
     var strUl_T = '';
     var strUl_V = '';
-    var oCTpl_T = Hogan.compile('<li><a href="#lst_{{id}}" data-toggle="tab">{{name}}</a></li>');
+    var oCTpl_T = Hogan.compile('<li><a href="#id_tab_{{id}}" data-toggle="tab">{{name}}</a></li>');
     var oCTpl_V = Hogan.compile(''
-        + '<div class="tab-pane fade" id="lst_{{id}}">'
+        + '<div class="tab-pane fade" id="id_tab_{{id}}">'
         + '<table id="id_tbl_lst_{{id}}" class="table table-striped table-condensed">'
         + '</table>'
         + '</div>');
@@ -401,7 +402,7 @@ function init_appview(oCListTbl) {
         strUl_T += oCTpl_T.render(oCListTbl[n]);
         strUl_V += oCTpl_V.render(oCListTbl[n]);
     }
-    $("#id_view_lst").html(''
+    $("#id_view_" + E_CCHECK[E_CCHECK.CAT]).html(''
         + '<ul id="id_tab_circle_lst" class="nav nav-tabs">'
         + strUl_T
         + '</ul>'
@@ -413,18 +414,26 @@ function init_appview(oCListTbl) {
     $("#id_tab_circle_lst a:first").tab("show");
 }
 /*!
+ *  @brief サークル一覧用のテーブルを生成
  */
-function init_appdata(oCListTbl, oCListDat) {
+function init_tabdata(oCListTbl, oCListDat) {
+    var strTableHead = ''
+        + '<tr>'
+        + '<th><span class="glyphicon glyphicon-star"></span></th>'
+        + '<th><span class="glyphicon glyphicon-map-marker"></span></th>'
+        + '<th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th>'
+        + '</tr>';
     for (var i = 0; i < oCListTbl.length; i++) {
         var listTable = [];
-        listTable.push('<tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>');
+        listTable.push(strTableHead);
         for (var j = 0; j < oCListDat[i].length; j++) {
             var oCItem = oCListDat[i][j];
             oCItem.grp = i;
             oCItem.idx = j;
+            oCItem.mode = E_CCHECK[E_CCHECK.CAT];
             listTable.push('<tr id="id_row_lst_' + oCItem.grp + '_' + oCItem.idx + '">');
-            for (var k = 0; k < GLOBAL.TPL_LST_LIST.length; k++) {
-                listTable.push('<td>' + GLOBAL.TPL_LST_LIST[k].render(oCItem) + '</td>');
+            for (var k = 0; k < GLOBAL.COLUMN_CAT.length; k++) {
+                listTable.push('<td>' + GLOBAL.COLUMN_CAT[k].render(oCItem) + '</td>');
             }
             listTable.push('</tr>');
         }
@@ -432,6 +441,7 @@ function init_appdata(oCListTbl, oCListDat) {
     }
 }
 /*!
+ *  @brief ローカルストレージからお気に入りを読込
  */
 function storage_load() {
     if (!window.localStorage)
@@ -444,6 +454,7 @@ function storage_load() {
     return (listResult);
 }
 /*!
+ *  @brief ローカルストレージにお気に入りを保存
  */
 function storage_save() {
     if (!window.localStorage)
@@ -480,83 +491,59 @@ function resume() {
 function ccheck_main() {
     GLOBAL.m_oCTplHead = Hogan.compile($("#id_tpl_head").html());
     GLOBAL.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
-    GLOBAL.TPL_LST_LIST = [
-        Hogan.compile('<button id="id_btn_lst_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>'),
-        Hogan.compile('{{layout}}'),
-        Hogan.compile(''
-            + '{{#circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'
-            + '{{^circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'),
-        Hogan.compile('<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>')
+    var oCTpl_FAV_ADD = Hogan.compile(''
+        + '<button id="id_btn_fav_add_{{grp}}_{{idx}}_{{mode}}" class="btn btn-primary" onclick="evt_btn_fav_add({{grp}}, {{idx}});">'
+        + '<span class="glyphicon glyphicon-star"></span>'
+        + '</button>');
+    var oCTpl_FAV_DEL = Hogan.compile(''
+        + '<button id="id_btn_fav_del_{{grp}}_{{idx}}_{{mode}}" class="btn btn-danger" onclick="evt_btn_fav_del({{grp}}, {{idx}});">'
+        + '<span class="glyphicon glyphicon-remove"></span>'
+        + '</button>');
+    var oCTpl_LAYOUT = Hogan.compile('{{layout}}');
+    var oCTpl_CIRCLE_INFO = Hogan.compile(''
+        + '{{#circle_list}}'
+        + '<div>'
+        + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
+        + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+        + '{{#writer}}<br />'
+        + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+        + '<small>{{writer}}</small>{{/writer}}'
+        + '</div>'
+        + '{{/circle_list}}'
+        + '{{^circle_list}}'
+        + '<div>'
+        + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
+        + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+        + '{{#writer}}<br />'
+        + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+        + '<small>{{writer}}</small>{{/writer}}'
+        + '</div>'
+        + '{{/circle_list}}');
+    var oCTpl_SHOW_CIRCLE_DESC_1 = Hogan.compile('<button class="btn btn-default" onclick="evt_btn_desc({{grp}}, {{idx}});"><span class="glyphicon glyphicon-info-sign"></span></button>');
+    var oCTpl_SHOW_CIRCLE_DESC_2 = Hogan.compile(''
+        + '<div class="btn-group">'
+        + '<button class="btn btn-default" onclick="evt_btn_desc({{grp}}, {{idx}});"><span class="glyphicon glyphicon-info-sign"></span></button>'
+        + '<button class="btn btn-default" onclick="evt_btn_mark({{grp}}, {{idx}});"><span class="glyphicon glyphicon-ok"></span></button>'
+        + '</div>');
+    GLOBAL.COLUMN_CAT = [
+        oCTpl_FAV_ADD,
+        oCTpl_LAYOUT,
+        oCTpl_CIRCLE_INFO,
+        oCTpl_SHOW_CIRCLE_DESC_1
     ];
-    GLOBAL.TPL_FAV_LIST = [
-        Hogan.compile('<button id="id_btn_fav_del_{{grp}}_{{idx}}" class="btn btn-danger" onclick="evt_btn_fav_del( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-remove"></span></button>'),
-        Hogan.compile('{{layout}}'),
-        Hogan.compile(''
-            + '{{#circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'
-            + '{{^circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'),
-        Hogan.compile(''
-            + '<div class="btn-group">'
-            + '<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>'
-            + '<button class="btn btn-default" onclick="evt_btn_mark( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-ok"></span></button>'
-            + '</div>')
+    GLOBAL.COLUMN_FAV = [
+        oCTpl_FAV_DEL,
+        oCTpl_LAYOUT,
+        oCTpl_CIRCLE_INFO,
+        oCTpl_SHOW_CIRCLE_DESC_2
     ];
-    GLOBAL.TPL_FND_LIST = [
-        Hogan.compile('<button id="id_btn_fnd_fav_add_{{grp}}_{{idx}}" class="btn btn-primary" onclick="evt_btn_fav_add( {{grp}}, {{idx}} );"><span class="glyphicon glyphicon-star"></span></button>'),
-        Hogan.compile('{{layout}}'),
-        Hogan.compile(''
-            + '{{#circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'
-            + '{{^circle_list}}'
-            + '<div>'
-            + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
-            + '{{#writer}}<br />'
-            + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
-            + '<small>{{writer}}</small>{{/writer}}'
-            + '</div>'
-            + '{{/circle_list}}'),
-        Hogan.compile('<button class="btn btn-default" onclick="evt_btn_desc( {{grp}}, {{idx}} );" ><span class="glyphicon glyphicon-info-sign"></span></button>')
+    GLOBAL.COLUMN_FND = [
+        oCTpl_FAV_ADD,
+        oCTpl_LAYOUT,
+        oCTpl_CIRCLE_INFO,
+        oCTpl_SHOW_CIRCLE_DESC_1
     ];
-    show_view("cfg");
+    show_view(E_CCHECK.CFG);
     $("#id_btn_search").click(function (oCEvt) { evt_btn_search(); });
     $("#id_btn_import_src").click(function (oCEvt) { evt_btn_import_url(); });
     $("#keyword").keyup(function (oCEvt) { evt_keyword(oCEvt); });
