@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "module": "commonjs",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "outDir": "./www",
+        "sourceMap": true
+    },
+    "filesGlob": [
+        "./**/*.ts",
+        "!./node_modules/**/*.ts"
+    ],
+    "files": [
+        "./DefinitelyTyped/bootstrap/bootstrap.d.ts",
+        "./DefinitelyTyped/hogan/hogan.d.ts",
+        "./DefinitelyTyped/jquery/jquery.d.ts",
+        "./DefinitelyTyped/microsoft-maps/microsoft-maps.d.ts"
+    ]
+}
