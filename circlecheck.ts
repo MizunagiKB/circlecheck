@@ -878,7 +878,7 @@ module circlecheck {
         let strAsset: string = listParam["asset"];
 
         if (strAsset == null) {
-            strAsset = "jsdata/sample.json.sample";
+            //strAsset = "jsdata/sample.json.sample";
         }
 
         if (CCircleCheck.INSTANCE != null) {
