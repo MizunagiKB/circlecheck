@@ -2,3 +2,9 @@
 *.tsv
 *.swp
 *.xml
+
+*.json
+
+*.js
+
+*.map
