@@ -13,6 +13,7 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
+        "./circlecheck.ts",
         "./DefinitelyTyped/bootstrap/bootstrap.d.ts",
         "./DefinitelyTyped/hogan/hogan.d.ts",
         "./DefinitelyTyped/jquery/jquery.d.ts",
