@@ -86,7 +86,7 @@ module circlecheck {
             // カラム要素のテンプレートを事前コンパイル
             // {{mode}}の項目をrender時に埋め込む処理を追加すること。
 
-            var oCTpl_FAV_ADD = Hogan.compile(
+            let oCTpl_FAV_ADD = Hogan.compile(
                 '\
                 <button id="id_btn_fav_add_{{grp}}_{{idx}}_{{mode}}" class="btn btn-primary" onclick="circlecheck.evt_btn_fav_add({{grp}}, {{idx}});">\
                 <span class="glyphicon glyphicon-star"></span>\
@@ -94,7 +94,7 @@ module circlecheck {
                 '
             );
 
-            var oCTpl_FAV_DEL = Hogan.compile(
+            let oCTpl_FAV_DEL = Hogan.compile(
                 '\
                 <button id="id_btn_fav_del_{{grp}}_{{idx}}_{{mode}}" class="btn btn-danger" onclick="circlecheck.evt_btn_fav_del({{grp}}, {{idx}});">\
                 <span class="glyphicon glyphicon-remove"></span>\
@@ -102,11 +102,11 @@ module circlecheck {
                 '
             );
 
-            var oCTpl_LAYOUT = Hogan.compile(
+            let oCTpl_LAYOUT = Hogan.compile(
                 '{{layout}}'
             );
 
-            var oCTpl_CIRCLE_INFO = Hogan.compile(
+            let oCTpl_CIRCLE_INFO = Hogan.compile(
                 '\
                 {{#circle_list}}\
                 <div>\
@@ -129,11 +129,11 @@ module circlecheck {
                 '
             );
 
-            var oCTpl_SHOW_CIRCLE_DESC_1 = Hogan.compile(
+            let oCTpl_SHOW_CIRCLE_DESC_1 = Hogan.compile(
                 '<button class="btn btn-default" onclick="circlecheck.evt_btn_desc({{grp}}, {{idx}});"><span class="glyphicon glyphicon-info-sign"></span></button>'
             );
 
-            var oCTpl_SHOW_CIRCLE_DESC_2 = Hogan.compile(
+            let oCTpl_SHOW_CIRCLE_DESC_2 = Hogan.compile(
                 '\
                 <div class="btn-group">\
                 <button class="btn btn-default" onclick="circlecheck.evt_btn_desc({{grp}}, {{idx}});"><span class="glyphicon glyphicon-info-sign"></span></button>\
@@ -177,8 +177,8 @@ module circlecheck {
             // エンターキーでフォーム送信されてしまうのを抑制。
             $("form").submit(function() { return (false) });
 
-            var listArgv: string[] = get_url_param();
-            var strUrl: string = listArgv["src_url"];
+            let listArgv: string[] = get_url_param();
+            let strUrl: string = listArgv["src_url"];
 
             if (strUrl) {
                 if (strUrl.length > 0) {
@@ -193,11 +193,11 @@ module circlecheck {
     /*!
      */
     function get_url_param(): Array<string> {
-        var listResult: string[] = [];
-        var listParam: string[] = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
+        let listResult: string[] = [];
+        let listParam: string[] = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
 
-        for (var n: number = 0; n < listParam.length; n++) {
-            var listData: Array<string> = listParam[n].split("=");
+        for (let n: number = 0; n < listParam.length; n++) {
+            let listData: Array<string> = listParam[n].split("=");
 
             listResult.push(listData[0]);
             listResult[listData[0]] = listData[1];
@@ -239,7 +239,7 @@ module circlecheck {
     /*!
      */
     function fav_search_idx(oCItem: ICIRCLE_LIST_DAT_ITEM): number {
-        for (var n: number = 0; n < CCircleCheck.FAV.length; n++) {
+        for (let n: number = 0; n < CCircleCheck.FAV.length; n++) {
             if (oCItem.layout == CCircleCheck.FAV[n].layout) {
                 return (n);
             }
@@ -253,7 +253,7 @@ module circlecheck {
     /*!
      */
     function update_row_class(strId: string, strClass: string): HTMLElement {
-        var oCRow: HTMLElement = document.getElementById(strId);
+        let oCRow: HTMLElement = document.getElementById(strId);
 
         if (oCRow != null) {
             oCRow.className = strClass;
@@ -267,8 +267,8 @@ module circlecheck {
     /*!
      */
     function fav_append(nGroup: number, nIndex: number): void {
-        var oCItem: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
-        var nIdx: number = fav_search_idx(oCItem);
+        let oCItem: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
+        let nIdx: number = fav_search_idx(oCItem);
 
         if (nIdx == -1) {
             CCircleCheck.FAV.push(oCItem);
@@ -295,11 +295,11 @@ module circlecheck {
     /*!
      */
     function fav_remove(nGroup: number, nIndex: number): void {
-        var oCItem: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
-        var nIdx: number = fav_search_idx(oCItem);
+        let oCItem: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
+        let nIdx: number = fav_search_idx(oCItem);
 
         if (nIdx != -1) {
-            var oCRow = document.getElementById("id_row_fav_" + nGroup + "_" + nIndex);
+            let oCRow = document.getElementById("id_row_fav_" + nGroup + "_" + nIndex);
 
             oCRow.parentNode.removeChild(oCRow);
 
@@ -324,7 +324,7 @@ module circlecheck {
     /*!
      */
     function show_view(e_ccheck: E_CCHECK): void {
-        for (var i: number = 0; i < E_CCHECK_LIST.length; i++) {
+        for (let i: number = 0; i < E_CCHECK_LIST.length; i++) {
             $("#id_menu_" + E_CCHECK[i]).removeClass("active");
             $("#id_view_" + E_CCHECK[i]).hide();
         }
@@ -421,8 +421,8 @@ module circlecheck {
     /*!
      */
     function search_keyword(strKeyword: string, oCDatItem: ICIRCLE_LIST_DAT_ITEM): boolean {
-        var bFound: boolean = false;
-        var listCItem: Array<ICIRCLE_LIST_DAT_ITEM>;
+        let bFound: boolean = false;
+        let listCItem: Array<ICIRCLE_LIST_DAT_ITEM>;
 
         if (oCDatItem.circle_list) {
             listCItem = oCDatItem.circle_list;
@@ -430,8 +430,8 @@ module circlecheck {
             listCItem = [oCDatItem];
         }
 
-        for (var i: number = 0; i < listCItem.length; i++) {
-            var oCItem = listCItem[i];
+        for (let i: number = 0; i < listCItem.length; i++) {
+            let oCItem = listCItem[i];
 
             if (oCItem.circle) {
                 if (oCItem.circle.indexOf(strKeyword, 0) != -1) bFound = true;
@@ -568,8 +568,8 @@ module circlecheck {
     /*!
      */
     export function evt_btn_desc(nGroup: number, nIndex: number): void {
-        var oCItem = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
-        var oCTpl = Hogan.compile(
+        let oCItem = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT[nGroup][nIndex];
+        let oCTpl = Hogan.compile(
             ''
             + '<table class="table table-striped table-condensed">'
             + '<tr>'
@@ -655,17 +655,17 @@ module circlecheck {
     /*!
      */
     function check_event_schedule(): any[] {
-        var aryResult: Array<any> = [];
+        let aryResult: Array<any> = [];
 
         if (is_valid_param(CCircleCheck.CIRCLE_DATA.EVENT_ST) != true) return (aryResult);
         if (is_valid_param(CCircleCheck.CIRCLE_DATA.EVENT_EN) != true) return (aryResult);
 
-        var oCDate = new Date();
-        var oCDateSt = new Date(CCircleCheck.CIRCLE_DATA.EVENT_ST);
-        var oCDateEn = new Date(CCircleCheck.CIRCLE_DATA.EVENT_EN);
+        let oCDate = new Date();
+        let oCDateSt = new Date(CCircleCheck.CIRCLE_DATA.EVENT_ST);
+        let oCDateEn = new Date(CCircleCheck.CIRCLE_DATA.EVENT_EN);
 
-        var strDateTimeSt = oCDateSt.getFullYear() + "年" + (oCDateSt.getMonth() + 1) + "月" + oCDateSt.getDate() + "日&nbsp;" + ("0" + oCDateSt.getHours()).slice(-2) + ":" + ("0" + oCDateSt.getMinutes()).slice(-2);
-        var strDateTimeEn = oCDateEn.getFullYear() + "年" + (oCDateEn.getMonth() + 1) + "月" + oCDateEn.getDate() + "日&nbsp;" + ("0" + oCDateEn.getHours()).slice(-2) + ":" + ("0" + oCDateEn.getMinutes()).slice(-2);
+        let strDateTimeSt = oCDateSt.getFullYear() + "年" + (oCDateSt.getMonth() + 1) + "月" + oCDateSt.getDate() + "日&nbsp;" + ("0" + oCDateSt.getHours()).slice(-2) + ":" + ("0" + oCDateSt.getMinutes()).slice(-2);
+        let strDateTimeEn = oCDateEn.getFullYear() + "年" + (oCDateEn.getMonth() + 1) + "月" + oCDateEn.getDate() + "日&nbsp;" + ("0" + oCDateEn.getHours()).slice(-2) + ":" + ("0" + oCDateEn.getMinutes()).slice(-2);
 
         if (oCDate.getTime() < oCDateSt.getTime()) {
             aryResult.push(
@@ -688,9 +688,9 @@ module circlecheck {
     /*!
     */
     function render_info() {
-        var strInfo: string = '';
+        let strInfo: string = '';
 
-        var oCTpl = Hogan.compile(
+        let oCTpl = Hogan.compile(
             ''
             + '<div class="alert alert-{{#alert}}{{alert}}{{/alert}}{{^alert}}info{{/alert}} alert-dismissable">'
             + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
@@ -700,12 +700,12 @@ module circlecheck {
 
         var oCItem = check_event_schedule();
 
-        for (var n: number = 0; n < oCItem.length; n++) {
+        for (let n: number = 0; n < oCItem.length; n++) {
             strInfo += oCTpl.render(oCItem[n]);
         }
 
         var oCItem: any[] = CCircleCheck.CIRCLE_DATA.INFORMATION;
-        for (var n: number = 0; n < oCItem.length; n++) {
+        for (let n: number = 0; n < oCItem.length; n++) {
             strInfo += oCTpl.render(oCItem[n]);
         }
 
@@ -717,16 +717,16 @@ module circlecheck {
     /*!
      */
     function render_fav(): void {
-        var listTable: Array<string> = [];
+        let listTable: Array<string> = [];
 
         listTable.push('<tr><th><span class="glyphicon glyphicon-remove"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>');
 
         for (var i = 0; i < CCircleCheck.FAV.length; i++) {
-            var oCItem = CCircleCheck.FAV[i];
+            let oCItem = CCircleCheck.FAV[i];
 
             listTable.push('<tr id="id_row_fav_' + oCItem.grp + '_' + oCItem.idx + '">');
 
-            for (var n = 0; n < CCircleCheck.COLUMN_FAV.length; n++) {
+            for (let n = 0; n < CCircleCheck.COLUMN_FAV.length; n++) {
                 listTable.push('<td>' + CCircleCheck.COLUMN_FAV[n].render(oCItem) + '</td>');
             }
             listTable.push('</tr>')
@@ -740,12 +740,12 @@ module circlecheck {
     /*!
      */
     function init_tabhead(oCListTbl: Array<ICIRCLE_LIST_TBL_ITEM>): void {
-        var strUl_T: string = '';
-        var strUl_V: string = '';
-        var oCTpl_T: any = Hogan.compile(
+        let strUl_T: string = '';
+        let strUl_V: string = '';
+        let oCTpl_T: any = Hogan.compile(
             '<li><a href="#id_tab_{{id}}" data-toggle="tab">{{name}}</a></li>'
         );
-        var oCTpl_V: any = Hogan.compile(
+        let oCTpl_V: any = Hogan.compile(
             ''
             + '<div class="tab-pane fade" id="id_tab_{{id}}">'
             + '<table id="id_tbl_lst_{{id}}" class="table table-striped table-condensed">'
@@ -753,7 +753,7 @@ module circlecheck {
             + '</div>'
         );
 
-        for (var n: number = 0; n < oCListTbl.length; n++) {
+        for (let n: number = 0; n < oCListTbl.length; n++) {
             strUl_T += oCTpl_T.render(oCListTbl[n]);
             strUl_V += oCTpl_V.render(oCListTbl[n]);
         }
@@ -786,8 +786,8 @@ module circlecheck {
 
             listTable.push(strTableHead);
 
-            for (var j: number = 0; j < oCListDat[i].length; j++) {
-                var oCItem = oCListDat[i][j];
+            for (let j: number = 0; j < oCListDat[i].length; j++) {
+                let oCItem = oCListDat[i][j];
 
                 oCItem.grp = i;
                 oCItem.idx = j;
@@ -795,7 +795,7 @@ module circlecheck {
 
                 listTable.push('<tr id="id_row_lst_' + oCItem.grp + '_' + oCItem.idx + '">');
 
-                for (var k: number = 0; k < CCircleCheck.COLUMN_CAT.length; k++) {
+                for (let k: number = 0; k < CCircleCheck.COLUMN_CAT.length; k++) {
                     listTable.push('<td>' + CCircleCheck.COLUMN_CAT[k].render(oCItem) + '</td>');
                 }
 
@@ -814,8 +814,8 @@ module circlecheck {
     function storage_load(): any {
         if (!window.localStorage) return;
 
-        var listResult: Array<any> = [];
-        var strStorageData = window.localStorage.getItem(CCircleCheck.CIRCLE_DATA.DATA_SOURCE) || -1;
+        let listResult: Array<any> = [];
+        let strStorageData = window.localStorage.getItem(CCircleCheck.CIRCLE_DATA.DATA_SOURCE) || -1;
 
         if (strStorageData != -1) {
             listResult = JSON.parse(strStorageData);
@@ -851,13 +851,13 @@ module circlecheck {
 
         } else {
 
-            var listFav: any = storage_load();
-            var listTbl: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_TBL;
-            var listDat: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT;
+            let listFav: any = storage_load();
+            let listTbl: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_TBL;
+            let listDat: any = CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT;
 
-            for (var grp: number = 0; grp < listTbl.length; grp++) {
-                for (var idx: number = 0; idx < listDat[grp].length; idx++) {
-                    for (var n: number = 0; n < listFav.length; n++) {
+            for (let grp: number = 0; grp < listTbl.length; grp++) {
+                for (let idx: number = 0; idx < listDat[grp].length; idx++) {
+                    for (let n: number = 0; n < listFav.length; n++) {
                         if (listDat[grp][idx].layout == listFav[n].layout) {
                             fav_append(grp, idx);
                         }
@@ -871,14 +871,15 @@ module circlecheck {
     /*!
      * @brief ディスプレイインスタンスの生成処理
      */
-    export function create_instance(strId: string): void {
+    export function create_instance(strId: string): CCircleCheck {
+        const listParam: Array<string> = get_url_param();
 
-        let oCResult: CCircleCheck = null;
-        let listParam: Array<string> = get_url_param();
         let strAsset: string = listParam["asset"];
+        let oCResult: CCircleCheck = null;
 
         if (strAsset == null) {
-            //strAsset = "jsdata/sample.json.sample";
+            strAsset = "jsdata/sample.json.sample";
+            strAsset = "jsdata/comitia_114_a.json";
         }
 
         if (CCircleCheck.INSTANCE != null) {
@@ -889,5 +890,10 @@ module circlecheck {
 
             import_from_url(strAsset);
         }
+
+        return (oCResult);
     }
 }
+
+
+// --------------------------------------------------------------------- [EOF]
