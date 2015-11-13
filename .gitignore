@@ -5,10 +5,5 @@
 
 *.json
 
-*.js
-
-*.map
-
 www/circlecheck.js
-
 www/circlecheck.js.map
