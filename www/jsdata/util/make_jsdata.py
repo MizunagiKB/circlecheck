@@ -8,9 +8,21 @@ import re
 #
 #LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}・[0-9]{1,2}")
 #LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
-COMIC1 = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふ"
-LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}・[0-9]{1,2}")
+#COMIC1 = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふ"
+#LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}・[0-9]{1,2}")
+#LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+
+#LAYOUT_PARSE_1 = re.compile(u"SP-No.(.*?)-.*")
+#LAYOUT_PARSE_2 = re.compile(u"SP-No.(.*?)-.*")
+#HOURAIGEKISEN = [u"A", u"B", u"C", u"D", u"E", u"F", u"G", u"H", u"I", u"J", u"K", u"L", u"M"]
+#LAYOUT_PARSE_1 = re.compile(u"(SP-No.).*")
+#LAYOUT_PARSE_2 = re.compile(u"(SP-No.).*")
+#HOURAIGEKISEN = [u"SP-No."]
+
+LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2},[0-9]{1,2}")
 LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+GRAFES = [u"グ", u"ラ", u"ブ", u"ル", u"海", u"なの", u"戦", u"城", u"DMM"]
+
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
 #KEY_POINT = [u"K", u"e", u"y"]
@@ -18,9 +30,12 @@ KEY_POINT = [u"魔", u"伊", u"呂", u"波", u"つむぎ", u"ラブリー", u"�
 
 UTAHIME = [u"歌", u"姫", u"シ", u"ン", u"デ", u"レ", u"ラ", u"メモ", u"ミリ", u"唯"]
 
-COMITIA_A = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
-COMITIA_B = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも"
-COMITIA_C = u"展"
+#COMITIA_A = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
+#COMITIA_B = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむ"
+#COMITIA_C = u"展"
+#LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
+#LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
+
 LYRICALMAGICAL = u"なのは"
 LOVELIVE = [u"ラブ"]
 #CIRCLE = [u"アイ", u"カツ"]
@@ -39,8 +54,9 @@ def circle_list(dictLayout):
     nGrp = 0
     nIndex = 1
 
-    for k in UTAHIME:
+    for k in GRAFES:
 
+        #print dictLayout.keys()
         listItem = dictLayout[k]
         listBuffer = []
         nIndexLocal = 1
@@ -88,7 +104,7 @@ def main():
     dictLayout = {}
 
     with open(sys.argv[1], "r") as hFile:
-        oCReader = csv.reader(hFile, delimiter="\t")
+        oCReader = csv.reader(hFile, delimiter=",")
 
         for r in oCReader:
             dictRecord = {

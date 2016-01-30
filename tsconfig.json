@@ -18,5 +18,8 @@
         "./DefinitelyTyped/hogan/hogan.d.ts",
         "./DefinitelyTyped/jquery/jquery.d.ts",
         "./DefinitelyTyped/microsoft-maps/microsoft-maps.d.ts"
-    ]
+    ],
+    "atom": {
+        "rewriteTsconfig": true
+    }
 }
