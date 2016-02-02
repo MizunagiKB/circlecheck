@@ -178,7 +178,7 @@ module circlecheck {
             $("form").submit(function() { return (false) });
 
             let listArgv: string[] = get_url_param();
-            let strUrl: string = listArgv["src_url"];
+            let strUrl: string = listArgv["jsdata"];
 
             if (strUrl) {
                 if (strUrl.length > 0) {
@@ -355,20 +355,20 @@ module circlecheck {
 
                 $("#id_title").text(CCircleCheck.EVENT_NAME);
 
-                $("#id_browser_type").attr("href", "./index.m.html" + "?src_url=" + strUrl);
+                $("#id_browser_type").attr("href", "./index.m.html" + "?jsdata=" + strUrl);
 
                 $("#id_tpl_head").html(CCircleCheck.INSTANCE.m_oCTplHead.render(CCircleCheck.CIRCLE_DATA));
 
                 var strHref_base: string = window.location.href.split("?")[0];
 
                 if (is_valid_param(CCircleCheck.CIRCLE_DATA.DATA_SOURCE_PREV) == true) {
-                    $("#id_menu_prev").click(function(oCEvt) { window.location.href = strHref_base + "?src_url=" + CCircleCheck.CIRCLE_DATA.DATA_SOURCE_PREV });
+                    $("#id_menu_prev").click(function(oCEvt) { window.location.href = strHref_base + "?jsdata=" + CCircleCheck.CIRCLE_DATA.DATA_SOURCE_PREV });
                 } else {
                     $("#id_menu_prev").click(function(oCEvt) { $("#id_tpl_empty").modal("show"); });
                 }
 
                 if (is_valid_param(CCircleCheck.CIRCLE_DATA.DATA_SOURCE_NEXT) == true) {
-                    $("#id_menu_next").click(function(oCEvt) { window.location.href = strHref_base + "?src_url=" + CCircleCheck.CIRCLE_DATA.DATA_SOURCE_NEXT });
+                    $("#id_menu_next").click(function(oCEvt) { window.location.href = strHref_base + "?jsdata=" + CCircleCheck.CIRCLE_DATA.DATA_SOURCE_NEXT });
                 } else {
                     $("#id_menu_next").click(function(oCEvt) { $("#id_tpl_empty").modal("show"); });
                 }
@@ -409,7 +409,7 @@ module circlecheck {
 
                 render_fav();
 
-                $("#src_url").val(strUrl);
+                $("#jsdata").val(strUrl);
 
                 setInterval(evt_keyword_timer, 100);
             }
@@ -639,7 +639,7 @@ module circlecheck {
     /*!
      */
     function evt_btn_import_url() {
-        import_from_url($("#src_url").val());
+        import_from_url($("#jsdata").val());
     }
 
 
@@ -874,12 +874,11 @@ module circlecheck {
     export function create_instance(strId: string): CCircleCheck {
         const listParam: Array<string> = get_url_param();
 
-        let strAsset: string = listParam["asset"];
+        let strAsset: string = listParam["jsdata"];
         let oCResult: CCircleCheck = null;
 
         if (strAsset == null) {
-            strAsset = "jsdata/sample.json.sample";
-            strAsset = "jsdata/comitia_114_a.json";
+            //strAsset = "jsdata/sample.json.sample";
         }
 
         if (CCircleCheck.INSTANCE != null) {
