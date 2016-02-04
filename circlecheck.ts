@@ -413,7 +413,7 @@ module circlecheck {
                 }
 
                 get_event_series(
-                    "/db/circlecheck/_design/catalog/_view/list?startkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES + "\", \"\"]&endkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES +"\", \"Z\"]"
+                    "/db/circlecheck/_design/catalog/_view/list?descending=true&startkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES + "\", \"Z\"]&endkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES +"\", \"\"]"
                 );
 
                 resume();
