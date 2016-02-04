@@ -23,6 +23,10 @@ LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2},[0-9]{1,2}")
 LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
 GRAFES = [u"グ", u"ラ", u"ブ", u"ル", u"海", u"なの", u"戦", u"城", u"DMM"]
 
+LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-.*")
+LAYOUT_PARSE_2 = LAYOUT_PARSE_1
+CC = u"ABCDEFGHIJKLMNO"
+
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
 #KEY_POINT = [u"K", u"e", u"y"]
@@ -54,7 +58,7 @@ def circle_list(dictLayout):
     nGrp = 0
     nIndex = 1
 
-    for k in GRAFES:
+    for k in CC:
 
         #print dictLayout.keys()
         listItem = dictLayout[k]
@@ -104,7 +108,7 @@ def main():
     dictLayout = {}
 
     with open(sys.argv[1], "r") as hFile:
-        oCReader = csv.reader(hFile, delimiter=",")
+        oCReader = csv.reader(hFile, delimiter="\t")
 
         for r in oCReader:
             dictRecord = {
@@ -112,8 +116,12 @@ def main():
             }
             strLayoutBlock = ""
 
+            r.append("")
+            r.append("")
+#            print len(r)
 #            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "url")):
             for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url")):
+
                 s = r[idx].strip().decode("utf-8")
                 if(s != u"　" and len(s) > 0):
                     dictRecord["circle_list"][kwd] = s
