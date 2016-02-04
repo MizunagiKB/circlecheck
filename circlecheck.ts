@@ -176,15 +176,6 @@ module circlecheck {
 
             // エンターキーでフォーム送信されてしまうのを抑制。
             $("form").submit(function() { return (false) });
-
-            let listArgv: string[] = get_url_param();
-            let strUrl: string = listArgv["jsdata"];
-
-            if (strUrl) {
-                if (strUrl.length > 0) {
-                    import_from_url(strUrl);
-                }
-            }
         }
     }
 
@@ -333,6 +324,28 @@ module circlecheck {
         $("#id_view_" + E_CCHECK[e_ccheck]).show();
     }
 
+    // =====================================================================
+    /*!
+     */
+    function get_event_series(strUrl: string): void {
+        $.getJSON(
+            strUrl,
+            function(oCJson) {
+
+                let oCTpl = Hogan.compile(
+                    '\
+                    {{#rows}}\
+                    <tr><td>{{value.EVENT_SERIES}}</td><td><a href="./index.html?jsdata=/db/circlecheck/{{id}}">{{value.EVENT_NAME}}</a></td><td>{{value.EVENT_ST}}</td></tr>\
+                    {{/rows}}\
+                    '
+                );
+
+                $("#id_tbl_cfg_0").html(
+                    oCTpl.render(oCJson)
+                );
+            }
+        );
+    }
 
     // =====================================================================
     /*!
@@ -353,9 +366,7 @@ module circlecheck {
                     CCircleCheck.CIRCLE_DATA.CIRCLE_LIST_DAT
                 );
 
-                $("#id_title").text(CCircleCheck.EVENT_NAME);
-
-                $("#id_browser_type").attr("href", "./index.m.html" + "?jsdata=" + strUrl);
+                $("#id_title").text(CCircleCheck.CIRCLE_DATA.EVENT_NAME);
 
                 $("#id_tpl_head").html(CCircleCheck.INSTANCE.m_oCTplHead.render(CCircleCheck.CIRCLE_DATA));
 
@@ -400,6 +411,10 @@ module circlecheck {
                         new Microsoft.Maps.Pushpin(CCircleCheck.EVENT_MAP.getCenter())
                     );
                 }
+
+                get_event_series(
+                    "/db/circlecheck/_design/catalog/_view/list?startkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES + "\", \"\"]&endkey=[\"" + CCircleCheck.CIRCLE_DATA.EVENT_SERIES +"\", \"Z\"]"
+                );
 
                 resume();
 
@@ -466,9 +481,11 @@ module circlecheck {
                 var listFavItem: Array<ICIRCLE_LIST_DAT_ITEM> = [];
                 var listTable: Array<string> = [];
 
-                listTable.push('<tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr>');
-
+                listTable.push('<thead><tr><th><span class="glyphicon glyphicon-star"></span></th><th><span class="glyphicon glyphicon-map-marker"></span></th><th>サークル名 / 執筆者</th><th><span class="glyphicon glyphicon-info-sign"></span></th></tr></thead>');
                 if (strKeyword) {
+
+                    listTable.push('<tbody>');
+
                     for (var i: number = 0; i < oCTBL.length; i++) {
                         for (var j: number = 0; j < oCDAT[i].length; j++) {
                             var oCItem = oCDAT[i][j];
@@ -494,6 +511,8 @@ module circlecheck {
                             }
                         }
                     }
+
+                    listTable.push('</tbody>');
 
                     $("#id_tbl_fnd_0").html(listTable.join(''));
 
