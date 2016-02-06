@@ -107,26 +107,27 @@ module circlecheck {
             );
 
             let oCTpl_CIRCLE_INFO = Hogan.compile(
-                '\
-                {{#circle_list}}\
-                <div>\
-                <span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;\
-                {{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}\
-                {{#writer}}<br />\
-                <span class="glyphicon glyphicon-pencil"></span>&nbsp;\
-                <small>{{writer}}</small>{{/writer}}\
-                </div>\
-                {{/circle_list}}\
-                {{^circle_list}}\
-                <div>\
-                <span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;\
-                {{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}\
-                {{#writer}}<br />\
-                <span class="glyphicon glyphicon-pencil"></span>&nbsp;\
-                <small>{{writer}}</small>{{/writer}}\
-                </div>\
-                {{/circle_list}}\
-                '
+                ''
+                + '{{#circle_list}}'
+                + '<div>'
+                + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
+                + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                + '{{#twitter}}&nbsp;/&nbsp;<a href="{{twitter}}" target="_blank">Twitter</a>{{/twitter}}'
+                + '{{#pixiv}}&nbsp;/&nbsp;<a href="{{pixiv}}" target="_blank">Pixiv</a>{{/pixiv}}'
+                + '{{#writer}}<br />'
+                + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                + '<small>{{writer}}</small>{{/writer}}'
+                + '</div>'
+                + '{{/circle_list}}'
+                + '{{^circle_list}}'
+                + '<div>'
+                + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;'
+                + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}'
+                + '{{#writer}}<br />'
+                + '<span class="glyphicon glyphicon-pencil"></span>&nbsp;'
+                + '<small>{{writer}}</small>{{/writer}}'
+                + '</div>'
+                + '{{/circle_list}}'
             );
 
             let oCTpl_SHOW_CIRCLE_DESC_1 = Hogan.compile(
@@ -602,8 +603,9 @@ module circlecheck {
             + '<td>'
             + '<div>'
             + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;{{circle}}'
-            + '<br />'
-            + '{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}'
+            + '{{#url}}<br /><a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}'
+            + '{{#twitter}}<br />Twitter&nbsp;<a href="{{url}}" target="_blank">{{twitter}}</a>{{/twitter}}'
+            + '{{#pixiv}}<br />Pixiv&nbsp;<a href="{{pixiv}}" target="_blank">{{pixiv}}</a>{{/pixiv}}'
             + '</div>'
             + '</td>'
             + '<td><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}</td>'

@@ -27,6 +27,10 @@ LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-.*")
 LAYOUT_PARSE_2 = LAYOUT_PARSE_1
 CC = u"ABCDEFGHIJKLMNO"
 
+LAYOUT_PARSE_1 = re.compile(u"([^0-9]*) - [0-9]{1,2},[0-9]{1,2}")
+LAYOUT_PARSE_2 = re.compile(u"([^0-9]*) - [0-9]{1,2}")
+CIN = u"シンデレラの舞踏会"
+
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
 #KEY_POINT = [u"K", u"e", u"y"]
@@ -58,7 +62,7 @@ def circle_list(dictLayout):
     nGrp = 0
     nIndex = 1
 
-    for k in CC:
+    for k in CIN:
 
         #print dictLayout.keys()
         listItem = dictLayout[k]
@@ -120,7 +124,7 @@ def main():
             r.append("")
 #            print len(r)
 #            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "url")):
-            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url")):
+            for idx, kwd in ((0, "layout"), (1, "circle"), (2, "writer"), (3, "url"), (4, "twitter"), (5, "pixiv")):
 
                 s = r[idx].strip().decode("utf-8")
                 if(s != u"　" and len(s) > 0):
