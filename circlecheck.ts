@@ -142,6 +142,9 @@ module circlecheck {
                 '
             );
 
+            // ヘッダ部を初期化
+            $("#id_tpl_head").html(this.m_oCTplHead.render({"EVENT_NAME": "イベント一覧"}));
+
             // 各テーブルにあわせたカラムセットを定義
 
             CCircleCheck.COLUMN_CAT = [
@@ -896,17 +899,19 @@ module circlecheck {
         let strAsset: string = listParam["jsdata"];
         let oCResult: CCircleCheck = null;
 
-        if (strAsset == null) {
-            //strAsset = "jsdata/sample.json.sample";
-        }
-
         if (CCircleCheck.INSTANCE != null) {
             oCResult = CCircleCheck.INSTANCE;
         } else {
             oCResult = new CCircleCheck();
             CCircleCheck.INSTANCE = oCResult;
 
-            import_from_url(strAsset);
+            if (strAsset == null) {
+                get_event_series(
+                    "/db/circlecheck/_design/catalog/_view/list_by_date?descending=true&limit=30"
+                );
+            } else {
+                import_from_url(strAsset);
+            }
         }
 
         return (oCResult);

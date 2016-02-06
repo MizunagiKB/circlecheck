@@ -63,6 +63,7 @@ var circlecheck;
                 <button class="btn btn-default" onclick="circlecheck.evt_btn_mark({{grp}}, {{idx}});"><span class="glyphicon glyphicon-ok"></span></button>\
                 </div>\
                 ');
+            $("#id_tpl_head").html(this.m_oCTplHead.render({ "EVENT_NAME": "イベント一覧" }));
             CCircleCheck.COLUMN_CAT = [
                 oCTpl_FAV_ADD,
                 oCTpl_LAYOUT,
@@ -532,15 +533,18 @@ var circlecheck;
         var listParam = get_url_param();
         var strAsset = listParam["jsdata"];
         var oCResult = null;
-        if (strAsset == null) {
-        }
         if (CCircleCheck.INSTANCE != null) {
             oCResult = CCircleCheck.INSTANCE;
         }
         else {
             oCResult = new CCircleCheck();
             CCircleCheck.INSTANCE = oCResult;
-            import_from_url(strAsset);
+            if (strAsset == null) {
+                get_event_series("/db/circlecheck/_design/catalog/_view/list_by_date?descending=true&limit=30");
+            }
+            else {
+                import_from_url(strAsset);
+            }
         }
         return (oCResult);
     }
