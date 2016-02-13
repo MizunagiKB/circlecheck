@@ -27,9 +27,13 @@ LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-.*")
 LAYOUT_PARSE_2 = LAYOUT_PARSE_1
 CC = u"ABCDEFGHIJKLMNO"
 
-LAYOUT_PARSE_1 = re.compile(u"([^0-9]*) - [0-9]{1,2},[0-9]{1,2}")
-LAYOUT_PARSE_2 = re.compile(u"([^0-9]*) - [0-9]{1,2}")
-CIN = u"シンデレラの舞踏会"
+LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}-[0-9]{1,2}")
+LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+MESHI = u"めしけっ"
+
+#LAYOUT_PARSE_1 = re.compile(u"([^0-9]*) - [0-9]{1,2},[0-9]{1,2}")
+#LAYOUT_PARSE_2 = re.compile(u"([^0-9]*) - [0-9]{1,2}")
+#CIN = u"シンデレラの舞踏会"
 
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
@@ -62,7 +66,7 @@ def circle_list(dictLayout):
     nGrp = 0
     nIndex = 1
 
-    for k in CIN:
+    for k in MESHI:
 
         #print dictLayout.keys()
         listItem = dictLayout[k]

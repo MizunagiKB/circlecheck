@@ -2,6 +2,29 @@
 import sys
 import re
 
+"""
+<tr>
+<td><img src="cut/yamada.jpg" width="400" height="282" alt="サークルカット"><td>め01</td>
+<td><a href="http://shop.comiczin.jp/products/list.php?category_id=5589">やまだや</a></td>
+<td>やまだえむ</td>
+</tr>
+"""
+
+def circle_info(s):
+
+    strCircle = ""
+    strUrl = ""
+
+    oCRe = re.search("<a href=\"(.*?)\">(.*?)</a>", s, re.I)
+    if oCRe != None:
+        strCircle = oCRe.group(2)
+        strUrl = oCRe.group(1)
+    else:
+        strCircle = s
+        strUrl = ""
+
+    return (strCircle, strUrl)
+
 def main():
 
     strBuffer = open(sys.argv[1], "rb").read()
@@ -9,51 +32,34 @@ def main():
     strBuffer = strBuffer.replace("\n", "")
 
     listTable = re.findall(
-        '<table class="circleList".*?>(.*?)</table>',
+        "<table class=\"table_01\">(.*?)</table>",
         strBuffer,
         re.I
     )
 
     for steTableBody in listTable:
         listCircle = re.findall(
-            '<tr>(.*?)</tr>',
+            "<tr>(.*?)</tr>",
             steTableBody,
             re.I
         )
         for strCircle in listCircle:
             oCRe = re.search(
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>'
-                '.*?'
-                '<td.*?>(.*?)</td>',
+                "<td.*?>(.*?)<td.*?>(.*?)</td>"
+                ".*?"
+                "<td.*?>(.*?)</td>"
+                ".*?"
+                "<td.*?>(.*?)</td>",
                 strCircle,
                 re.I
             )
 
-            if(oCRe is not None):
-                listRecord = [oCRe.group(n).strip() for n in range(1,4)]
+            if oCRe != None:
+                strSpace = oCRe.group(2)
+                strCircle, strUrl = circle_info(oCRe.group(3))
+                strWriter = oCRe.group(4)
 
-                for n in range(4,7):
-                    oCReHP = re.search('href="(.*?)"', oCRe.group(n))
-                    if(oCReHP is not None):
-                        listRecord.append(oCReHP.group(1))
-                    else:
-                        listRecord.append("")
-
-                print "\t".join(listRecord)
-
-    pass
+                print "\t".join([strSpace, strCircle, strWriter, strUrl])
 
 
 if(__name__ == "__main__"):
