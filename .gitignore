@@ -7,5 +7,4 @@
 
 www/circlecheck.js
 www/circlecheck.js.map
-
-*.html
+util/*.html
