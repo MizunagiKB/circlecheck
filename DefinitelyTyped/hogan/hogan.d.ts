@@ -1,6 +1,6 @@
 declare module Ihogan {
-    export interface hogan
-    {
+
+    export interface hogan {
         compile: any;
     }
 }

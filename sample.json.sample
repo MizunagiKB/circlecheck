@@ -2,13 +2,14 @@
     "EVENT_URL" 			: "http://localhost/",
     "EVENT_MAP_LOCATION"    : {"latitude": 35.630128, "longitude": 139.793745},
     "DATA_SOURCE"			: "jsdata/sample.json",
-    "DATA_SOURCE_PREV"		: "#",
+    "DATA_SOURCE_PREV"		: "ABA",
     "DATA_SOURCE_NEXT"		: "#",
 
     "EVENT_NAME" 			: "sample_event",
     "EVENT_ST"              : "9999-01-01T00:00:00+09:00",
     "EVENT_EN"              : "9999-12-31T23:59:59+09:00",
     "INFORMATION"			: [
+        {"text": "TEST"}
     ],
 
     "CIRCLE_LIST_TBL"	: [
@@ -18,21 +19,42 @@
 
     "CIRCLE_LIST_DAT"	: {
         "0" : [
-            { "layout" : "A1", "sortkey": "001-0001-00000001", "circle" : "AAA_CIRCLE", "writer" : "AAA", "url" : "" },
-            { "layout" : "A2", "sortkey": "001-0002-00000002", "circle" : "BBB_CIRCLE", "writer" : "BBB", "url" : "http://localhost/" },
+            { "layout" : "A1", "sortkey": "001-0001-00000001",
+                "circle_list": [
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"}
+                ]
+            },
+
+            { "layout" : "A2", "sortkey": "001-0002-00000002",
+                "circle_list": [
+                    {"circle": "CCC_a_CIRCLE", "url": ""},
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"},
+                    {"circle": "配列形式にすると複数表示可能です。"}
+                ]
+            },
 
             { "layout" : "A3", "sortkey": "001-0003-00000003",
                 "circle_list": [
                     {"circle": "CCC_a_CIRCLE", "url": ""},
-                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"},
-                    {"circle": "配列形式にすると複数表示可能です。"},
-                    {"circle": "アイコンも変更出来ます。（bootstrapのものが使用できます）", "icon": "exclamation-sign"}
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"}
                 ]
             }
         ],
         "1" : [
-            { "layout" : "B1", "sortkey": "002-0001-00000004", "circle" : "CCC_CIRCLE", "writer" : "CCC", "url" : "http://localhost/" },
-            { "layout" : "B2", "sortkey": "002-0002-00000005", "circle" : "DDD_CIRCLE", "writer" : "DDD", "url" : "http://localhost/" }
+            { "layout" : "B1", "sortkey": "002-0001-00000004",
+                "circle_list": [
+                    {"circle": "CCC_a_CIRCLE", "url": ""},
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"},
+                    {"circle": "配列形式にすると複数表示可能です。"}
+                ]
+            },
+
+            { "layout" : "B2", "sortkey": "002-0002-00000005",
+                "circle_list": [
+                    {"circle": "CCC_a_CIRCLE", "url": ""},
+                    {"circle": "CCC_b_CIRCLE", "writer": "CCC_b"}
+                ]
+            }
         ]
     }
 }

@@ -13,11 +13,15 @@
         "!./node_modules/**/*.ts"
     ],
     "files": [
-        "./circlecheck.ts",
+        "./ccheck_model.ts",
+        "./ccheck.ts",
+        "./DefinitelyTyped/backbone/backbone-global.d.ts",
+        "./DefinitelyTyped/backbone/backbone.d.ts",
         "./DefinitelyTyped/bootstrap/bootstrap.d.ts",
         "./DefinitelyTyped/hogan/hogan.d.ts",
         "./DefinitelyTyped/jquery/jquery.d.ts",
-        "./DefinitelyTyped/microsoft-maps/microsoft-maps.d.ts"
+        "./DefinitelyTyped/microsoft-maps/microsoft-maps.d.ts",
+        "./DefinitelyTyped/underscore/underscore.d.ts"
     ],
     "atom": {
         "rewriteTsconfig": true
