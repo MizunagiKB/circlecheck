@@ -213,12 +213,12 @@ var ccheck;
             var strBaseAddress = window.location.href.split("?")[0];
             if (this.model.isValid() == false) {
                 $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render({ "EVENT_NAME": "イベント一覧" }));
-                this.trigger("view_change", "#id_menu_conf");
+                this.view_change("#id_menu_conf");
             }
             else {
                 $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes));
                 $("nav li").removeClass("disabled");
-                this.trigger("view_change", "#id_menu_list");
+                this.view_change("#id_menu_list");
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_PREV) == true) {
                     $("#id_menu_prev a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV);
                 }
@@ -366,11 +366,14 @@ var ccheck;
         function view_CCircleFind(options) {
             if (options === void 0) { options = {}; }
             _super.call(this, options);
+            this.m_hTimer = null;
+            this.m_strSearchKeyword = "";
             this.m_dictTemplate = options.dictTemplate;
         }
         view_CCircleFind.prototype.events = function () {
             return {
-                "click button#id_btn_search": this.evt_btn_search,
+                "keyup #id_input_keyword": this.evt_search,
+                "click button#id_btn_search": this.evt_search,
                 "click #id_view_find button.evt-favo-append": this.evt_favo_append,
                 "click #id_view_find button.evt-show-circle": this.evt_show_circle
             };
@@ -387,7 +390,7 @@ var ccheck;
             var nIdx = $(oCEvt.currentTarget).data("idx");
             ccheck.app.show_circle(nGrp, nIdx);
         };
-        view_CCircleFind.prototype.search_keyword = function (strKeyword, oCItem) {
+        view_CCircleFind.prototype.search_circle_item = function (strKeyword, oCItem) {
             var bFound = false;
             for (var n = 0; n < oCItem.circle_list.length; n++) {
                 var oCDatItem = oCItem.circle_list[n];
@@ -398,25 +401,38 @@ var ccheck;
             }
             return bFound;
         };
-        view_CCircleFind.prototype.evt_btn_search = function () {
-            var strKeyword = $("#keyword").val();
-            var oCTBL = ccheck.app.m_model_event_catalog.attributes.CIRCLE_LIST_TBL;
-            var oCDAT = ccheck.app.m_model_event_catalog.attributes.CIRCLE_LIST_DAT;
-            var listFavItem = [];
+        view_CCircleFind.prototype.evt_search = function (oCEvt) {
+            var strKeyword = $("#id_input_keyword").val();
             if (!strKeyword)
                 return;
             if (strKeyword.length < 2)
                 return;
+            if (strKeyword == this.m_strSearchKeyword)
+                return;
+            if (this.m_hTimer != null) {
+                clearTimeout(this.m_hTimer);
+                this.m_hTimer = null;
+            }
             $("#id_search_progress").css("width", "0%");
+            this.m_hTimer = setTimeout(function () {
+                ccheck.app.m_view_circle_find.search(strKeyword);
+            }, 1000);
+        };
+        view_CCircleFind.prototype.search = function (strKeyword) {
+            var oCTBL = ccheck.app.m_model_event_catalog.attributes.CIRCLE_LIST_TBL;
+            var oCDAT = ccheck.app.m_model_event_catalog.attributes.CIRCLE_LIST_DAT;
+            var listFavItem = [];
+            $("#id_search_progress").css("width", "100%");
             this.collection.reset();
             for (var grp = 0; grp < oCTBL.length; grp++) {
                 for (var idx = 0; idx < oCDAT[grp].length; idx++) {
                     var oCItem = oCDAT[grp][idx];
-                    if (this.search_keyword(strKeyword, oCItem) == true) {
+                    if (this.search_circle_item(strKeyword, oCItem) == true) {
                         this.collection.add(oCItem);
                     }
                 }
             }
+            this.m_strSearchKeyword = strKeyword;
             this.render();
         };
         view_CCircleFind.prototype.render = function () {

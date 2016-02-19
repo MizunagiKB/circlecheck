@@ -18,6 +18,7 @@ module ccheck {
     // --------------------------------------------------------------- enum(s)
     // ------------------------------------------------------ Global Object(s)
     export var app: CApplication = null;
+    const DEMO: number = 0;
 
     // -------------------------------------------------------------- class(s)
     // -----------------------------------------------------------------------
@@ -29,11 +30,11 @@ module ccheck {
         public m_collection_circle_favo: collection_CCircleFavo = null;
         public m_collection_circle_find: collection_CCircleFind = null;
 
-        private m_view_catalog_head: view_CCatalogHead = null;
-        private m_view_catalog_list: view_CCatalogList = null;
+        public m_view_catalog_head: view_CCatalogHead = null;
+        public m_view_catalog_list: view_CCatalogList = null;
 
-        private m_view_circle_favo: view_CCircleFavo = null;
-        private m_view_circle_find: view_CCircleFind = null;
+        public m_view_circle_favo: view_CCircleFavo = null;
+        public m_view_circle_find: view_CCircleFind = null;
 
         private m_oCTplTBodyConf = Hogan.compile($("#id_tpl_tbody_conf").html());
         private m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
@@ -98,7 +99,9 @@ module ccheck {
 
             //
             if (strJSData == null) {
-                //this.import_from_url("../sample.json.sample");
+                if (DEMO == 1) {
+                    this.import_from_url("../sample.json.sample");
+                }
             } else {
                 this.import_from_url(strJSData);
             }

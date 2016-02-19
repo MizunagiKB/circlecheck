@@ -319,10 +319,10 @@ module ccheck {
             if (this.model.isValid() == false) {
 
                 $("#id_tpl_head").html(
-                    this.m_dictTemplate["#id_tpl_head"].render({"EVENT_NAME": "イベント一覧"})
+                    this.m_dictTemplate["#id_tpl_head"].render({ "EVENT_NAME": "イベント一覧" })
                 );
 
-                this.trigger("view_change", "#id_menu_conf");
+                this.view_change("#id_menu_conf");
 
             } else {
 
@@ -332,7 +332,7 @@ module ccheck {
 
                 $("nav li").removeClass("disabled");
 
-                this.trigger("view_change", "#id_menu_list");
+                this.view_change("#id_menu_list");
 
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_PREV) == true) {
                     $("#id_menu_prev a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV);
@@ -539,6 +539,8 @@ module ccheck {
     // -----------------------------------------------------------------------
     export class view_CCircleFind extends Backbone.View<model_CEventCatalog> {
         private m_dictTemplate: ITEMPLATES;
+        private m_hTimer: number = null;
+        private m_strSearchKeyword: string = "";
 
         //
         constructor(options: any = {}) {
@@ -550,7 +552,8 @@ module ccheck {
         //
         events(): Backbone.EventsHash {
             return {
-                "click button#id_btn_search": this.evt_btn_search,
+                "keyup #id_input_keyword": this.evt_search,
+                "click button#id_btn_search": this.evt_search,
                 "click #id_view_find button.evt-favo-append": this.evt_favo_append,
                 "click #id_view_find button.evt-show-circle": this.evt_show_circle
             }
@@ -577,7 +580,7 @@ module ccheck {
         }
 
         //
-        search_keyword(strKeyword: string, oCItem: ICIRCLE_LIST_DAT): boolean {
+        search_circle_item(strKeyword: string, oCItem: ICIRCLE_LIST_DAT): boolean {
             let bFound: boolean = false;
 
             for (let n: number = 0; n < oCItem.circle_list.length; n++) {
@@ -591,16 +594,34 @@ module ccheck {
         }
 
         //
-        evt_btn_search(): void {
-            const strKeyword: string = $("#keyword").val();
+        evt_search(oCEvt: any): void {
+            const strKeyword: string = $("#id_input_keyword").val();
+
+            if (!strKeyword) return;
+            if (strKeyword.length < 2) return;
+            if (strKeyword == this.m_strSearchKeyword) return;
+
+            if (this.m_hTimer != null) {
+                clearTimeout(this.m_hTimer);
+                this.m_hTimer = null;
+            }
+
+            $("#id_search_progress").css("width", "0%");
+
+            this.m_hTimer = setTimeout(
+                function() {
+                    app.m_view_circle_find.search(strKeyword)
+                }, 1000
+            );
+        }
+
+        //
+        search(strKeyword: string): void {
             const oCTBL: Array<ICIRCLE_LIST_TBL> = app.m_model_event_catalog.attributes.CIRCLE_LIST_TBL
             const oCDAT: { [key: string]: Array<ICIRCLE_LIST_DAT> } = app.m_model_event_catalog.attributes.CIRCLE_LIST_DAT;
             let listFavItem: Array<ICIRCLE_LIST_DAT_ITEM> = [];
 
-            if (!strKeyword) return;
-            if (strKeyword.length < 2) return;
-
-            $("#id_search_progress").css("width", "0%");
+            $("#id_search_progress").css("width", "100%");
 
             this.collection.reset();
 
@@ -608,11 +629,13 @@ module ccheck {
                 for (let idx: number = 0; idx < oCDAT[grp].length; idx++) {
                     let oCItem = oCDAT[grp][idx];
 
-                    if (this.search_keyword(strKeyword, oCItem) == true) {
+                    if (this.search_circle_item(strKeyword, oCItem) == true) {
                         this.collection.add(oCItem);
                     }
                 }
             }
+
+            this.m_strSearchKeyword = strKeyword;
 
             this.render();
         }

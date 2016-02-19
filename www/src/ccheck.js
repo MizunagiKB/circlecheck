@@ -5,6 +5,7 @@
 var ccheck;
 (function (ccheck) {
     ccheck.app = null;
+    var DEMO = 0;
     var CApplication = (function () {
         function CApplication(strJSData) {
             this.m_model_event_catalog = null;
@@ -55,6 +56,9 @@ var ccheck;
                 dictTemplate: dictTemplate
             });
             if (strJSData == null) {
+                if (DEMO == 1) {
+                    this.import_from_url("../sample.json.sample");
+                }
             }
             else {
                 this.import_from_url(strJSData);
