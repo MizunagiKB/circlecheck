@@ -123,8 +123,8 @@ module ccheck {
         }
 
         //
-        modelId(attribute: ICIRCLE_LIST_DAT) {
-            return attribute.layout;
+        modelId(attributes: ICIRCLE_LIST_DAT) {
+            return attributes.layout;
         }
 
         //
@@ -181,8 +181,8 @@ module ccheck {
     export class collection_CCircleFind extends Backbone.Collection<model_CCircleFind> {
 
         //
-        modelId(attribute: ICIRCLE_LIST_DAT) {
-            return attribute.layout;
+        modelId(attributes: ICIRCLE_LIST_DAT) {
+            return attributes.layout;
         }
 
         //

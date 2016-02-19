@@ -65,8 +65,8 @@ var ccheck;
             this.on("add", this.evt_append);
             this.on("remove", this.evt_remove);
         }
-        collection_CCircleFavo.prototype.modelId = function (attribute) {
-            return attribute.layout;
+        collection_CCircleFavo.prototype.modelId = function (attributes) {
+            return attributes.layout;
         };
         collection_CCircleFavo.prototype.comparator = function (compare, to) {
             if (compare.attributes.sortkey > to.attributes.sortkey)
@@ -117,8 +117,8 @@ var ccheck;
         function collection_CCircleFind() {
             _super.apply(this, arguments);
         }
-        collection_CCircleFind.prototype.modelId = function (attribute) {
-            return attribute.layout;
+        collection_CCircleFind.prototype.modelId = function (attributes) {
+            return attributes.layout;
         };
         collection_CCircleFind.prototype.comparator = function (compare, to) {
             if (compare.attributes.sortkey > to.attributes.sortkey)
