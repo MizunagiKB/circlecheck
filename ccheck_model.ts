@@ -523,6 +523,7 @@ module ccheck {
 
             if (this.model.isValid() == false) {
 
+                app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
                 app.m_collection_event_list.fetch(
                     {
                         data: {
@@ -534,12 +535,14 @@ module ccheck {
 
             } else {
 
+                app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list";
                 app.m_collection_event_list.fetch(
                     {
                         data: {
                             descending: true,
                             startkey: JSON.stringify([this.model.attributes.EVENT_SERIES, "Z"]),
-                            endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""])
+                            endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""]),
+                            limit: 30
                         }
                     }
                 );

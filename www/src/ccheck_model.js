@@ -316,6 +316,7 @@ var ccheck;
         };
         view_CCatalogList.prototype.render = function () {
             if (this.model.isValid() == false) {
+                ccheck.app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
                 ccheck.app.m_collection_event_list.fetch({
                     data: {
                         descending: true,
@@ -324,11 +325,13 @@ var ccheck;
                 });
             }
             else {
+                ccheck.app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list";
                 ccheck.app.m_collection_event_list.fetch({
                     data: {
                         descending: true,
                         startkey: JSON.stringify([this.model.attributes.EVENT_SERIES, "Z"]),
-                        endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""])
+                        endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""]),
+                        limit: 30
                     }
                 });
                 this.render_table_tab();
