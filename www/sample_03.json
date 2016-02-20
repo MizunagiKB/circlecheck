@@ -1,0 +1,57 @@
+{
+    "EVENT_URL" 			: "http://localhost/",
+    "EVENT_MAP_LOCATION"    : {"latitude": 35.630128, "longitude": 139.793745},
+    "DATA_SOURCE"			: "sample_03.json",
+    "DATA_SOURCE_PREV"		: "sample_02.json",
+    "DATA_SOURCE_NEXT"		: "#",
+
+    "EVENT_NAME" 			: "sample_event",
+    "EVENT_ST"              : "9999-01-01T00:00:00+09:00",
+    "EVENT_EN"              : "9999-12-31T23:59:59+09:00",
+    "INFORMATION"			: [
+        {"text": "TEST"}
+    ],
+
+    "CIRCLE_LIST_TBL"	: [
+        { "id" : "0", "name" : "SAMPLE A" },
+        { "id" : "1", "name" : "SAMPLE B" }
+    ],
+
+    "CIRCLE_LIST_DAT"	: {
+        "0" : [
+            { "layout" : "A1", "sortkey": "001-0001-00000001",
+                "circle_list": [
+                    {"circle": "サークルA1", "writer": "WRITER A1"}
+                ]
+            },
+
+            { "layout" : "A2", "sortkey": "001-0002-00000002",
+                "circle_list": [
+                    {"circle": "サークルA2-1", "url": ""},
+                    {"circle": "サークルA2-2", "writer": "WRITER A2-2"}
+                ]
+            },
+
+            { "layout" : "A3", "sortkey": "001-0003-00000003",
+                "circle_list": [
+                    {"circle": "サークルA3", "url": ""}
+                ]
+            }
+        ],
+        "1" : [
+            { "layout" : "B1", "sortkey": "002-0001-00000004",
+                "circle_list": [
+                    {"circle": "サークルB1-1", "url": ""},
+                    {"circle": "サークルB1-2", "writer": "WRITER B1-2"}
+                ]
+            },
+
+            { "layout" : "B2", "sortkey": "002-0002-00000005",
+                "circle_list": [
+                    {"circle": "サークルB2-1", "url": ""},
+                    {"circle": "サークルB2-2", "writer": "WRITER B2-1"}
+                ]
+            }
+        ]
+    }
+}
