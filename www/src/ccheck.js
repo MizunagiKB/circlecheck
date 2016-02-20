@@ -35,29 +35,25 @@ var ccheck;
             this.m_model_event_catalog = new ccheck.model_CEventCatalog();
             this.m_view_catalog_head = new ccheck.view_CCatalogHead({
                 el: "nav",
-                model: this.m_model_event_catalog,
-                dictTemplate: dictTemplate
-            });
+                model: this.m_model_event_catalog
+            }, dictTemplate);
             this.m_view_catalog_list = new ccheck.view_CCatalogList({
                 el: "div",
-                model: this.m_model_event_catalog,
-                dictTemplate: dictTemplate
-            });
+                model: this.m_model_event_catalog
+            }, dictTemplate);
             this.m_collection_circle_favo = new ccheck.collection_CCircleFavo();
             this.m_view_circle_favo = new ccheck.view_CCircleFavo({
                 el: "div",
-                collection: this.m_collection_circle_favo,
-                dictTemplate: dictTemplate
-            });
+                collection: this.m_collection_circle_favo
+            }, dictTemplate);
             this.m_collection_circle_find = new ccheck.collection_CCircleFind();
             this.m_view_circle_find = new ccheck.view_CCircleFind({
                 el: "div",
-                collection: this.m_collection_circle_find,
-                dictTemplate: dictTemplate
-            });
+                collection: this.m_collection_circle_find
+            }, dictTemplate);
             if (strJSData == null) {
                 if (DEMO == 1) {
-                    this.import_from_url("../sample.json.sample");
+                    this.import_from_url("./sample_01.json");
                 }
             }
             else {

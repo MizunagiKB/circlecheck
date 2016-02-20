@@ -85,10 +85,13 @@ module ccheck {
     // ------------------------------------------------------ Global Object(s)
     // -------------------------------------------------------------- class(s)
 
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class model_CEventCatalog extends Backbone.Model {
 
         //
-        constructor(attributes: any = {}, options: any = {}) {
+        constructor(attributes?: any, options?: any) {
             super(attributes, options);
         }
 
@@ -103,21 +106,25 @@ module ccheck {
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class model_CCircleFavo extends Backbone.Model {
 
         //
-        constructor(attributes: any = {}, options: any = {}) {
+        constructor(attributes?: any, options?: any) {
             super(attributes, options);
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class collection_CCircleFavo extends Backbone.Collection<model_CCircleFavo> {
 
         //
-        constructor() {
-            super();
+        constructor(models?: model_CCircleFavo[] | Object[], options?: any) {
+            super(models, options);
             this.on("add", this.evt_append);
             this.on("remove", this.evt_remove);
         }
@@ -168,17 +175,26 @@ module ccheck {
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class model_CCircleFind extends Backbone.Model {
 
         //
-        constructor(attributes: any = {}, options: any = {}) {
+        constructor(attributes?: any, options?: any) {
             super(attributes, options);
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class collection_CCircleFind extends Backbone.Collection<model_CCircleFind> {
+
+        //
+        constructor(models?: model_CCircleFind[] | Object[], options?: any) {
+            super(models, options);
+        }
 
         //
         modelId(attributes: ICIRCLE_LIST_DAT) {
@@ -198,12 +214,12 @@ module ccheck {
         private m_dictTemplate: ITEMPLATES;
 
         //
-        constructor(options: any = {}) {
+        constructor(options?: Backbone.ViewOptions<model_CEventCatalog>, dictTemplate?: any) {
             super(options);
             this.listenTo(this.model, "change", this.render);
             this.on("view_change", this.view_change);
 
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
 
         events(): Backbone.EventsHash {
@@ -354,17 +370,19 @@ module ccheck {
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class view_CCatalogList extends Backbone.View<model_CEventCatalog> {
         private m_dictTemplate: ITEMPLATES;
 
         //
-        constructor(options: any = {}) {
+        constructor(options?: Backbone.ViewOptions<model_CEventCatalog>, dictTemplate?: any) {
             super(options);
 
             this.listenTo(this.model, "change", this.render);
 
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
 
         //
@@ -453,17 +471,19 @@ module ccheck {
     }
 
     // -----------------------------------------------------------------------
+    /*!
+     */
     export class view_CCircleFavo extends Backbone.View<model_CCircleFavo> {
         private m_dictTemplate: ITEMPLATES;
 
         //
-        constructor(options: any = {}) {
+        constructor(options?: Backbone.ViewOptions<model_CCircleFavo>, dictTemplate?: any) {
             super(options);
 
             this.listenTo(this.collection, "add", this.render);
             this.listenTo(this.collection, "remove", this.render);
 
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
 
         //
@@ -537,16 +557,18 @@ module ccheck {
     }
 
     // -----------------------------------------------------------------------
+    /*!
+     */
     export class view_CCircleFind extends Backbone.View<model_CEventCatalog> {
         private m_dictTemplate: ITEMPLATES;
         private m_hTimer: number = null;
         private m_strSearchKeyword: string = "";
 
         //
-        constructor(options: any = {}) {
+        constructor(options?: Backbone.ViewOptions<model_CEventCatalog>, dictTemplate?: any) {
             super(options);
 
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
 
         //

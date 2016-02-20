@@ -32,8 +32,6 @@ var ccheck;
     var model_CEventCatalog = (function (_super) {
         __extends(model_CEventCatalog, _super);
         function model_CEventCatalog(attributes, options) {
-            if (attributes === void 0) { attributes = {}; }
-            if (options === void 0) { options = {}; }
             _super.call(this, attributes, options);
         }
         model_CEventCatalog.prototype.validate = function (attributes, options) {
@@ -51,8 +49,6 @@ var ccheck;
     var model_CCircleFavo = (function (_super) {
         __extends(model_CCircleFavo, _super);
         function model_CCircleFavo(attributes, options) {
-            if (attributes === void 0) { attributes = {}; }
-            if (options === void 0) { options = {}; }
             _super.call(this, attributes, options);
         }
         return model_CCircleFavo;
@@ -60,8 +56,8 @@ var ccheck;
     ccheck.model_CCircleFavo = model_CCircleFavo;
     var collection_CCircleFavo = (function (_super) {
         __extends(collection_CCircleFavo, _super);
-        function collection_CCircleFavo() {
-            _super.call(this);
+        function collection_CCircleFavo(models, options) {
+            _super.call(this, models, options);
             this.on("add", this.evt_append);
             this.on("remove", this.evt_remove);
         }
@@ -105,8 +101,6 @@ var ccheck;
     var model_CCircleFind = (function (_super) {
         __extends(model_CCircleFind, _super);
         function model_CCircleFind(attributes, options) {
-            if (attributes === void 0) { attributes = {}; }
-            if (options === void 0) { options = {}; }
             _super.call(this, attributes, options);
         }
         return model_CCircleFind;
@@ -114,8 +108,8 @@ var ccheck;
     ccheck.model_CCircleFind = model_CCircleFind;
     var collection_CCircleFind = (function (_super) {
         __extends(collection_CCircleFind, _super);
-        function collection_CCircleFind() {
-            _super.apply(this, arguments);
+        function collection_CCircleFind(models, options) {
+            _super.call(this, models, options);
         }
         collection_CCircleFind.prototype.modelId = function (attributes) {
             return attributes.layout;
@@ -132,12 +126,11 @@ var ccheck;
     ccheck.collection_CCircleFind = collection_CCircleFind;
     var view_CCatalogHead = (function (_super) {
         __extends(view_CCatalogHead, _super);
-        function view_CCatalogHead(options) {
-            if (options === void 0) { options = {}; }
+        function view_CCatalogHead(options, dictTemplate) {
             _super.call(this, options);
             this.listenTo(this.model, "change", this.render);
             this.on("view_change", this.view_change);
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
         view_CCatalogHead.prototype.events = function () {
             return {
@@ -241,11 +234,10 @@ var ccheck;
     ccheck.view_CCatalogHead = view_CCatalogHead;
     var view_CCatalogList = (function (_super) {
         __extends(view_CCatalogList, _super);
-        function view_CCatalogList(options) {
-            if (options === void 0) { options = {}; }
+        function view_CCatalogList(options, dictTemplate) {
             _super.call(this, options);
             this.listenTo(this.model, "change", this.render);
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
         view_CCatalogList.prototype.events = function () {
             return {
@@ -306,12 +298,11 @@ var ccheck;
     ccheck.view_CCatalogList = view_CCatalogList;
     var view_CCircleFavo = (function (_super) {
         __extends(view_CCircleFavo, _super);
-        function view_CCircleFavo(options) {
-            if (options === void 0) { options = {}; }
+        function view_CCircleFavo(options, dictTemplate) {
             _super.call(this, options);
             this.listenTo(this.collection, "add", this.render);
             this.listenTo(this.collection, "remove", this.render);
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
         view_CCircleFavo.prototype.events = function () {
             return {
@@ -363,12 +354,11 @@ var ccheck;
     ccheck.view_CCircleFavo = view_CCircleFavo;
     var view_CCircleFind = (function (_super) {
         __extends(view_CCircleFind, _super);
-        function view_CCircleFind(options) {
-            if (options === void 0) { options = {}; }
+        function view_CCircleFind(options, dictTemplate) {
             _super.call(this, options);
             this.m_hTimer = null;
             this.m_strSearchKeyword = "";
-            this.m_dictTemplate = options.dictTemplate;
+            this.m_dictTemplate = dictTemplate;
         }
         view_CCircleFind.prototype.events = function () {
             return {

@@ -64,17 +64,17 @@ module ccheck {
             this.m_view_catalog_head = new view_CCatalogHead(
                 {
                     el: "nav",
-                    model: this.m_model_event_catalog,
-                    dictTemplate: dictTemplate
-                }
+                    model: this.m_model_event_catalog
+                },
+                dictTemplate
             );
 
             this.m_view_catalog_list = new view_CCatalogList(
                 {
                     el: "div",
-                    model: this.m_model_event_catalog,
-                    dictTemplate: dictTemplate
-                }
+                    model: this.m_model_event_catalog
+                },
+                dictTemplate
             );
 
             //
@@ -82,9 +82,9 @@ module ccheck {
             this.m_view_circle_favo = new view_CCircleFavo(
                 {
                     el: "div",
-                    collection: this.m_collection_circle_favo,
-                    dictTemplate: dictTemplate
-                }
+                    collection: this.m_collection_circle_favo
+                },
+                dictTemplate
             );
 
             //
@@ -92,15 +92,15 @@ module ccheck {
             this.m_view_circle_find = new view_CCircleFind(
                 {
                     el: "div",
-                    collection: this.m_collection_circle_find,
-                    dictTemplate: dictTemplate
-                }
+                    collection: this.m_collection_circle_find
+                },
+                dictTemplate
             );
 
             //
             if (strJSData == null) {
                 if (DEMO == 1) {
-                    this.import_from_url("../sample.json.sample");
+                    this.import_from_url("./sample_01.json");
                 }
             } else {
                 this.import_from_url(strJSData);
