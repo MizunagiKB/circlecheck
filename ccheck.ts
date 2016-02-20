@@ -29,14 +29,15 @@ module ccheck {
         public m_model_event_catalog: model_CEventCatalog = null;
         public m_collection_circle_favo: collection_CCircleFavo = null;
         public m_collection_circle_find: collection_CCircleFind = null;
+        public m_collection_event_list: collection_CEventList = null;
 
         public m_view_catalog_head: view_CCatalogHead = null;
         public m_view_catalog_list: view_CCatalogList = null;
 
         public m_view_circle_favo: view_CCircleFavo = null;
         public m_view_circle_find: view_CCircleFind = null;
+        public m_view_event_list: view_CEventList = null;
 
-        private m_oCTplTBodyConf = Hogan.compile($("#id_tpl_tbody_conf").html());
         private m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
         // -------------------------------------------------------------------
@@ -52,7 +53,8 @@ module ccheck {
                 "#id_tpl_circleinfo",
                 "#id_tpl_show_circle_desc_1",
                 "#id_tpl_show_circle_desc_2",
-                "#id_tpl_notify_area"
+                "#id_tpl_notify_area",
+                "#id_tpl_tbody_conf"
             ];
             let dictTemplate = {};
 
@@ -93,6 +95,15 @@ module ccheck {
                 {
                     el: "div",
                     collection: this.m_collection_circle_find
+                },
+                dictTemplate
+            );
+
+            this.m_collection_event_list = new collection_CEventList();
+            this.m_view_event_list = new view_CEventList(
+                {
+                    el: "div",
+                    collection: this.m_collection_event_list
                 },
                 dictTemplate
             );
@@ -155,22 +166,8 @@ module ccheck {
         // -------------------------------------------------------------------
         /*!
          */
-        public get_event_series(strUrl: string): void {
-            $.getJSON(
-                strUrl,
-                function(oCJson) {
-
-                    $("#id_tbl_conf_0").html(
-                        app.m_oCTplTBodyConf.render(oCJson)
-                    );
-                }
-            );
-        }
-
-        // -------------------------------------------------------------------
-        /*!
-         */
         public import_from_url(strUrl: string): void {
+
             $.getJSON(
                 strUrl,
                 function(dictEventCatalog) {

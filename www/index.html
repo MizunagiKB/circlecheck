@@ -189,9 +189,9 @@
         <script type="text/template" id="id_tpl_tbody_conf">
             {{#rows}}
             <tr>
-                <td>{{value.EVENT_SERIES}}</td>
-                <td><a href="?jsdata=/db/circlecheck/{{id}}">{{value.EVENT_NAME}}</a></td>
-                <td>{{value.EVENT_ST}}</td>
+                <td>{{attributes.value.EVENT_SERIES}}</td>
+                <td><a href="?jsdata=/db/circlecheck/{{id}}">{{attributes.value.EVENT_NAME}}</a></td>
+                <td>{{attributes.value.EVENT_ST}}</td>
             </tr>
             {{/rows}}
         </script>

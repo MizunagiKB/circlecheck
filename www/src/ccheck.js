@@ -11,11 +11,12 @@ var ccheck;
             this.m_model_event_catalog = null;
             this.m_collection_circle_favo = null;
             this.m_collection_circle_find = null;
+            this.m_collection_event_list = null;
             this.m_view_catalog_head = null;
             this.m_view_catalog_list = null;
             this.m_view_circle_favo = null;
             this.m_view_circle_find = null;
-            this.m_oCTplTBodyConf = Hogan.compile($("#id_tpl_tbody_conf").html());
+            this.m_view_event_list = null;
             this.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
             var listTemplate = [
                 "#id_tpl_head",
@@ -26,7 +27,8 @@ var ccheck;
                 "#id_tpl_circleinfo",
                 "#id_tpl_show_circle_desc_1",
                 "#id_tpl_show_circle_desc_2",
-                "#id_tpl_notify_area"
+                "#id_tpl_notify_area",
+                "#id_tpl_tbody_conf"
             ];
             var dictTemplate = {};
             for (var n = 0; n < listTemplate.length; n++) {
@@ -50,6 +52,11 @@ var ccheck;
             this.m_view_circle_find = new ccheck.view_CCircleFind({
                 el: "div",
                 collection: this.m_collection_circle_find
+            }, dictTemplate);
+            this.m_collection_event_list = new ccheck.collection_CEventList();
+            this.m_view_event_list = new ccheck.view_CEventList({
+                el: "div",
+                collection: this.m_collection_event_list
             }, dictTemplate);
             if (strJSData == null) {
                 if (DEMO == 1) {
@@ -90,11 +97,6 @@ var ccheck;
                 "circle_table_item": oCTpl.render(oCItem)
             }));
             $("#id_tpl_desc").modal("show");
-        };
-        CApplication.prototype.get_event_series = function (strUrl) {
-            $.getJSON(strUrl, function (oCJson) {
-                $("#id_tbl_conf_0").html(ccheck.app.m_oCTplTBodyConf.render(oCJson));
-            });
         };
         CApplication.prototype.import_from_url = function (strUrl) {
             $.getJSON(strUrl, function (dictEventCatalog) {

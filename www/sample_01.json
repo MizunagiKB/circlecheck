@@ -1,5 +1,6 @@
 {
     "EVENT_URL" 			: "http://localhost/",
+    "EVENT_SERIES"          : "sample",
     "EVENT_MAP_LOCATION"    : {"latitude": 35.630128, "longitude": 139.793745},
     "DATA_SOURCE"			: "sample_01.json",
     "DATA_SOURCE_PREV"		: "#",

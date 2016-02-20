@@ -29,6 +29,40 @@ var __extends = (this && this.__extends) || function (d, b) {
 };
 var ccheck;
 (function (ccheck) {
+    var model_CEventList = (function (_super) {
+        __extends(model_CEventList, _super);
+        function model_CEventList(attributes, options) {
+            _super.call(this, attributes, options);
+        }
+        return model_CEventList;
+    }(Backbone.Model));
+    ccheck.model_CEventList = model_CEventList;
+    var collection_CEventList = (function (_super) {
+        __extends(collection_CEventList, _super);
+        function collection_CEventList(models, options) {
+            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
+            _super.call(this, models, options);
+        }
+        collection_CEventList.prototype.parse = function (response, options) {
+            return response.rows;
+        };
+        return collection_CEventList;
+    }(Backbone.Collection));
+    ccheck.collection_CEventList = collection_CEventList;
+    var view_CEventList = (function (_super) {
+        __extends(view_CEventList, _super);
+        function view_CEventList(options, dictTemplate) {
+            _super.call(this, options);
+            this.listenTo(this.collection, "sync", this.render);
+            this.m_dictTemplate = dictTemplate;
+        }
+        view_CEventList.prototype.render = function () {
+            $("#id_tbl_conf_0").html(this.m_dictTemplate["#id_tpl_tbody_conf"].render({ rows: this.collection.models }));
+            return this;
+        };
+        return view_CEventList;
+    }(Backbone.View));
+    ccheck.view_CEventList = view_CEventList;
     var model_CEventCatalog = (function (_super) {
         __extends(model_CEventCatalog, _super);
         function model_CEventCatalog(attributes, options) {
@@ -282,10 +316,21 @@ var ccheck;
         };
         view_CCatalogList.prototype.render = function () {
             if (this.model.isValid() == false) {
-                ccheck.app.get_event_series("/db/circlecheck/_design/catalog/_view/list_by_date?descending=true&limit=30");
+                ccheck.app.m_collection_event_list.fetch({
+                    data: {
+                        descending: true,
+                        limit: 30
+                    }
+                });
             }
             else {
-                ccheck.app.get_event_series("/db/circlecheck/_design/catalog/_view/list?descending=true&startkey=[\"" + this.model.attributes.EVENT_SERIES + "\", \"Z\"]&endkey=[\"" + this.model.attributes.EVENT_SERIES + "\", \"\"]");
+                ccheck.app.m_collection_event_list.fetch({
+                    data: {
+                        descending: true,
+                        startkey: JSON.stringify([this.model.attributes.EVENT_SERIES, "Z"]),
+                        endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""])
+                    }
+                });
                 this.render_table_tab();
                 this.render_table_dat();
                 $("#id_tab_circle_lst a:first").tab("show");

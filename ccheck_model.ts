@@ -77,6 +77,17 @@ module ccheck {
         CIRCLE_LIST_DAT: { [key: string]: Array<ICIRCLE_LIST_DAT> };
     }
 
+    interface IEVENT_LIST {
+        id: string;
+        key: string;
+        value: {
+            EVENT_NAME: string;
+            EVENT_SERIES: string;
+            EVENT_ST: string;
+            EVENT_EN: string;
+        }
+    }
+
     interface ITEMPLATES {
         [key: string]: any;
     }
@@ -84,6 +95,62 @@ module ccheck {
     // --------------------------------------------------------------- enum(s)
     // ------------------------------------------------------ Global Object(s)
     // -------------------------------------------------------------- class(s)
+
+    // -----------------------------------------------------------------------
+    /*!
+     */
+    export class model_CEventList extends Backbone.Model {
+
+        //
+        constructor(attributes?: any, options?: any) {
+            super(attributes, options);
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    /*!
+     */
+    export class collection_CEventList extends Backbone.Collection<model_CEventList> {
+
+        //
+        constructor(models?: model_CCircleFavo[] | Object[], options?: any) {
+            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
+            super(models, options);
+        }
+
+        //
+        parse(response: any, options?: any): any {
+            return response.rows;
+        }
+    }
+
+    // -----------------------------------------------------------------------
+    /*!
+     */
+    export class view_CEventList extends Backbone.View<model_CEventList> {
+        private m_dictTemplate: ITEMPLATES;
+
+        //
+        constructor(options?: Backbone.ViewOptions<model_CEventList>, dictTemplate?: any) {
+            super(options);
+
+            this.listenTo(this.collection, "sync", this.render);
+
+            this.m_dictTemplate = dictTemplate;
+        }
+
+        //
+        render() {
+
+            $("#id_tbl_conf_0").html(
+                this.m_dictTemplate["#id_tpl_tbody_conf"].render(
+                    {rows: this.collection.models}
+                )
+            );
+
+            return this;
+        }
+    }
 
     // -----------------------------------------------------------------------
     /*!
@@ -209,7 +276,9 @@ module ccheck {
         }
     }
 
-    //
+    // -----------------------------------------------------------------------
+    /*!
+     */
     export class view_CCatalogHead extends Backbone.View<model_CEventCatalog> {
         private m_dictTemplate: ITEMPLATES;
 
@@ -222,6 +291,7 @@ module ccheck {
             this.m_dictTemplate = dictTemplate;
         }
 
+        //
         events(): Backbone.EventsHash {
             return {
                 "click li#id_menu_list": this.evt_view_change,
@@ -261,6 +331,7 @@ module ccheck {
             return bResult;
         }
 
+        //
         render_notify_area(): string {
 
             if (this.is_valid_param(this.model.attributes.EVENT_ST) != true) return;
@@ -406,6 +477,7 @@ module ccheck {
             storage_save();
         }
 
+        //
         evt_show_circle(oCEvt: any) {
             let nGrp: number = $(oCEvt.currentTarget).data("grp");
             let nIdx: number = $(oCEvt.currentTarget).data("idx");
@@ -450,12 +522,26 @@ module ccheck {
         render() {
 
             if (this.model.isValid() == false) {
-                app.get_event_series(
-                    "/db/circlecheck/_design/catalog/_view/list_by_date?descending=true&limit=30"
+
+                app.m_collection_event_list.fetch(
+                    {
+                        data: {
+                            descending: true,
+                            limit: 30
+                        }
+                    }
                 );
+
             } else {
-                app.get_event_series(
-                    "/db/circlecheck/_design/catalog/_view/list?descending=true&startkey=[\"" + this.model.attributes.EVENT_SERIES + "\", \"Z\"]&endkey=[\"" + this.model.attributes.EVENT_SERIES + "\", \"\"]"
+
+                app.m_collection_event_list.fetch(
+                    {
+                        data: {
+                            descending: true,
+                            startkey: JSON.stringify([this.model.attributes.EVENT_SERIES, "Z"]),
+                            endkey: JSON.stringify([this.model.attributes.EVENT_SERIES, ""])
+                        }
+                    }
                 );
 
                 this.render_table_tab();
