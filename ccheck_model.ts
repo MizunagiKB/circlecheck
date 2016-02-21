@@ -19,7 +19,7 @@
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
 
-    id_view_conf .cchack_view
+    id_view_conf .cchack_vie
     id_view_area .cchack_view
 
  */
@@ -29,6 +29,7 @@
 /// <reference path="./DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
 /// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
+/// <reference path="./ccheck.ts"/>
 
 // ---------------------------------------------------------------- declare(s)
 
@@ -144,7 +145,7 @@ module ccheck {
 
             $("#id_tbl_conf_0").html(
                 this.m_dictTemplate["#id_tpl_tbody_conf"].render(
-                    {rows: this.collection.models}
+                    { rows: this.collection.models }
                 )
             );
 
@@ -694,11 +695,23 @@ module ccheck {
         search_circle_item(strKeyword: string, oCItem: ICIRCLE_LIST_DAT): boolean {
             let bFound: boolean = false;
 
+            if (oCItem.layout) {
+                if (oCItem.layout.indexOf(strKeyword, 0) != -1) bFound = true;
+            }
+
             for (let n: number = 0; n < oCItem.circle_list.length; n++) {
                 const oCDatItem = oCItem.circle_list[n];
 
-                for (let k in oCDatItem) {
-                    if (oCDatItem[k].indexOf(strKeyword, 0) != -1) bFound = true;
+                if (oCDatItem.circle) {
+                    if (oCDatItem.circle.indexOf(strKeyword, 0) != -1) bFound = true;
+                }
+
+                if (oCDatItem.writer) {
+                    if (oCDatItem.writer.indexOf(strKeyword, 0) != -1) bFound = true;
+                }
+
+                if (oCDatItem.url) {
+                    if (oCDatItem.url.indexOf(strKeyword, 0) != -1) bFound = true;
                 }
             }
             return bFound;

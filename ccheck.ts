@@ -56,7 +56,7 @@ module ccheck {
                 "#id_tpl_notify_area",
                 "#id_tpl_tbody_conf"
             ];
-            let dictTemplate = {};
+            let dictTemplate: { [key: string]: Array<ICIRCLE_LIST_DAT> } = {};
 
             for (let n: number = 0; n < listTemplate.length; n++) {
                 dictTemplate[listTemplate[n]] = Hogan.compile($(listTemplate[n]).html());
@@ -183,14 +183,13 @@ module ccheck {
     // =======================================================================
     /*!
      */
-    function get_url_param(): Array<string> {
-        let listResult: string[] = [];
+    function get_url_param(): { [key: string]: string }{
+        let listResult: { [key: string]: string }= {};
         let listParam: string[] = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
 
         for (let n: number = 0; n < listParam.length; n++) {
             let listData: Array<string> = listParam[n].split("=");
 
-            listResult.push(listData[0]);
             listResult[listData[0]] = listData[1];
         }
 
@@ -260,8 +259,8 @@ module ccheck {
 
     // =======================================================================
     export function main() {
-        const listParam: Array<string> = get_url_param();
-        const strJSData: string = listParam["jsdata"];
+        const dictParam: { [key: string]: string } = get_url_param();
+        const strJSData: string = dictParam["jsdata"];
 
         app = new CApplication(strJSData);
 

@@ -105,13 +105,12 @@ var ccheck;
             });
         };
         return CApplication;
-    }());
+    })();
     function get_url_param() {
-        var listResult = [];
+        var listResult = {};
         var listParam = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
         for (var n = 0; n < listParam.length; n++) {
             var listData = listParam[n].split("=");
-            listResult.push(listData[0]);
             listResult[listData[0]] = listData[1];
         }
         return (listResult);
@@ -158,8 +157,8 @@ var ccheck;
     }
     ccheck.resume = resume;
     function main() {
-        var listParam = get_url_param();
-        var strJSData = listParam["jsdata"];
+        var dictParam = get_url_param();
+        var strJSData = dictParam["jsdata"];
         ccheck.app = new CApplication(strJSData);
         if (strJSData == null) {
             ccheck.app.m_model_event_catalog.set({ null: null });

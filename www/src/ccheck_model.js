@@ -18,7 +18,7 @@
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
 
-    id_view_conf .cchack_view
+    id_view_conf .cchack_vie
     id_view_area .cchack_view
 
  */
@@ -430,10 +430,22 @@ var ccheck;
         };
         view_CCircleFind.prototype.search_circle_item = function (strKeyword, oCItem) {
             var bFound = false;
+            if (oCItem.layout) {
+                if (oCItem.layout.indexOf(strKeyword, 0) != -1)
+                    bFound = true;
+            }
             for (var n = 0; n < oCItem.circle_list.length; n++) {
                 var oCDatItem = oCItem.circle_list[n];
-                for (var k in oCDatItem) {
-                    if (oCDatItem[k].indexOf(strKeyword, 0) != -1)
+                if (oCDatItem.circle) {
+                    if (oCDatItem.circle.indexOf(strKeyword, 0) != -1)
+                        bFound = true;
+                }
+                if (oCDatItem.writer) {
+                    if (oCDatItem.writer.indexOf(strKeyword, 0) != -1)
+                        bFound = true;
+                }
+                if (oCDatItem.url) {
+                    if (oCDatItem.url.indexOf(strKeyword, 0) != -1)
                         bFound = true;
                 }
             }
