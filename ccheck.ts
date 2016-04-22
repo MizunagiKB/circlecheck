@@ -4,11 +4,12 @@
  * @author @MizunagiKB
  */
 // -------------------------------------------------------------- reference(s)
-/// <reference path="./DefinitelyTyped/jquery/jquery.d.ts"/>
-/// <reference path="./DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
-/// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
+/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts"/>
+/// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
+/// <reference path="../DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
 /// <reference path="./ccheck_model.ts"/>
+/// <reference path="./ccheck_cdesc.ts"/>
 
 // ---------------------------------------------------------------- declare(s)
 
@@ -38,6 +39,9 @@ module ccheck {
         public m_view_circle_find: view_CCircleFind = null;
         public m_view_event_list: view_CEventList = null;
 
+        public m_model_circle_desc_hist: model_CCircleDesc_Hist = null;
+        public m_view_circle_desc_hist: view_CCircleDesc_Hist = null;
+
         private m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
         // -------------------------------------------------------------------
@@ -65,7 +69,7 @@ module ccheck {
             this.m_model_event_catalog = new model_CEventCatalog();
             this.m_view_catalog_head = new view_CCatalogHead(
                 {
-                    el: "nav",
+                    el: "body",
                     model: this.m_model_event_catalog
                 },
                 dictTemplate
@@ -73,7 +77,7 @@ module ccheck {
 
             this.m_view_catalog_list = new view_CCatalogList(
                 {
-                    el: "div",
+                    el: "body",
                     model: this.m_model_event_catalog
                 },
                 dictTemplate
@@ -83,7 +87,7 @@ module ccheck {
             this.m_collection_circle_favo = new collection_CCircleFavo();
             this.m_view_circle_favo = new view_CCircleFavo(
                 {
-                    el: "div",
+                    el: "body",
                     collection: this.m_collection_circle_favo
                 },
                 dictTemplate
@@ -93,7 +97,7 @@ module ccheck {
             this.m_collection_circle_find = new collection_CCircleFind();
             this.m_view_circle_find = new view_CCircleFind(
                 {
-                    el: "div",
+                    el: "body",
                     collection: this.m_collection_circle_find
                 },
                 dictTemplate
@@ -102,10 +106,18 @@ module ccheck {
             this.m_collection_event_list = new collection_CEventList();
             this.m_view_event_list = new view_CEventList(
                 {
-                    el: "div",
+                    el: "body",
                     collection: this.m_collection_event_list
                 },
                 dictTemplate
+            );
+
+            this.m_model_circle_desc_hist = new model_CCircleDesc_Hist();
+            this.m_view_circle_desc_hist = new view_CCircleDesc_Hist(
+                {
+                    el: "body",
+                    model: this.m_model_circle_desc_hist
+                }
             );
 
             //
@@ -131,7 +143,7 @@ module ccheck {
                 + '<table class="table table-striped table-condensed">'
                 + '<thead>'
                 + '<tr>'
-                + '<th>サークル情報</th>'
+                + '<th></th>'
                 + '</tr>'
                 + '</thead>'
                 + '<tbody>'
@@ -155,9 +167,22 @@ module ccheck {
                 this.m_oCTplDesc.render(
                     {
                         "layout": oCItem.layout,
-                        "circle_table_item": oCTpl.render(oCItem)
+                        "circle_desc_info": oCTpl.render(oCItem)
                     }
                 )
+            );
+
+            this.m_model_circle_desc_hist.clear();
+            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
+            this.m_model_circle_desc_hist.fetch(
+                {
+                    data: {
+                        descending: true,
+                        limit: 5,
+                        startkey: JSON.stringify([oCItem.circle_list[0].circle, "Z"]),
+                        endkey: JSON.stringify([oCItem.circle_list[0].circle, ""])
+                    }
+                }
             );
 
             $("#id_tpl_desc").modal("show");

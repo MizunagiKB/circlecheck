@@ -17,6 +17,8 @@ var ccheck;
             this.m_view_circle_favo = null;
             this.m_view_circle_find = null;
             this.m_view_event_list = null;
+            this.m_model_circle_desc_hist = null;
+            this.m_view_circle_desc_hist = null;
             this.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
             var listTemplate = [
                 "#id_tpl_head",
@@ -36,28 +38,33 @@ var ccheck;
             }
             this.m_model_event_catalog = new ccheck.model_CEventCatalog();
             this.m_view_catalog_head = new ccheck.view_CCatalogHead({
-                el: "nav",
+                el: "body",
                 model: this.m_model_event_catalog
             }, dictTemplate);
             this.m_view_catalog_list = new ccheck.view_CCatalogList({
-                el: "div",
+                el: "body",
                 model: this.m_model_event_catalog
             }, dictTemplate);
             this.m_collection_circle_favo = new ccheck.collection_CCircleFavo();
             this.m_view_circle_favo = new ccheck.view_CCircleFavo({
-                el: "div",
+                el: "body",
                 collection: this.m_collection_circle_favo
             }, dictTemplate);
             this.m_collection_circle_find = new ccheck.collection_CCircleFind();
             this.m_view_circle_find = new ccheck.view_CCircleFind({
-                el: "div",
+                el: "body",
                 collection: this.m_collection_circle_find
             }, dictTemplate);
             this.m_collection_event_list = new ccheck.collection_CEventList();
             this.m_view_event_list = new ccheck.view_CEventList({
-                el: "div",
+                el: "body",
                 collection: this.m_collection_event_list
             }, dictTemplate);
+            this.m_model_circle_desc_hist = new ccheck.model_CCircleDesc_Hist();
+            this.m_view_circle_desc_hist = new ccheck.view_CCircleDesc_Hist({
+                el: "body",
+                model: this.m_model_circle_desc_hist
+            });
             if (strJSData == null) {
                 if (DEMO == 1) {
                     this.import_from_url("./sample_01.json");
@@ -74,7 +81,7 @@ var ccheck;
                 + '<table class="table table-striped table-condensed">'
                 + '<thead>'
                 + '<tr>'
-                + '<th>サークル情報</th>'
+                + '<th></th>'
                 + '</tr>'
                 + '</thead>'
                 + '<tbody>'
@@ -94,8 +101,18 @@ var ccheck;
                 + '</table>');
             $("#id_tpl_desc").html(this.m_oCTplDesc.render({
                 "layout": oCItem.layout,
-                "circle_table_item": oCTpl.render(oCItem)
+                "circle_desc_info": oCTpl.render(oCItem)
             }));
+            this.m_model_circle_desc_hist.clear();
+            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
+            this.m_model_circle_desc_hist.fetch({
+                data: {
+                    descending: true,
+                    limit: 5,
+                    startkey: JSON.stringify([oCItem.circle_list[0].circle, "Z"]),
+                    endkey: JSON.stringify([oCItem.circle_list[0].circle, ""])
+                }
+            });
             $("#id_tpl_desc").modal("show");
         };
         CApplication.prototype.import_from_url = function (strUrl) {
@@ -105,7 +122,7 @@ var ccheck;
             });
         };
         return CApplication;
-    })();
+    }());
     function get_url_param() {
         var listResult = {};
         var listParam = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
