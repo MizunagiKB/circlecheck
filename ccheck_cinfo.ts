@@ -164,29 +164,35 @@ module ccheck {
 
                     if (nCheckCount == 3) {
 
+                        oXhr.ccheck_model.set("_id", jsonData.id);
+                        oXhr.ccheck_model.set("_rev", jsonData.rev);
+
                         switch (eEMode) {
                             case E_EDIT_MODE.INSERT:
                                 bResult = app.insert_circle_info_db(
                                     oXhr.ccheck_model.get("layout"),
-                                    jsonData._id,
+                                    jsonData.id,
                                     oXhr.ccheck_model
                                 );
                                 break;
                             case E_EDIT_MODE.UPDATE:
                                 bResult = app.update_circle_info_db(
                                     oXhr.ccheck_model.get("layout"),
-                                    jsonData._id,
+                                    jsonData.id,
                                     oXhr.ccheck_model
                                 );
                                 break;
                             case E_EDIT_MODE.DELETE:
                                 bResult = app.delete_circle_info_db(
                                     oXhr.ccheck_model.get("layout"),
-                                    jsonData._id,
+                                    jsonData.id,
                                     oXhr.ccheck_model
                                 );
                                 break;
                         }
+
+                        console.log("JOB " + nCheckCount);
+                        console.log(bResult);
 
                         if (bResult == true) {
                             let strLst: string = "#id_row_list_" + nGrp + "_" + nIdx;
@@ -195,7 +201,7 @@ module ccheck {
                             $(strLst).html(
                                 app.m_view_catalog_list.render_table_dat_row(nGrp, nIdx)
                             )
-                            $(strLst).html(
+                            $(strFav).html(
                                 app.m_view_circle_favo.render_table_dat_row(nGrp, nIdx)
                             )
 
@@ -219,6 +225,7 @@ module ccheck {
                 }
             ).fail(
                 function(oXhr: any, strStatus: string, errThrown: any) {
+                    console.log(strStatus);
                     $(oXhr.ccheck_notify_id).html(
                         ''
                         + '<div class="alert alert-danger alert-dismissable">'

@@ -222,6 +222,7 @@ module ccheck {
 
             if (eEMode == E_EDIT_MODE.INSERT) {
                 this.m_view_circle_edit.model.reset();
+                this.m_view_circle_edit.model.set("DATA_SOURCE", this.m_model_event_catalog.get("DATA_SOURCE"));
                 this.m_view_circle_edit.model.set("layout", strLayout);
             } else {
                 let oCCInfo: model_CCircleInfo = app.select_circle_info_db(strLayout, _id);
@@ -305,6 +306,7 @@ module ccheck {
                 const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
 
                 for (let n: number = 0; n < listCCInfo.length; n++) {
+                    console.log(n + " " + _id + " " + listCCInfo[n].get("_id"));
                     if (_id == listCCInfo[n].get("_id")) {
                         listCCInfo[n].set(oCCInfo.attributes);
                         listCCInfo.sort(compare_cedit_date);
@@ -330,7 +332,7 @@ module ccheck {
                     if (_id == listCCInfo[n].get("_id")) {
                         listCCInfo.splice(n, 1);
                         bResult = true;
-                        return true;
+                        break;
                     }
                 }
             }
@@ -347,10 +349,10 @@ module ccheck {
                 $.getJSON(strUrl)
             ).done(
                 function(dictEventCatalog: any) {
-                    const URL_CIRCLE_INFO: string = "sample_01_circle_info.json";
-                    const URL_AUTH: string = "sample_01_auth.json";
-                    //const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?key=%22" + dictEventCatalog.DATA_SOURCE + "%22&include_docs=true";
-                    //const URL_AUTH: string = "iface_auth.php?=DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE;
+                    //const URL_CIRCLE_INFO: string = "sample_01_circle_info.json";
+                    //const URL_AUTH: string = "sample_01_auth.json";
+                    const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?key=%22" + dictEventCatalog.DATA_SOURCE + "%22&descending=true&include_docs=true";
+                    const URL_AUTH: string = "iface_auth.php?DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE;
 
                     if (strMode.match("cinfo")) {
                         $.when(
@@ -363,12 +365,17 @@ module ccheck {
 
                                 app.create_circle_info_db(deffered_cinfo);
 
-                                app.m_dictAuth = {
-                                    "DATA_SOURCE": deffered_auth[0].DATA_SOURCE,
-                                    "twitter_screen_name": deffered_auth[0].twitter_screen_name,
-                                    "twitter_user_id": deffered_auth[0].twitter_user_id,
-                                    "layout_list": deffered_auth[0].layout_list
-                                };
+                                if(typeof deffered_auth[0].twitter_user_id === "undefined")
+                                {
+                                    app.m_dictAuth = null;
+                                } else {
+                                    app.m_dictAuth = {
+                                        "DATA_SOURCE": deffered_auth[0].DATA_SOURCE,
+                                        "twitter_screen_name": deffered_auth[0].twitter_screen_name,
+                                        "twitter_user_id": deffered_auth[0].twitter_user_id,
+                                        "layout_list": deffered_auth[0].layout_list
+                                    };
+                                }
 
                                 $("#jsdata").val(strUrl);
                                 app.m_model_event_catalog.set(dictEventCatalog);

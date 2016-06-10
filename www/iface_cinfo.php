@@ -4,10 +4,6 @@ require_once("./app_config.php");
 require_once("./libs/cls_couchdb.php");
 
 // ------------------------------------------------------------------ const(s)
-const ORDER_INSERT = "insert";
-const ORDER_UPDATE = "update";
-const ORDER_DELETE = "delete";
-
 // --------------------------------------------------------------- function(s)
 // ===========================================================================
 /*!
@@ -15,16 +11,16 @@ const ORDER_DELETE = "delete";
 function valid_param($oCConn, $param)
 {
     if(array_key_exists("access_token", $_SESSION) != true) die();
+    if(array_key_exists("DATA_SOURCE", $_SESSION) != true) die();
     if(array_key_exists("DATA_SOURCE", $param) != true) die();
     if(array_key_exists("layout", $param) != true) die();
 
-    $DATA_SOURCE = $_SESSION["access_token"]["DATA_SOURCE"];
-    $layout = $_SESSION["access_token"]["layout"];
     $twitter_user_id = $_SESSION["access_token"]["user_id"];
     $twitter_screen_name = $_SESSION["access_token"]["screen_name"];
+    $DATA_SOURCE = $_SESSION["DATA_SOURCE"];
+    $layout = $param["layout"];
 
     if($DATA_SOURCE != $param["DATA_SOURCE"]) die();
-    if($layout != $param["layout"]) die();
 
     $result = get_twitter_user_info($oCConn, COUCHDB_DATABASE, $DATA_SOURCE, $twitter_user_id);
 
@@ -71,7 +67,7 @@ function main()
     $param = $_POST;
     $result = "{}";
 
-    if(valid_param($oCConn, COUCHDB_DATABASE, $param) == true)
+    if(valid_param($oCConn, $param) == true)
     {
         switch($order)
         {

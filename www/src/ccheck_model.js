@@ -249,17 +249,14 @@ var ccheck;
                 $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes));
                 if (ccheck.app.m_bCInfo == true) {
                     var strScreenName = "";
-                    var strBtn = "";
-                    var strHref = "";
-                    if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
-                        strScreenName = "@" + ccheck.app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
-                        strBtn = "ログアウト";
-                        strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
-                    }
-                    else {
-                        strScreenName = "";
-                        strBtn = "ログイン";
-                        strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    var strBtn = "ログイン";
+                    var strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    if (ccheck.app.m_dictAuth != null) {
+                        if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
+                            strScreenName = "@" + ccheck.app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
+                            strBtn = "ログアウト";
+                            strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                        }
                     }
                     $("#id_menu_auth_space").html(''
                         + '<li id="id_menu_auth" data-target-view="#id_menu_auth">'
@@ -380,12 +377,14 @@ var ccheck;
                 listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
             }
             else {
-                if (this.model.attributes.DATA_SOURCE == ccheck.app.m_dictAuth.DATA_SOURCE) {
-                    if (ccheck.app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
-                        oCItem.owner = true;
-                    }
-                    if (ccheck.app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
-                        oCItem.owner = true;
+                if (ccheck.app.m_dictAuth != null) {
+                    if (this.model.attributes.DATA_SOURCE == ccheck.app.m_dictAuth.DATA_SOURCE) {
+                        if (ccheck.app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
+                            oCItem.owner = true;
+                        }
+                        if (ccheck.app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
+                            oCItem.owner = true;
+                        }
                     }
                 }
                 listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));

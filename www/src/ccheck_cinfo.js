@@ -127,22 +127,26 @@ var ccheck;
                     }
                 }
                 if (nCheckCount == 3) {
+                    oXhr.ccheck_model.set("_id", jsonData.id);
+                    oXhr.ccheck_model.set("_rev", jsonData.rev);
                     switch (eEMode) {
                         case E_EDIT_MODE.INSERT:
-                            bResult = ccheck.app.insert_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData._id, oXhr.ccheck_model);
+                            bResult = ccheck.app.insert_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
                         case E_EDIT_MODE.UPDATE:
-                            bResult = ccheck.app.update_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData._id, oXhr.ccheck_model);
+                            bResult = ccheck.app.update_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
                         case E_EDIT_MODE.DELETE:
-                            bResult = ccheck.app.delete_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData._id, oXhr.ccheck_model);
+                            bResult = ccheck.app.delete_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
                     }
+                    console.log("JOB " + nCheckCount);
+                    console.log(bResult);
                     if (bResult == true) {
                         var strLst = "#id_row_list_" + nGrp + "_" + nIdx;
                         var strFav = "#id_row_favo_" + nGrp + "_" + nIdx;
                         $(strLst).html(ccheck.app.m_view_catalog_list.render_table_dat_row(nGrp, nIdx));
-                        $(strLst).html(ccheck.app.m_view_circle_favo.render_table_dat_row(nGrp, nIdx));
+                        $(strFav).html(ccheck.app.m_view_circle_favo.render_table_dat_row(nGrp, nIdx));
                         if ($(strLst).hasClass("info") == true) {
                             $(strLst + " button.evt-favo-append").addClass("disabled");
                         }
@@ -157,6 +161,7 @@ var ccheck;
                         + '</div>');
                 }
             }).fail(function (oXhr, strStatus, errThrown) {
+                console.log(strStatus);
                 $(oXhr.ccheck_notify_id).html(''
                     + '<div class="alert alert-danger alert-dismissable">'
                     + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'

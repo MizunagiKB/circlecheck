@@ -28,7 +28,7 @@ function sess_init($order, $jsdata)
     );
 
     //Twitter.com の認証画面へリダイレクト
-    header("location: ". $url);
+    header("location: " . $url);
 }
 
 
@@ -48,7 +48,7 @@ function sess_term($order, $jsdata)
     // 最終的に、セッションを破壊する
     session_destroy();
 
-    header("location: " . LOGIN_LOCATION + "?jsdata=" . $jsdata . "&m=cinfo");
+    header("location: " . LOGIN_LOCATION . "?jsdata=" . $jsdata . "&m=cinfo");
 }
 
 

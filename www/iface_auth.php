@@ -12,7 +12,10 @@ function main()
     session_start();
 
     if(array_key_exists("DATA_SOURCE", $_GET) != true) die();
-    if(array_key_exists("access_token", $_SESSION) != true) die();
+    if(array_key_exists("access_token", $_SESSION) != true)
+    {
+        return json_encode(array());
+    }
 
     $oCConn = new CCouchDB(
         array(

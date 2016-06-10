@@ -427,17 +427,15 @@ module ccheck {
 
                 if (app.m_bCInfo == true) {
                     let strScreenName: string = "";
-                    let strBtn: string = "";
-                    let strHref: string = "";
+                    let strBtn: string = "ログイン";
+                    let strHref: string = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
 
-                    if ("twitter_screen_name" in app.m_dictAuth) {
-                        strScreenName = "@" + app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
-                        strBtn = "ログアウト";
-                        strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
-                    } else {
-                        strScreenName = "";
-                        strBtn = "ログイン";
-                        strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    if (app.m_dictAuth != null) {
+                        if ("twitter_screen_name" in app.m_dictAuth) {
+                            strScreenName = "@" + app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
+                            strBtn = "ログアウト";
+                            strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                        }
                     }
 
                     $("#id_menu_auth_space").html(
@@ -610,12 +608,14 @@ module ccheck {
                 //console.log(app.m_dictAuth.layout_list);
                 //console.log(app.m_dictAuth.DATA_SOURCE);
                 //console.log(this.model.attributes.DATA_SOURCE);
-                if (this.model.attributes.DATA_SOURCE == app.m_dictAuth.DATA_SOURCE) {
-                    if (app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
-                        oCItem.owner = true;
-                    }
-                    if (app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
-                        oCItem.owner = true;
+                if (app.m_dictAuth != null) {
+                    if (this.model.attributes.DATA_SOURCE == app.m_dictAuth.DATA_SOURCE) {
+                        if (app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
+                            oCItem.owner = true;
+                        }
+                        if (app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
+                            oCItem.owner = true;
+                        }
                     }
                 }
 

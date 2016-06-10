@@ -1,4 +1,8 @@
 <?php
+// ------------------------------------------------------------------ const(s)
+const ORDER_INSERT = "insert";
+const ORDER_UPDATE = "update";
+const ORDER_DELETE = "delete";
 
 // ------------------------------------------------------------------ class(s)
 // ---------------------------------------------------------------------------
@@ -69,13 +73,13 @@ function make_record($order, $aryParam)
 {
     $aryResult = array();
 
-    if(array_key_exists($order, array(ORDER_UPDATE, ORDER_DELETE) == true))
+    if(in_array($order, array(ORDER_UPDATE, ORDER_DELETE)) == true)
     {
-        $aryDocument["_id"] = $aryParam["_id"];
-        $aryDocument["_rev"] = $aryParam["_rev"];
+        $aryResult["_id"] = $aryParam["_id"];
+        $aryResult["_rev"] = $aryParam["_rev"];
     }
 
-    if(array_key_exists($order, array(ORDER_INSERT, ORDER_UPDATE) == true))
+    if(in_array($order, array(ORDER_INSERT, ORDER_UPDATE)) == true)
     {
         $aryResult["cedit_date"] = htmlspecialchars($aryParam["cedit_date"]);
         $aryResult["cedit_category"] = htmlspecialchars($aryParam["cedit_category"]);
