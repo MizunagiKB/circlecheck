@@ -60,7 +60,7 @@ module ccheck {
         cedit_category: E_CIRCLE_INFO_CATEGORY;
         cedit_url: string;
         cedit_txt: string;
-        cedit_rating: boolean;
+        cedit_rating: number;
     }
 
     const TPL_OWNER_EDIT = Hogan.compile(
@@ -191,9 +191,6 @@ module ccheck {
                                 break;
                         }
 
-                        console.log("JOB " + nCheckCount);
-                        console.log(bResult);
-
                         if (bResult == true) {
                             let strLst: string = "#id_row_list_" + nGrp + "_" + nIdx;
                             let strFav: string = "#id_row_favo_" + nGrp + "_" + nIdx;
@@ -225,12 +222,11 @@ module ccheck {
                 }
             ).fail(
                 function(oXhr: any, strStatus: string, errThrown: any) {
-                    console.log(strStatus);
                     $(oXhr.ccheck_notify_id).html(
                         ''
                         + '<div class="alert alert-danger alert-dismissable">'
                         + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-                        + '<strong><span class="glyphicon glyphicon-warning-sign"></span></strong>&nbsp;処理に失敗しました'
+                        + '<strong><span class="glyphicon glyphicon-warning-sign"></span></strong>&nbsp;' + strStatus
                         + '</div>'
                     );
                 }
@@ -271,7 +267,12 @@ module ccheck {
             this.model.set("cedit_txt", $("#id_txt_circle_edit").val());
             this.model.set("cedit_url", $("#id_url_circle_edit").val());
 
-            this.model.set("cedit_rating", $("#id_check_circle_edit_r18").is(":checked"));
+            if($("#id_check_circle_edit_r18").is(":checked") == true)
+            {
+                this.model.set("cedit_rating", 1);
+            } else {
+                this.model.set("cedit_rating", 0);
+            }
         }
 
         //
@@ -355,7 +356,12 @@ module ccheck {
                 default: $("#id_category_4").addClass("active"); break;
             }
 
-            $("#id_check_circle_edit_r18").prop("checked", this.model.get("cedit_rating"));
+            if(this.model.get("cedit_rating") == 1)
+            {
+                $("#id_check_circle_edit_r18").prop("checked", true);
+            } else {
+                $("#id_check_circle_edit_r18").prop("checked", false);
+            }
         }
 
         //

@@ -81,11 +81,16 @@ function make_record($order, $aryParam)
 
     if(in_array($order, array(ORDER_INSERT, ORDER_UPDATE)) == true)
     {
-        $aryResult["cedit_date"] = htmlspecialchars($aryParam["cedit_date"]);
-        $aryResult["cedit_category"] = htmlspecialchars($aryParam["cedit_category"]);
-        $aryResult["cedit_rating"] = htmlspecialchars($aryParam["cedit_rating"]);
+        if(strlen($aryParam["cedit_date"]) > 10) die();
+        $aryResult["cedit_date"] = $aryParam["cedit_date"];
 
+        $aryResult["cedit_category"] = (int)$aryParam["cedit_category"];
+        $aryResult["cedit_rating"] = (int)$aryParam["cedit_rating"];
+
+        if(strlen($aryParam["cedit_url"]) > 192) die();
         if(isset($aryParam["cedit_url"])) $aryResult["cedit_url"] = $aryParam["cedit_url"];
+
+        if(strlen($aryParam["cedit_txt"]) > 192) die();
         if(isset($aryParam["cedit_txt"])) $aryResult["cedit_txt"] = htmlspecialchars($aryParam["cedit_txt"]);
 
         $aryResult["DATA_SOURCE"] = $aryParam["DATA_SOURCE"];

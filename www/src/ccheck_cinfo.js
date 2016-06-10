@@ -140,8 +140,6 @@ var ccheck;
                             bResult = ccheck.app.delete_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
                     }
-                    console.log("JOB " + nCheckCount);
-                    console.log(bResult);
                     if (bResult == true) {
                         var strLst = "#id_row_list_" + nGrp + "_" + nIdx;
                         var strFav = "#id_row_favo_" + nGrp + "_" + nIdx;
@@ -161,11 +159,10 @@ var ccheck;
                         + '</div>');
                 }
             }).fail(function (oXhr, strStatus, errThrown) {
-                console.log(strStatus);
                 $(oXhr.ccheck_notify_id).html(''
                     + '<div class="alert alert-danger alert-dismissable">'
                     + '<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>'
-                    + '<strong><span class="glyphicon glyphicon-warning-sign"></span></strong>&nbsp;処理に失敗しました'
+                    + '<strong><span class="glyphicon glyphicon-warning-sign"></span></strong>&nbsp;' + strStatus
                     + '</div>');
             });
         };
@@ -200,7 +197,12 @@ var ccheck;
             }
             this.model.set("cedit_txt", $("#id_txt_circle_edit").val());
             this.model.set("cedit_url", $("#id_url_circle_edit").val());
-            this.model.set("cedit_rating", $("#id_check_circle_edit_r18").is(":checked"));
+            if ($("#id_check_circle_edit_r18").is(":checked") == true) {
+                this.model.set("cedit_rating", 1);
+            }
+            else {
+                this.model.set("cedit_rating", 0);
+            }
         };
         view_CCircleEdit.prototype.ui_update = function (grp, idx, eEMode) {
             var o;
@@ -270,7 +272,12 @@ var ccheck;
                     $("#id_category_4").addClass("active");
                     break;
             }
-            $("#id_check_circle_edit_r18").prop("checked", this.model.get("cedit_rating"));
+            if (this.model.get("cedit_rating") == 1) {
+                $("#id_check_circle_edit_r18").prop("checked", true);
+            }
+            else {
+                $("#id_check_circle_edit_r18").prop("checked", false);
+            }
         };
         view_CCircleEdit.prototype.render = function () {
             $("#id_preview_circle_edit").html(render_cinfo(null, this.model));
