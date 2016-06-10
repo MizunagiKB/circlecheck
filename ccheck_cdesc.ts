@@ -6,7 +6,8 @@
     id_view_list .cchack_view
         id_row_list_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-edit-circle
 
     id_view_favo .cchack_view
         id_row_favo_{{grp}}_{{idx}}
@@ -17,7 +18,7 @@
     id_view_find .cchack_view
         id_row_find_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
 
     id_view_conf .cchack_vie
     id_view_area .cchack_view

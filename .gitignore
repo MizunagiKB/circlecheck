@@ -9,3 +9,9 @@ util/*.py
 
 www/circlecheck.js
 www/circlecheck.js.map
+
+www/app_config.php
+
+www/sample_01_auth.json
+
+www/sample_01_circle_info.json

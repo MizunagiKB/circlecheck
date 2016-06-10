@@ -16,6 +16,13 @@
 module ccheck {
 
     // ---------------------------------------------------------- interface(s)
+    interface IAUTH {
+        twitter_user_id: string;
+        twitter_screen_name: string;
+        DATA_SOURCE: string;
+        layout_list: Array<string>;
+    }
+
     // --------------------------------------------------------------- enum(s)
     // ------------------------------------------------------ Global Object(s)
     export var app: CApplication = null;
@@ -42,12 +49,19 @@ module ccheck {
         public m_model_circle_desc_hist: model_CCircleDesc_Hist = null;
         public m_view_circle_desc_hist: view_CCircleDesc_Hist = null;
 
+        public m_model_circle_info: model_CCircleInfo = null;
+        public m_view_circle_edit: view_CCircleEdit = null;
+
+        public m_dictCircleInfoDB: { [key: string]: Array<model_CCircleInfo> } = null;
+        public m_bCInfo: boolean = false;
+        public m_dictAuth: IAUTH = null;
+
         private m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
 
         // -------------------------------------------------------------------
         /*!
          */
-        constructor(strJSData: string) {
+        constructor(strJSData: string, strMode: string) {
             const listTemplate = [
                 "#id_tpl_head",
                 "#id_tpl_eventcatalog_list",
@@ -121,16 +135,29 @@ module ccheck {
             );
 
             //
+            this.m_model_circle_info = new model_CCircleInfo();
+            this.m_view_circle_edit = new view_CCircleEdit(
+                {
+                    el: "body",
+                    model: this.m_model_circle_info
+                }
+            );
+
+            // イベント情報をデータベースから取得
             if (strJSData == null) {
                 if (DEMO == 1) {
-                    this.import_from_url("./sample_01.json");
+                    this.import_from_url("./sample_01.json", "");
                 }
             } else {
-                this.import_from_url(strJSData);
+                if (strMode == null) {
+                    this.import_from_url(strJSData, "");
+                } else {
+                    this.import_from_url(strJSData, strMode);
+                }
             }
 
             //
-            $("#id_btn_import_src").on("click", function(oCEvt) { app.import_from_url($("#jsdata").val()); });
+            $("#id_btn_import_src").on("click", function(oCEvt) { app.import_from_url($("#jsdata").val(), ""); });
         }
 
         // -------------------------------------------------------------------
@@ -191,25 +218,196 @@ module ccheck {
         // -------------------------------------------------------------------
         /*!
          */
-        public import_from_url(strUrl: string): void {
+        edit_circle(nGrp: number, nIdx: number, strLayout: string, _id: string, eEMode: E_EDIT_MODE): void {
 
-            $.getJSON(
-                strUrl,
-                function(dictEventCatalog) {
-                    app.m_model_event_catalog.set(dictEventCatalog);
+            if (eEMode == E_EDIT_MODE.INSERT) {
+                this.m_view_circle_edit.model.reset();
+                this.m_view_circle_edit.model.set("layout", strLayout);
+            } else {
+                let oCCInfo: model_CCircleInfo = app.select_circle_info_db(strLayout, _id);
+                this.m_view_circle_edit.model.reset();
+                this.m_view_circle_edit.model.set(oCCInfo.attributes);
+            }
 
-                    $("#jsdata").val(strUrl);
+            this.m_view_circle_edit.ui_update(nGrp, nIdx, eEMode);
+            this.m_view_circle_edit.render();
+
+            $("#id_tpl_circle_edit").modal("show");
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        create_circle_info_db(deffered_cinfo: any): void {
+            this.m_dictCircleInfoDB = {};
+
+            // cinfo用のデータベースを生成
+            for (let n: number = 0; n < deffered_cinfo[0].rows.length; n++) {
+                const strLayout: string = deffered_cinfo[0].rows[n].doc.layout;
+
+                if (strLayout in this.m_dictCircleInfoDB) {
+                    this.m_dictCircleInfoDB[strLayout].push(
+                        new model_CCircleInfo(deffered_cinfo[0].rows[n].doc)
+                    );
+                } else {
+                    this.m_dictCircleInfoDB[strLayout] = [new model_CCircleInfo(deffered_cinfo[0].rows[n].doc)];
                 }
-            );
+            }
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        select_circle_info_db(strLayout: string, _id: string): model_CCircleInfo {
+
+            if (strLayout in this.m_dictCircleInfoDB) {
+                const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
+
+                for (let n: number = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        return listCCInfo[n];
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        insert_circle_info_db(strLayout: string, _id: string, oCCInfo: model_CCircleInfo): boolean {
+
+            if (strLayout in this.m_dictCircleInfoDB) {
+                const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
+                let oCCInfoNew: model_CCircleInfo = new model_CCircleInfo();
+                oCCInfoNew.set(oCCInfo.attributes);
+
+                listCCInfo.push(oCCInfoNew);
+                listCCInfo.sort(compare_cedit_date);
+            } else {
+                let oCCInfoNew: model_CCircleInfo = new model_CCircleInfo();
+                oCCInfoNew.set(oCCInfo.attributes);
+
+                this.m_dictCircleInfoDB[strLayout] = [oCCInfoNew];
+            }
+
+            return true;
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        update_circle_info_db(strLayout: string, _id: string, oCCInfo: model_CCircleInfo): boolean {
+            let bResult: boolean = false;
+
+            if (strLayout in this.m_dictCircleInfoDB) {
+                const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
+
+                for (let n: number = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        listCCInfo[n].set(oCCInfo.attributes);
+                        listCCInfo.sort(compare_cedit_date);
+                        bResult = true;
+                        break;
+                    }
+                }
+            }
+
+            return bResult;
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        delete_circle_info_db(strLayout: string, _id: string, oCCInfo: model_CCircleInfo): boolean {
+            let bResult: boolean = false;
+
+            if (strLayout in this.m_dictCircleInfoDB) {
+                const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
+
+                for (let n: number = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        listCCInfo.splice(n, 1);
+                        bResult = true;
+                        return true;
+                    }
+                }
+            }
+
+            return bResult;
+        }
+
+        // -------------------------------------------------------------------
+        /*!
+         */
+        public import_from_url(strUrl: string, strMode: string): void {
+
+            $.when(
+                $.getJSON(strUrl)
+            ).done(
+                function(dictEventCatalog: any) {
+                    const URL_CIRCLE_INFO: string = "sample_01_circle_info.json";
+                    const URL_AUTH: string = "sample_01_auth.json";
+                    //const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?key=%22" + dictEventCatalog.DATA_SOURCE + "%22&include_docs=true";
+                    //const URL_AUTH: string = "iface_auth.php?=DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE;
+
+                    if (strMode.match("cinfo")) {
+                        $.when(
+                            $.getJSON(URL_CIRCLE_INFO),
+                            $.getJSON(URL_AUTH)
+                        ).done(
+                            function(deffered_cinfo: any, deffered_auth: any) {
+
+                                app.m_bCInfo = true;
+
+                                app.create_circle_info_db(deffered_cinfo);
+
+                                app.m_dictAuth = {
+                                    "DATA_SOURCE": deffered_auth[0].DATA_SOURCE,
+                                    "twitter_screen_name": deffered_auth[0].twitter_screen_name,
+                                    "twitter_user_id": deffered_auth[0].twitter_user_id,
+                                    "layout_list": deffered_auth[0].layout_list
+                                };
+
+                                $("#jsdata").val(strUrl);
+                                app.m_model_event_catalog.set(dictEventCatalog);
+                            }
+                            ).fail(
+                            function(deffered_cinfo: any, deffered_auth: any) {
+                                app.m_bCInfo = false;
+
+                                $("#jsdata").val(strUrl);
+                                app.m_model_event_catalog.set(dictEventCatalog);
+                            }
+                            );
+                    } else {
+                        app.m_bCInfo = false;
+
+                        $("#jsdata").val(strUrl);
+                        app.m_model_event_catalog.set(dictEventCatalog);
+                    }
+                }
+                );
         }
     }
 
     // ----------------------------------------------------------- function(s)
+
     // =======================================================================
     /*!
      */
-    function get_url_param(): { [key: string]: string }{
-        let listResult: { [key: string]: string }= {};
+    function compare_cedit_date(compare: model_CCircleInfo, to: model_CCircleInfo): number {
+        if (compare.get("cedit_date") > to.get("cedit_date")) return (-1);
+        if (compare.get("cedit_date") < to.get("cedit_date")) return (1);
+        return (0);
+    }
+
+    // =======================================================================
+    /*!
+     */
+    function get_url_param(): { [key: string]: string } {
+        let listResult: { [key: string]: string } = {};
         let listParam: string[] = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
 
         for (let n: number = 0; n < listParam.length; n++) {
@@ -218,7 +416,7 @@ module ccheck {
             listResult[listData[0]] = listData[1];
         }
 
-        return (listResult);
+        return listResult;
     }
 
     // =====================================================================
@@ -229,9 +427,9 @@ module ccheck {
         if (!window.localStorage) return;
 
         let listResult: Array<any> = [];
-        let strStorageData = window.localStorage.getItem(app.m_model_event_catalog.attributes.DATA_SOURCE) || -1;
+        let strStorageData: string = window.localStorage.getItem(app.m_model_event_catalog.attributes.DATA_SOURCE) || "-1";
 
-        if (strStorageData != -1) {
+        if (strStorageData != "-1") {
             listResult = JSON.parse(strStorageData);
         }
 
@@ -286,8 +484,9 @@ module ccheck {
     export function main() {
         const dictParam: { [key: string]: string } = get_url_param();
         const strJSData: string = dictParam["jsdata"];
+        const strMode: string = dictParam["m"];
 
-        app = new CApplication(strJSData);
+        app = new CApplication(strJSData, strMode);
 
         if (strJSData == null) {
             app.m_model_event_catalog.set({ null: null });

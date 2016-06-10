@@ -6,18 +6,19 @@
     id_view_list .cchack_view
         id_row_list_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-edit-circle
 
     id_view_favo .cchack_view
         id_row_favo_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-remove
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-check
 
     id_view_find .cchack_view
         id_row_find_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
 
     id_view_conf .cchack_vie
     id_view_area .cchack_view
@@ -30,6 +31,7 @@
 /// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
 /// <reference path="./ccheck.ts"/>
+/// <reference path="./ccheck_cinfo.ts"/>
 
 // ---------------------------------------------------------------- declare(s)
 
@@ -54,6 +56,7 @@ module ccheck {
         mode: string;
         layout: string;
         sortkey: string;
+        owner?: boolean;
         circle_list?: Array<ICIRCLE_LIST_DAT_ITEM>;
     }
 
@@ -115,8 +118,8 @@ module ccheck {
 
         //
         constructor(models?: model_CCircleFavo[] | Object[], options?: any) {
-            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
             super(models, options);
+            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
         }
 
         //
@@ -407,7 +410,11 @@ module ccheck {
             if (this.model.isValid() == false) {
 
                 $("#id_tpl_head").html(
-                    this.m_dictTemplate["#id_tpl_head"].render({ "EVENT_NAME": "イベント一覧" })
+                    this.m_dictTemplate["#id_tpl_head"].render(
+                        {
+                            "EVENT_NAME": "イベント一覧"
+                        }
+                    )
                 );
 
                 this.view_change("#id_menu_conf");
@@ -418,18 +425,51 @@ module ccheck {
                     this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes)
                 );
 
+                if (app.m_bCInfo == true) {
+                    let strScreenName: string = "";
+                    let strBtn: string = "";
+                    let strHref: string = "";
+
+                    if ("twitter_screen_name" in app.m_dictAuth) {
+                        strScreenName = "@" + app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
+                        strBtn = "ログアウト";
+                        strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                    } else {
+                        strScreenName = "";
+                        strBtn = "ログイン";
+                        strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    }
+
+                    $("#id_menu_auth_space").html(
+                        ''
+                        + '<li id="id_menu_auth" data-target-view="#id_menu_auth">'
+                        + '<a href="' + strHref + '">' + strScreenName + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
+                        + '</li>'
+                    );
+                }
+
                 $("nav li").removeClass("disabled");
 
                 this.view_change("#id_menu_list");
 
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_PREV) == true) {
-                    $("#id_menu_prev a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV);
+                    const strPrev: string = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV;
+                    if (app.m_bCInfo == true) {
+                        $("#id_menu_prev a").attr("href", strPrev + "&m=cinfo");
+                    } else {
+                        $("#id_menu_prev a").attr("href", strPrev);
+                    }
                 } else {
                     $("#id_menu_prev").addClass("disabled");
                 }
 
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_NEXT) == true) {
-                    $("#id_menu_next a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_NEXT);
+                    const strNext: string = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_NEXT;
+                    if (app.m_bCInfo == true) {
+                        $("#id_menu_next a").attr("href", strNext + "&m=cinfo");
+                    } else {
+                        $("#id_menu_next a").attr("href", strNext);
+                    }
                 } else {
                     $("#id_menu_next").addClass("disabled");
                 }
@@ -461,7 +501,10 @@ module ccheck {
         events(): Backbone.EventsHash {
             return {
                 "click #id_view_list button.evt-favo-append": this.evt_favo_append,
-                "click #id_view_list button.evt-show-circle": this.evt_show_circle
+                "click #id_view_list button.evt-show-circle": this.evt_show_circle,
+                "click #id_view_list button.evt-edit-circle": this.evt_edit_circle,
+                "click #id_view_list a.evt-edit-circle": this.evt_edit_circle,
+                "click #id_view_list a.evt-drop-circle": this.evt_drop_circle
             }
         }
 
@@ -480,10 +523,38 @@ module ccheck {
 
         //
         evt_show_circle(oCEvt: any) {
-            let nGrp: number = $(oCEvt.currentTarget).data("grp");
-            let nIdx: number = $(oCEvt.currentTarget).data("idx");
+            const nGrp: number = $(oCEvt.currentTarget).data("grp");
+            const nIdx: number = $(oCEvt.currentTarget).data("idx");
 
             app.show_circle(nGrp, nIdx);
+        }
+
+        //
+        evt_edit_circle(oCEvt: any) {
+            const nGrp: number = $(oCEvt.currentTarget).data("grp");
+            const nIdx: number = $(oCEvt.currentTarget).data("idx");
+            const _id: string = $(oCEvt.currentTarget).data("id");
+            const _rev: string = $(oCEvt.currentTarget).data("rev");
+            const strLayout: string = $(oCEvt.currentTarget).data("layout");
+            let eMMode: E_EDIT_MODE = E_EDIT_MODE.INSERT;
+
+            if (typeof _id !== "undefined") {
+                eMMode = E_EDIT_MODE.UPDATE;
+            }
+
+            app.edit_circle(nGrp, nIdx, strLayout, _id, eMMode);
+        }
+
+        //
+        evt_drop_circle(oCEvt: any) {
+            const nGrp: number = $(oCEvt.currentTarget).data("grp");
+            const nIdx: number = $(oCEvt.currentTarget).data("idx");
+            const _id: string = $(oCEvt.currentTarget).data("id");
+            const _rev: string = $(oCEvt.currentTarget).data("rev");
+            const strLayout: string = $(oCEvt.currentTarget).data("layout");
+            let eMMode: E_EDIT_MODE = E_EDIT_MODE.DELETE;
+
+            app.edit_circle(nGrp, nIdx, strLayout, _id, eMMode);
         }
 
         //
@@ -501,17 +572,10 @@ module ccheck {
             for (let nT: number = 0; nT < oCTbl.length; nT++) {
                 let listTable: Array<string> = [];
 
+                // グループ内の情報を読み取りながら、一行単位に生成
                 for (let nD: number = 0; nD < oCDat[String(nT)].length; nD++) {
-                    let oCItem = oCDat[String(nT)][nD];
-
-                    oCItem.grp = nT;
-                    oCItem.idx = nD;
-
-                    listTable.push('<tr id="id_row_list_' + oCItem.grp + '_' + oCItem.idx + '">');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
+                    listTable.push('<tr id="id_row_list_' + nT + '_' + nD + '">');
+                    listTable.push(this.render_table_dat_row(nT, nD));
                     listTable.push('</tr>');
                 }
 
@@ -519,11 +583,69 @@ module ccheck {
             }
         }
 
+        render_table_dat_row(grp: number, idx: number): string {
+            const oCDat: { [key: string]: Array<ICIRCLE_LIST_DAT> } = this.model.attributes.CIRCLE_LIST_DAT;
+
+            let oCItem: ICIRCLE_LIST_DAT = oCDat[String(grp)][idx];
+            let listTable: Array<string> = [];
+
+            oCItem.grp = grp;
+            oCItem.idx = idx;
+            oCItem.owner = false;
+
+            // Administrator
+            //oCItem.owner = true;
+
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
+
+            listTable.push('<td>');
+            if (app.m_bCInfo == false) {
+                // CircleInfo Pluginが無効
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+            } else {
+                // CircleInfo Pluginが有効
+
+                //console.log(oCItem.layout);
+                //console.log(app.m_dictAuth.layout_list);
+                //console.log(app.m_dictAuth.DATA_SOURCE);
+                //console.log(this.model.attributes.DATA_SOURCE);
+                if (this.model.attributes.DATA_SOURCE == app.m_dictAuth.DATA_SOURCE) {
+                    if (app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
+                        oCItem.owner = true;
+                    }
+                    if (app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
+                        oCItem.owner = true;
+                    }
+                }
+
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+
+                if (oCItem.layout in app.m_dictCircleInfoDB) {
+                    listTable.push('<small>');
+                    for (let nCI: number = 0; nCI < app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        const oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(render_cinfo(oCItem, app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+            }
+            listTable.push('</td>');
+
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
+
+            return listTable.join('');
+            //$("#id_row_list_" + grp + "_" + idx).html(listTable.join(''));
+        }
+
         //
         render() {
 
             if (this.model.isValid() == false) {
 
+                // 最新30件のイベントを取得
                 app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
                 app.m_collection_event_list.fetch(
                     {
@@ -536,6 +658,7 @@ module ccheck {
 
             } else {
 
+                // 現在表示中のEVENT_SERIESから最新30件のイベントを取得
                 app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list";
                 app.m_collection_event_list.fetch(
                     {
@@ -627,14 +750,47 @@ module ccheck {
                 const oCItem: ICIRCLE_LIST_DAT = this.collection.models[n].attributes;
 
                 listTable.push('<tr id="id_row_favo_' + oCItem.grp + '_' + oCItem.idx + '">');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_remove"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_2"].render(oCItem) + '</td>');
+                listTable.push(this.render_table_dat_row(oCItem.grp, oCItem.idx));
                 listTable.push('</tr>')
             }
 
             $("#id_tbl_favo_0").html(listTable.join(''));
+        }
+
+        render_table_dat_row(grp: number, idx: number): string {
+            let listTable: Array<string> = [];
+
+            for (var n = 0; n < this.collection.length; n++) {
+                const oCItem: ICIRCLE_LIST_DAT = this.collection.models[n].attributes;
+
+                if (oCItem.grp != grp) continue;
+                if (oCItem.idx != idx) continue;
+
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_remove"].render(oCItem) + '</td>');
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
+
+                listTable.push('<td>');
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                if (oCItem.layout in app.m_dictCircleInfoDB) {
+
+                    // お気に入り表示は強制的に権限なしに変更
+                    oCItem.owner = false;
+
+                    listTable.push('<small>');
+                    for (let nCI: number = 0; nCI < app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        const oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(render_cinfo(oCItem, app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+                listTable.push('</td>');
+
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_2"].render(oCItem) + '</td>');
+            }
+
+            return listTable.join('');
         }
 
         //
@@ -714,6 +870,19 @@ module ccheck {
                     if (oCDatItem.url.indexOf(strKeyword, 0) != -1) bFound = true;
                 }
             }
+
+            // CircleInfoが有効の場合はそちらも検索
+            if (app.m_bCInfo == true) {
+                if (oCItem.layout in app.m_dictCircleInfoDB) {
+                    for (let n: number = 0; n < app.m_dictCircleInfoDB[oCItem.layout].length; n++) {
+                        let oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][n];
+                        const strCInfo: string = render_cinfo(oCItem, oCCInfo);
+
+                        if (strCInfo.indexOf(strKeyword, 0) != -1) bFound = true;
+                    }
+                }
+            }
+
             return bFound;
         }
 
@@ -774,7 +943,25 @@ module ccheck {
                 listTable.push('<tr id="' + "id_row_find_" + oCItem.grp + "_" + oCItem.idx + '">');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
+
+                listTable.push('<td>');
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                if (oCItem.layout in app.m_dictCircleInfoDB) {
+
+                    // お気に入り表示は強制的に権限なしに変更
+                    oCItem.owner = false;
+
+                    listTable.push('<small>');
+                    for (let nCI: number = 0; nCI < app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        const oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(render_cinfo(oCItem, app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+                listTable.push('</td>');
+
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
                 listTable.push('</tr>');
             }

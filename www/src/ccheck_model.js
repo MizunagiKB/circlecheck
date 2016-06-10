@@ -5,18 +5,19 @@
     id_view_list .cchack_view
         id_row_list_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-edit-circle
 
     id_view_favo .cchack_view
         id_row_favo_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-remove
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-check
 
     id_view_find .cchack_view
         id_row_find_{{grp}}_{{idx}}
             data-grp="{{grp}}" data-idx="{{idx}}" .evt-favo-append
-            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-desc
+            data-grp="{{grp}}" data-idx="{{idx}}" .evt-show-circle
 
     id_view_conf .cchack_vie
     id_view_area .cchack_view
@@ -40,8 +41,8 @@ var ccheck;
     var collection_CEventList = (function (_super) {
         __extends(collection_CEventList, _super);
         function collection_CEventList(models, options) {
-            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
             _super.call(this, models, options);
+            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
         }
         collection_CEventList.prototype.parse = function (response, options) {
             return response.rows;
@@ -239,21 +240,54 @@ var ccheck;
         view_CCatalogHead.prototype.render = function () {
             var strBaseAddress = window.location.href.split("?")[0];
             if (this.model.isValid() == false) {
-                $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render({ "EVENT_NAME": "イベント一覧" }));
+                $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render({
+                    "EVENT_NAME": "イベント一覧"
+                }));
                 this.view_change("#id_menu_conf");
             }
             else {
                 $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes));
+                if (ccheck.app.m_bCInfo == true) {
+                    var strScreenName = "";
+                    var strBtn = "";
+                    var strHref = "";
+                    if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
+                        strScreenName = "@" + ccheck.app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
+                        strBtn = "ログアウト";
+                        strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                    }
+                    else {
+                        strScreenName = "";
+                        strBtn = "ログイン";
+                        strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    }
+                    $("#id_menu_auth_space").html(''
+                        + '<li id="id_menu_auth" data-target-view="#id_menu_auth">'
+                        + '<a href="' + strHref + '">' + strScreenName + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
+                        + '</li>');
+                }
                 $("nav li").removeClass("disabled");
                 this.view_change("#id_menu_list");
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_PREV) == true) {
-                    $("#id_menu_prev a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV);
+                    var strPrev = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV;
+                    if (ccheck.app.m_bCInfo == true) {
+                        $("#id_menu_prev a").attr("href", strPrev + "&m=cinfo");
+                    }
+                    else {
+                        $("#id_menu_prev a").attr("href", strPrev);
+                    }
                 }
                 else {
                     $("#id_menu_prev").addClass("disabled");
                 }
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_NEXT) == true) {
-                    $("#id_menu_next a").attr("href", strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_NEXT);
+                    var strNext = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_NEXT;
+                    if (ccheck.app.m_bCInfo == true) {
+                        $("#id_menu_next a").attr("href", strNext + "&m=cinfo");
+                    }
+                    else {
+                        $("#id_menu_next a").attr("href", strNext);
+                    }
                 }
                 else {
                     $("#id_menu_next").addClass("disabled");
@@ -276,7 +310,10 @@ var ccheck;
         view_CCatalogList.prototype.events = function () {
             return {
                 "click #id_view_list button.evt-favo-append": this.evt_favo_append,
-                "click #id_view_list button.evt-show-circle": this.evt_show_circle
+                "click #id_view_list button.evt-show-circle": this.evt_show_circle,
+                "click #id_view_list button.evt-edit-circle": this.evt_edit_circle,
+                "click #id_view_list a.evt-edit-circle": this.evt_edit_circle,
+                "click #id_view_list a.evt-drop-circle": this.evt_drop_circle
             };
         };
         view_CCatalogList.prototype.evt_favo_append = function (oCEvt) {
@@ -291,6 +328,27 @@ var ccheck;
             var nIdx = $(oCEvt.currentTarget).data("idx");
             ccheck.app.show_circle(nGrp, nIdx);
         };
+        view_CCatalogList.prototype.evt_edit_circle = function (oCEvt) {
+            var nGrp = $(oCEvt.currentTarget).data("grp");
+            var nIdx = $(oCEvt.currentTarget).data("idx");
+            var _id = $(oCEvt.currentTarget).data("id");
+            var _rev = $(oCEvt.currentTarget).data("rev");
+            var strLayout = $(oCEvt.currentTarget).data("layout");
+            var eMMode = ccheck.E_EDIT_MODE.INSERT;
+            if (typeof _id !== "undefined") {
+                eMMode = ccheck.E_EDIT_MODE.UPDATE;
+            }
+            ccheck.app.edit_circle(nGrp, nIdx, strLayout, _id, eMMode);
+        };
+        view_CCatalogList.prototype.evt_drop_circle = function (oCEvt) {
+            var nGrp = $(oCEvt.currentTarget).data("grp");
+            var nIdx = $(oCEvt.currentTarget).data("idx");
+            var _id = $(oCEvt.currentTarget).data("id");
+            var _rev = $(oCEvt.currentTarget).data("rev");
+            var strLayout = $(oCEvt.currentTarget).data("layout");
+            var eMMode = ccheck.E_EDIT_MODE.DELETE;
+            ccheck.app.edit_circle(nGrp, nIdx, strLayout, _id, eMMode);
+        };
         view_CCatalogList.prototype.render_table_tab = function () {
             var oCTbl = this.model.attributes.CIRCLE_LIST_TBL;
             $("#id_view_list").html(this.m_dictTemplate["#id_tpl_eventcatalog_list"].render({ "CIRCLE_LIST_TBL": oCTbl }));
@@ -301,18 +359,50 @@ var ccheck;
             for (var nT = 0; nT < oCTbl.length; nT++) {
                 var listTable = [];
                 for (var nD = 0; nD < oCDat[String(nT)].length; nD++) {
-                    var oCItem = oCDat[String(nT)][nD];
-                    oCItem.grp = nT;
-                    oCItem.idx = nD;
-                    listTable.push('<tr id="id_row_list_' + oCItem.grp + '_' + oCItem.idx + '">');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
-                    listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
+                    listTable.push('<tr id="id_row_list_' + nT + '_' + nD + '">');
+                    listTable.push(this.render_table_dat_row(nT, nD));
                     listTable.push('</tr>');
                 }
                 $("#id_tbl_list_" + nT).html(listTable.join(''));
             }
+        };
+        view_CCatalogList.prototype.render_table_dat_row = function (grp, idx) {
+            var oCDat = this.model.attributes.CIRCLE_LIST_DAT;
+            var oCItem = oCDat[String(grp)][idx];
+            var listTable = [];
+            oCItem.grp = grp;
+            oCItem.idx = idx;
+            oCItem.owner = false;
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
+            listTable.push('<td>');
+            if (ccheck.app.m_bCInfo == false) {
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+            }
+            else {
+                if (this.model.attributes.DATA_SOURCE == ccheck.app.m_dictAuth.DATA_SOURCE) {
+                    if (ccheck.app.m_dictAuth.layout_list.indexOf(oCItem.layout) >= 0) {
+                        oCItem.owner = true;
+                    }
+                    if (ccheck.app.m_dictAuth.layout_list.indexOf("EVENT_MANAGER") >= 0) {
+                        oCItem.owner = true;
+                    }
+                }
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
+                    listTable.push('<small>');
+                    for (var nCI = 0; nCI < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(ccheck.render_cinfo(oCItem, ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+            }
+            listTable.push('</td>');
+            listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
+            return listTable.join('');
         };
         view_CCatalogList.prototype.render = function () {
             if (this.model.isValid() == false) {
@@ -384,13 +474,38 @@ var ccheck;
             for (var n = 0; n < this.collection.length; n++) {
                 var oCItem = this.collection.models[n].attributes;
                 listTable.push('<tr id="id_row_favo_' + oCItem.grp + '_' + oCItem.idx + '">');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_remove"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_2"].render(oCItem) + '</td>');
+                listTable.push(this.render_table_dat_row(oCItem.grp, oCItem.idx));
                 listTable.push('</tr>');
             }
             $("#id_tbl_favo_0").html(listTable.join(''));
+        };
+        view_CCircleFavo.prototype.render_table_dat_row = function (grp, idx) {
+            var listTable = [];
+            for (var n = 0; n < this.collection.length; n++) {
+                var oCItem = this.collection.models[n].attributes;
+                if (oCItem.grp != grp)
+                    continue;
+                if (oCItem.idx != idx)
+                    continue;
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_remove"].render(oCItem) + '</td>');
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
+                listTable.push('<td>');
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
+                    oCItem.owner = false;
+                    listTable.push('<small>');
+                    for (var nCI = 0; nCI < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(ccheck.render_cinfo(oCItem, ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+                listTable.push('</td>');
+                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_2"].render(oCItem) + '</td>');
+            }
+            return listTable.join('');
         };
         view_CCircleFavo.prototype.render = function () {
             this.render_table_tab();
@@ -449,6 +564,16 @@ var ccheck;
                         bFound = true;
                 }
             }
+            if (ccheck.app.m_bCInfo == true) {
+                if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
+                    for (var n = 0; n < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; n++) {
+                        var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][n];
+                        var strCInfo = ccheck.render_cinfo(oCItem, oCCInfo);
+                        if (strCInfo.indexOf(strKeyword, 0) != -1)
+                            bFound = true;
+                    }
+                }
+            }
             return bFound;
         };
         view_CCircleFind.prototype.evt_search = function (oCEvt) {
@@ -492,7 +617,20 @@ var ccheck;
                 listTable.push('<tr id="' + "id_row_find_" + oCItem.grp + "_" + oCItem.idx + '">');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
-                listTable.push('<td>' + this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem) + '</td>');
+                listTable.push('<td>');
+                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
+                    oCItem.owner = false;
+                    listTable.push('<small>');
+                    for (var nCI = 0; nCI < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                        var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                        listTable.push('<div>');
+                        listTable.push(ccheck.render_cinfo(oCItem, ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                        listTable.push('</div>');
+                    }
+                    listTable.push('</small>');
+                }
+                listTable.push('</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
                 listTable.push('</tr>');
             }

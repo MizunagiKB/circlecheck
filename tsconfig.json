@@ -14,6 +14,7 @@
     ],
     "files": [
         "./ccheck_cdesc.ts",
+        "./ccheck_cinfo.ts",
         "./ccheck_model.ts",
         "./ccheck.ts",
         "./DefinitelyTyped/backbone/backbone-global.d.ts",

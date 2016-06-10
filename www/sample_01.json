@@ -6,11 +6,15 @@
     "DATA_SOURCE_PREV"		: "#",
     "DATA_SOURCE_NEXT"		: "sample_02.json",
 
-    "EVENT_NAME" 			: "sample_event",
+    "EVENT_NAME" 			: "sample_01",
     "EVENT_ST"              : "9999-01-01T00:00:00+09:00",
     "EVENT_EN"              : "9999-12-31T23:59:59+09:00",
     "INFORMATION"			: [
         {"text": "TEST"}
+    ],
+
+    "EVENT_MANAGER": [
+        {"twitter_screen_name": "MizunagiKB", "twitter_user_id": "431236837"}
     ],
 
     "CIRCLE_LIST_TBL"	: [
@@ -22,7 +26,7 @@
         "0" : [
             { "layout" : "A1", "sortkey": "001-0001-00000001",
                 "circle_list": [
-                    {"circle": "サークルA1", "writer": "WRITER A1"}
+                    {"circle": "サークルA1", "writer": "WRITER A1", "twitter_user_id": "00000000"}
                 ]
             },
 

@@ -7,7 +7,7 @@ var ccheck;
     ccheck.app = null;
     var DEMO = 0;
     var CApplication = (function () {
-        function CApplication(strJSData) {
+        function CApplication(strJSData, strMode) {
             this.m_model_event_catalog = null;
             this.m_collection_circle_favo = null;
             this.m_collection_circle_find = null;
@@ -19,6 +19,11 @@ var ccheck;
             this.m_view_event_list = null;
             this.m_model_circle_desc_hist = null;
             this.m_view_circle_desc_hist = null;
+            this.m_model_circle_info = null;
+            this.m_view_circle_edit = null;
+            this.m_dictCircleInfoDB = null;
+            this.m_bCInfo = false;
+            this.m_dictAuth = null;
             this.m_oCTplDesc = Hogan.compile($("#id_tpl_desc").html());
             var listTemplate = [
                 "#id_tpl_head",
@@ -65,15 +70,25 @@ var ccheck;
                 el: "body",
                 model: this.m_model_circle_desc_hist
             });
+            this.m_model_circle_info = new ccheck.model_CCircleInfo();
+            this.m_view_circle_edit = new ccheck.view_CCircleEdit({
+                el: "body",
+                model: this.m_model_circle_info
+            });
             if (strJSData == null) {
                 if (DEMO == 1) {
-                    this.import_from_url("./sample_01.json");
+                    this.import_from_url("./sample_01.json", "");
                 }
             }
             else {
-                this.import_from_url(strJSData);
+                if (strMode == null) {
+                    this.import_from_url(strJSData, "");
+                }
+                else {
+                    this.import_from_url(strJSData, strMode);
+                }
             }
-            $("#id_btn_import_src").on("click", function (oCEvt) { ccheck.app.import_from_url($("#jsdata").val()); });
+            $("#id_btn_import_src").on("click", function (oCEvt) { ccheck.app.import_from_url($("#jsdata").val(), ""); });
         }
         CApplication.prototype.show_circle = function (nGroup, nIndex) {
             var oCItem = ccheck.app.m_model_event_catalog.attributes.CIRCLE_LIST_DAT[nGroup][nIndex];
@@ -115,14 +130,125 @@ var ccheck;
             });
             $("#id_tpl_desc").modal("show");
         };
-        CApplication.prototype.import_from_url = function (strUrl) {
-            $.getJSON(strUrl, function (dictEventCatalog) {
-                ccheck.app.m_model_event_catalog.set(dictEventCatalog);
-                $("#jsdata").val(strUrl);
+        CApplication.prototype.edit_circle = function (nGrp, nIdx, strLayout, _id, eEMode) {
+            if (eEMode == ccheck.E_EDIT_MODE.INSERT) {
+                this.m_view_circle_edit.model.reset();
+                this.m_view_circle_edit.model.set("layout", strLayout);
+            }
+            else {
+                var oCCInfo = ccheck.app.select_circle_info_db(strLayout, _id);
+                this.m_view_circle_edit.model.reset();
+                this.m_view_circle_edit.model.set(oCCInfo.attributes);
+            }
+            this.m_view_circle_edit.ui_update(nGrp, nIdx, eEMode);
+            this.m_view_circle_edit.render();
+            $("#id_tpl_circle_edit").modal("show");
+        };
+        CApplication.prototype.create_circle_info_db = function (deffered_cinfo) {
+            this.m_dictCircleInfoDB = {};
+            for (var n = 0; n < deffered_cinfo[0].rows.length; n++) {
+                var strLayout = deffered_cinfo[0].rows[n].doc.layout;
+                if (strLayout in this.m_dictCircleInfoDB) {
+                    this.m_dictCircleInfoDB[strLayout].push(new ccheck.model_CCircleInfo(deffered_cinfo[0].rows[n].doc));
+                }
+                else {
+                    this.m_dictCircleInfoDB[strLayout] = [new ccheck.model_CCircleInfo(deffered_cinfo[0].rows[n].doc)];
+                }
+            }
+        };
+        CApplication.prototype.select_circle_info_db = function (strLayout, _id) {
+            if (strLayout in this.m_dictCircleInfoDB) {
+                var listCCInfo = this.m_dictCircleInfoDB[strLayout];
+                for (var n = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        return listCCInfo[n];
+                    }
+                }
+            }
+            return null;
+        };
+        CApplication.prototype.insert_circle_info_db = function (strLayout, _id, oCCInfo) {
+            if (strLayout in this.m_dictCircleInfoDB) {
+                var listCCInfo = this.m_dictCircleInfoDB[strLayout];
+                var oCCInfoNew = new ccheck.model_CCircleInfo();
+                oCCInfoNew.set(oCCInfo.attributes);
+                listCCInfo.push(oCCInfoNew);
+                listCCInfo.sort(compare_cedit_date);
+            }
+            else {
+                var oCCInfoNew = new ccheck.model_CCircleInfo();
+                oCCInfoNew.set(oCCInfo.attributes);
+                this.m_dictCircleInfoDB[strLayout] = [oCCInfoNew];
+            }
+            return true;
+        };
+        CApplication.prototype.update_circle_info_db = function (strLayout, _id, oCCInfo) {
+            var bResult = false;
+            if (strLayout in this.m_dictCircleInfoDB) {
+                var listCCInfo = this.m_dictCircleInfoDB[strLayout];
+                for (var n = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        listCCInfo[n].set(oCCInfo.attributes);
+                        listCCInfo.sort(compare_cedit_date);
+                        bResult = true;
+                        break;
+                    }
+                }
+            }
+            return bResult;
+        };
+        CApplication.prototype.delete_circle_info_db = function (strLayout, _id, oCCInfo) {
+            var bResult = false;
+            if (strLayout in this.m_dictCircleInfoDB) {
+                var listCCInfo = this.m_dictCircleInfoDB[strLayout];
+                for (var n = 0; n < listCCInfo.length; n++) {
+                    if (_id == listCCInfo[n].get("_id")) {
+                        listCCInfo.splice(n, 1);
+                        bResult = true;
+                        return true;
+                    }
+                }
+            }
+            return bResult;
+        };
+        CApplication.prototype.import_from_url = function (strUrl, strMode) {
+            $.when($.getJSON(strUrl)).done(function (dictEventCatalog) {
+                var URL_CIRCLE_INFO = "sample_01_circle_info.json";
+                var URL_AUTH = "sample_01_auth.json";
+                if (strMode.match("cinfo")) {
+                    $.when($.getJSON(URL_CIRCLE_INFO), $.getJSON(URL_AUTH)).done(function (deffered_cinfo, deffered_auth) {
+                        ccheck.app.m_bCInfo = true;
+                        ccheck.app.create_circle_info_db(deffered_cinfo);
+                        ccheck.app.m_dictAuth = {
+                            "DATA_SOURCE": deffered_auth[0].DATA_SOURCE,
+                            "twitter_screen_name": deffered_auth[0].twitter_screen_name,
+                            "twitter_user_id": deffered_auth[0].twitter_user_id,
+                            "layout_list": deffered_auth[0].layout_list
+                        };
+                        $("#jsdata").val(strUrl);
+                        ccheck.app.m_model_event_catalog.set(dictEventCatalog);
+                    }).fail(function (deffered_cinfo, deffered_auth) {
+                        ccheck.app.m_bCInfo = false;
+                        $("#jsdata").val(strUrl);
+                        ccheck.app.m_model_event_catalog.set(dictEventCatalog);
+                    });
+                }
+                else {
+                    ccheck.app.m_bCInfo = false;
+                    $("#jsdata").val(strUrl);
+                    ccheck.app.m_model_event_catalog.set(dictEventCatalog);
+                }
             });
         };
         return CApplication;
     }());
+    function compare_cedit_date(compare, to) {
+        if (compare.get("cedit_date") > to.get("cedit_date"))
+            return (-1);
+        if (compare.get("cedit_date") < to.get("cedit_date"))
+            return (1);
+        return (0);
+    }
     function get_url_param() {
         var listResult = {};
         var listParam = window.location.href.slice(window.location.href.indexOf("?") + 1).split("&");
@@ -130,14 +256,14 @@ var ccheck;
             var listData = listParam[n].split("=");
             listResult[listData[0]] = listData[1];
         }
-        return (listResult);
+        return listResult;
     }
     function storage_load() {
         if (!window.localStorage)
             return;
         var listResult = [];
-        var strStorageData = window.localStorage.getItem(ccheck.app.m_model_event_catalog.attributes.DATA_SOURCE) || -1;
-        if (strStorageData != -1) {
+        var strStorageData = window.localStorage.getItem(ccheck.app.m_model_event_catalog.attributes.DATA_SOURCE) || "-1";
+        if (strStorageData != "-1") {
             listResult = JSON.parse(strStorageData);
         }
         return listResult;
@@ -176,7 +302,8 @@ var ccheck;
     function main() {
         var dictParam = get_url_param();
         var strJSData = dictParam["jsdata"];
-        ccheck.app = new CApplication(strJSData);
+        var strMode = dictParam["m"];
+        ccheck.app = new CApplication(strJSData, strMode);
         if (strJSData == null) {
             ccheck.app.m_model_event_catalog.set({ null: null });
         }
