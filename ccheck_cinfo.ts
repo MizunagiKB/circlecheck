@@ -422,7 +422,7 @@ module ccheck {
         if (oCCInfo.has("cedit_url") == true) {
             let strUrl: string = oCCInfo.get("cedit_url");
             if (strUrl.match("^https?:\/\/")) {
-                preview_text = "<a href=\"" + oCCInfo.get("cedit_url") + "\">" + preview_text + "</a>";
+                preview_text = "<a href=\"" + oCCInfo.get("cedit_url") + "\" target=\"_blank\">" + preview_text + "</a>";
             }
         }
 
