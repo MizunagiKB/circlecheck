@@ -770,20 +770,27 @@ module ccheck {
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
 
                 listTable.push('<td>');
-                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
-                if (oCItem.layout in app.m_dictCircleInfoDB) {
+                if (app.m_bCInfo == false) {
+                    // CircleInfo Pluginが無効
+                    listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                } else {
+                    // CircleInfo Pluginが有効
+                    listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
 
-                    // お気に入り表示は強制的に権限なしに変更
-                    oCItem.owner = false;
+                    if (oCItem.layout in app.m_dictCircleInfoDB) {
 
-                    listTable.push('<small>');
-                    for (let nCI: number = 0; nCI < app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
-                        const oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][nCI];
-                        listTable.push('<div>');
-                        listTable.push(render_cinfo(oCItem, app.m_dictCircleInfoDB[oCItem.layout][nCI]));
-                        listTable.push('</div>');
+                        // お気に入り表示は強制的に権限なしに変更
+                        oCItem.owner = false;
+
+                        listTable.push('<small>');
+                        for (let nCI: number = 0; nCI < app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                            const oCCInfo: model_CCircleInfo = app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                            listTable.push('<div>');
+                            listTable.push(render_cinfo(oCItem, app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                            listTable.push('</div>');
+                        }
+                        listTable.push('</small>');
                     }
-                    listTable.push('</small>');
                 }
                 listTable.push('</td>');
 

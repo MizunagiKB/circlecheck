@@ -3,9 +3,8 @@
 *.swp
 *.xml
 
-util/*.html
+util/source.*
 util/*.json
-util/*.py
 
 www/circlecheck.js
 www/circlecheck.js.map
