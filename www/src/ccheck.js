@@ -215,10 +215,21 @@ var ccheck;
         };
         CApplication.prototype.import_from_url = function (strUrl, strMode) {
             $.when($.getJSON(strUrl)).done(function (dictEventCatalog) {
-                var URL_CIRCLE_INFO = "/db/circlecheck_cinfo/_design/event/_view/circle_information?key=%22" + dictEventCatalog.DATA_SOURCE + "%22&descending=true&include_docs=true";
-                var URL_AUTH = "iface_auth.php?DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE;
+                var URL_CIRCLE_INFO = "/db/circlecheck_cinfo/_design/event/_view/circle_information?";
+                var URL_AUTH = "iface_auth.php?";
+                var listCParam = [
+                    "startkey=" + JSON.stringify([dictEventCatalog.DATA_SOURCE, "Z"]),
+                    "endkey=" + JSON.stringify([dictEventCatalog.DATA_SOURCE, ""]),
+                    "descending=true",
+                    "include_docs=true"
+                ];
+                var listAParam = [
+                    "DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE
+                ];
+                console.log(URL_CIRCLE_INFO + listCParam.join("&"));
+                console.log(URL_AUTH + listAParam.join("&"));
                 if (strMode.match("cinfo")) {
-                    $.when($.getJSON(URL_CIRCLE_INFO), $.getJSON(URL_AUTH)).done(function (deffered_cinfo, deffered_auth) {
+                    $.when($.getJSON(URL_CIRCLE_INFO + listCParam.join("&")), $.getJSON(URL_AUTH + listAParam.join("&"))).done(function (deffered_cinfo, deffered_auth) {
                         ccheck.app.m_bCInfo = true;
                         ccheck.app.create_circle_info_db(deffered_cinfo);
                         if (typeof deffered_auth[0].twitter_user_id === "undefined") {

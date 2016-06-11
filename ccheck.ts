@@ -351,13 +351,25 @@ module ccheck {
                 function(dictEventCatalog: any) {
                     //const URL_CIRCLE_INFO: string = "sample_01_circle_info.json";
                     //const URL_AUTH: string = "sample_01_auth.json";
-                    const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?key=%22" + dictEventCatalog.DATA_SOURCE + "%22&descending=true&include_docs=true";
-                    const URL_AUTH: string = "iface_auth.php?DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE;
+                    const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?";
+                    const URL_AUTH: string = "iface_auth.php?";
+                    let listCParam: Array<string> = [
+                        "startkey=" + JSON.stringify([dictEventCatalog.DATA_SOURCE, "Z"]),
+                        "endkey=" + JSON.stringify([dictEventCatalog.DATA_SOURCE, ""]),
+                        "descending=true",
+                        "include_docs=true"
+                    ];
+                    let listAParam: Array<string> = [
+                        "DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE
+                    ];
+
+                    console.log(URL_CIRCLE_INFO + listCParam.join("&"));
+                    console.log(URL_AUTH + listAParam.join("&"));
 
                     if (strMode.match("cinfo")) {
                         $.when(
-                            $.getJSON(URL_CIRCLE_INFO),
-                            $.getJSON(URL_AUTH)
+                            $.getJSON(URL_CIRCLE_INFO + listCParam.join("&")),
+                            $.getJSON(URL_AUTH + listAParam.join("&"))
                         ).done(
                             function(deffered_cinfo: any, deffered_auth: any) {
 
@@ -365,8 +377,7 @@ module ccheck {
 
                                 app.create_circle_info_db(deffered_cinfo);
 
-                                if(typeof deffered_auth[0].twitter_user_id === "undefined")
-                                {
+                                if (typeof deffered_auth[0].twitter_user_id === "undefined") {
                                     app.m_dictAuth = null;
                                 } else {
                                     app.m_dictAuth = {
