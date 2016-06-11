@@ -306,7 +306,6 @@ module ccheck {
                 const listCCInfo: Array<model_CCircleInfo> = this.m_dictCircleInfoDB[strLayout];
 
                 for (let n: number = 0; n < listCCInfo.length; n++) {
-                    console.log(n + " " + _id + " " + listCCInfo[n].get("_id"));
                     if (_id == listCCInfo[n].get("_id")) {
                         listCCInfo[n].set(oCCInfo.attributes);
                         listCCInfo.sort(compare_cedit_date);
@@ -362,9 +361,6 @@ module ccheck {
                     let listAParam: Array<string> = [
                         "DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE
                     ];
-
-                    console.log(URL_CIRCLE_INFO + listCParam.join("&"));
-                    console.log(URL_AUTH + listAParam.join("&"));
 
                     if (strMode.match("cinfo")) {
                         $.when(

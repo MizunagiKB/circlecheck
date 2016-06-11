@@ -188,7 +188,6 @@ var ccheck;
             if (strLayout in this.m_dictCircleInfoDB) {
                 var listCCInfo = this.m_dictCircleInfoDB[strLayout];
                 for (var n = 0; n < listCCInfo.length; n++) {
-                    console.log(n + " " + _id + " " + listCCInfo[n].get("_id"));
                     if (_id == listCCInfo[n].get("_id")) {
                         listCCInfo[n].set(oCCInfo.attributes);
                         listCCInfo.sort(compare_cedit_date);
@@ -226,8 +225,6 @@ var ccheck;
                 var listAParam = [
                     "DATA_SOURCE=" + dictEventCatalog.DATA_SOURCE
                 ];
-                console.log(URL_CIRCLE_INFO + listCParam.join("&"));
-                console.log(URL_AUTH + listAParam.join("&"));
                 if (strMode.match("cinfo")) {
                     $.when($.getJSON(URL_CIRCLE_INFO + listCParam.join("&")), $.getJSON(URL_AUTH + listAParam.join("&"))).done(function (deffered_cinfo, deffered_auth) {
                         ccheck.app.m_bCInfo = true;
