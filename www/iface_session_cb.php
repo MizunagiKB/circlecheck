@@ -26,7 +26,6 @@ function main()
     $connection = new TwitterOAuth(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET, $request_token["oauth_token"], $request_token["oauth_token_secret"]);
 
     $_SESSION["access_token"] = $connection->oauth("oauth/access_token", array("oauth_verifier" => $_REQUEST["oauth_verifier"]));
-    $_SESSION["DATA_SOURCE"] = $_SESSION["jsdata"];
 
     session_regenerate_id();
 

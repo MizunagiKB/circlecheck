@@ -40,6 +40,8 @@ function main()
         array_push($aryLayout, $aryTwitterUserInfo -> rows[$i] -> value -> layout);
     }
 
+    $_SESSION["DATA_SOURCE"] = $DATA_SOURCE;
+
     $aryResult = array(
         "twitter_user_id" => $twitter_user_id,
         "twitter_screen_name" => $twitter_screen_name,
