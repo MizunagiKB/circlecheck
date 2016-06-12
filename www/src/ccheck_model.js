@@ -58,7 +58,17 @@ var ccheck;
             this.m_dictTemplate = dictTemplate;
         }
         view_CEventList.prototype.render = function () {
-            $("#id_tbl_conf_0").html(this.m_dictTemplate["#id_tpl_tbody_conf"].render({ rows: this.collection.models }));
+            var strTemplateName = "";
+            if (ccheck.app.m_bCInfo == true) {
+                strTemplateName = "#id_tpl_tbody_conf_0_m";
+            }
+            else {
+                strTemplateName = "#id_tpl_tbody_conf_0";
+            }
+            $("#id_tbl_conf_0").html(this.m_dictTemplate[strTemplateName].render({
+                rows: this.collection.models,
+                m: "cinfo"
+            }));
             return this;
         };
         return view_CEventList;

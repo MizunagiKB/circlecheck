@@ -304,12 +304,32 @@
             </div>
         </script>
 
-        <script type="text/template" id="id_tpl_tbody_conf">
+        <script type="text/template" id="id_tpl_tbody_conf_0">
             {{#rows}}
             <tr>
                 <td>{{attributes.value.EVENT_SERIES}}</td>
                 <td><a href="?jsdata=/db/circlecheck/{{id}}">{{attributes.value.EVENT_NAME}}</a></td>
-                <td>{{attributes.value.EVENT_ST}}</td>
+                <td>
+                    <div>
+                        {{attributes.value.EVENT_ST}}
+                        <br /><small>{{attributes.value.EVENT_LOCATION_NAME}}</small>
+                    </div>
+                </td>
+            </tr>
+            {{/rows}}
+        </script>
+
+        <script type="text/template" id="id_tpl_tbody_conf_0_m">
+            {{#rows}}
+            <tr>
+                <td>{{attributes.value.EVENT_SERIES}}</td>
+                <td><a href="?jsdata=/db/circlecheck/{{id}}&amp;m={{m}}">{{attributes.value.EVENT_NAME}}</a></td>
+                <td>
+                    <div>
+                        {{attributes.value.EVENT_ST}}
+                        <br /><small>{{attributes.value.EVENT_LOCATION_NAME}}</small>
+                    </dvi>
+                </td>
             </tr>
             {{/rows}}
         </script>

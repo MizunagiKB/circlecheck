@@ -37,12 +37,6 @@ var ccheck;
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["ABSENT"] = 4] = "ABSENT";
     })(ccheck.E_CIRCLE_INFO_CATEGORY || (ccheck.E_CIRCLE_INFO_CATEGORY = {}));
     var E_CIRCLE_INFO_CATEGORY = ccheck.E_CIRCLE_INFO_CATEGORY;
-    (function (E_EDIT_MODE) {
-        E_EDIT_MODE[E_EDIT_MODE["INSERT"] = 0] = "INSERT";
-        E_EDIT_MODE[E_EDIT_MODE["UPDATE"] = 1] = "UPDATE";
-        E_EDIT_MODE[E_EDIT_MODE["DELETE"] = 2] = "DELETE";
-    })(ccheck.E_EDIT_MODE || (ccheck.E_EDIT_MODE = {}));
-    var E_EDIT_MODE = ccheck.E_EDIT_MODE;
     var TPL_OWNER_EDIT = Hogan.compile(''
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-info evt-edit-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"></span></a>'
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-danger evt-drop-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"></span></a>');
@@ -89,13 +83,13 @@ var ccheck;
             var strUrl = "";
             var oXhr = null;
             switch (eEMode) {
-                case E_EDIT_MODE.INSERT:
+                case ccheck.E_EDIT_MODE.INSERT:
                     strUrl = "iface_cinfo.php?order=insert";
                     break;
-                case E_EDIT_MODE.UPDATE:
+                case ccheck.E_EDIT_MODE.UPDATE:
                     strUrl = "iface_cinfo.php?order=update";
                     break;
-                case E_EDIT_MODE.DELETE:
+                case ccheck.E_EDIT_MODE.DELETE:
                     strUrl = "iface_cinfo.php?order=delete";
                     break;
             }
@@ -130,13 +124,13 @@ var ccheck;
                     oXhr.ccheck_model.set("_id", jsonData.id);
                     oXhr.ccheck_model.set("_rev", jsonData.rev);
                     switch (eEMode) {
-                        case E_EDIT_MODE.INSERT:
+                        case ccheck.E_EDIT_MODE.INSERT:
                             bResult = ccheck.app.insert_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
-                        case E_EDIT_MODE.UPDATE:
+                        case ccheck.E_EDIT_MODE.UPDATE:
                             bResult = ccheck.app.update_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
-                        case E_EDIT_MODE.DELETE:
+                        case ccheck.E_EDIT_MODE.DELETE:
                             bResult = ccheck.app.delete_circle_info_db(oXhr.ccheck_model.get("layout"), jsonData.id, oXhr.ccheck_model);
                             break;
                     }
@@ -167,13 +161,13 @@ var ccheck;
             });
         };
         view_CCircleEdit.prototype.evt_insert = function (oCEvt) {
-            this.ajax_post(oCEvt, E_EDIT_MODE.INSERT);
+            this.ajax_post(oCEvt, ccheck.E_EDIT_MODE.INSERT);
         };
         view_CCircleEdit.prototype.evt_update = function (oCEvt) {
-            this.ajax_post(oCEvt, E_EDIT_MODE.UPDATE);
+            this.ajax_post(oCEvt, ccheck.E_EDIT_MODE.UPDATE);
         };
         view_CCircleEdit.prototype.evt_delete = function (oCEvt) {
-            this.ajax_post(oCEvt, E_EDIT_MODE.DELETE);
+            this.ajax_post(oCEvt, ccheck.E_EDIT_MODE.DELETE);
         };
         view_CCircleEdit.prototype.evt_view_change = function (oCEvt) {
             this.model.set("cedit_date", $("#id_date_circle_edit").val());
@@ -211,7 +205,7 @@ var ccheck;
                 + '<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>');
             $("#id_circle_edit_notify_area").html("");
             switch (eEMode) {
-                case E_EDIT_MODE.INSERT:
+                case ccheck.E_EDIT_MODE.INSERT:
                     $("#id_circle_edit_form").show();
                     $("#id_dlg_circle_edit_caption").html("サークル通知情報の追加");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({
@@ -221,7 +215,7 @@ var ccheck;
                         "idx": idx
                     }));
                     break;
-                case E_EDIT_MODE.UPDATE:
+                case ccheck.E_EDIT_MODE.UPDATE:
                     $("#id_circle_edit_form").show();
                     $("#id_dlg_circle_edit_caption").html("サークル通知情報の編集");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({
@@ -231,7 +225,7 @@ var ccheck;
                         "idx": idx
                     }));
                     break;
-                case E_EDIT_MODE.DELETE:
+                case ccheck.E_EDIT_MODE.DELETE:
                     $("#id_circle_edit_form").hide();
                     $("#id_dlg_circle_edit_caption").html("<span class=\"text-danger\">サークル通知情報の削除</span>");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({

@@ -4,6 +4,12 @@
  */
 var ccheck;
 (function (ccheck) {
+    (function (E_EDIT_MODE) {
+        E_EDIT_MODE[E_EDIT_MODE["INSERT"] = 0] = "INSERT";
+        E_EDIT_MODE[E_EDIT_MODE["UPDATE"] = 1] = "UPDATE";
+        E_EDIT_MODE[E_EDIT_MODE["DELETE"] = 2] = "DELETE";
+    })(ccheck.E_EDIT_MODE || (ccheck.E_EDIT_MODE = {}));
+    var E_EDIT_MODE = ccheck.E_EDIT_MODE;
     ccheck.app = null;
     var DEMO = 0;
     var CApplication = (function () {
@@ -35,7 +41,8 @@ var ccheck;
                 "#id_tpl_show_circle_desc_1",
                 "#id_tpl_show_circle_desc_2",
                 "#id_tpl_notify_area",
-                "#id_tpl_tbody_conf"
+                "#id_tpl_tbody_conf_0",
+                "#id_tpl_tbody_conf_0_m"
             ];
             var dictTemplate = {};
             for (var n = 0; n < listTemplate.length; n++) {
@@ -131,7 +138,7 @@ var ccheck;
             $("#id_tpl_desc").modal("show");
         };
         CApplication.prototype.edit_circle = function (nGrp, nIdx, strLayout, _id, eEMode) {
-            if (eEMode == ccheck.E_EDIT_MODE.INSERT) {
+            if (eEMode == E_EDIT_MODE.INSERT) {
                 this.m_view_circle_edit.model.reset();
                 this.m_view_circle_edit.model.set("DATA_SOURCE", this.m_model_event_catalog.get("DATA_SOURCE"));
                 this.m_view_circle_edit.model.set("layout", strLayout);

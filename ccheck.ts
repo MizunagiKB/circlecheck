@@ -24,6 +24,12 @@ module ccheck {
     }
 
     // --------------------------------------------------------------- enum(s)
+    export enum E_EDIT_MODE {
+        INSERT,
+        UPDATE,
+        DELETE
+    }
+
     // ------------------------------------------------------ Global Object(s)
     export var app: CApplication = null;
     const DEMO: number = 0;
@@ -72,7 +78,8 @@ module ccheck {
                 "#id_tpl_show_circle_desc_1",
                 "#id_tpl_show_circle_desc_2",
                 "#id_tpl_notify_area",
-                "#id_tpl_tbody_conf"
+                "#id_tpl_tbody_conf_0",
+                "#id_tpl_tbody_conf_0_m"
             ];
             let dictTemplate: { [key: string]: Array<ICIRCLE_LIST_DAT> } = {};
 

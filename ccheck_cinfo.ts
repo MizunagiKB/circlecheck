@@ -44,12 +44,6 @@ module ccheck {
         ABSENT
     }
 
-    export enum E_EDIT_MODE {
-        INSERT,
-        UPDATE,
-        DELETE
-    }
-
     // ---------------------------------------------------------- interface(s)
     export interface ICIRCLE_INFO {
         _id?: string;

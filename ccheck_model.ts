@@ -145,10 +145,20 @@ module ccheck {
 
         //
         render() {
+            let strTemplateName = "";
+
+            if (app.m_bCInfo == true) {
+                strTemplateName ="#id_tpl_tbody_conf_0_m";
+            } else {
+                strTemplateName ="#id_tpl_tbody_conf_0";
+            }
 
             $("#id_tbl_conf_0").html(
-                this.m_dictTemplate["#id_tpl_tbody_conf"].render(
-                    { rows: this.collection.models }
+                this.m_dictTemplate[strTemplateName].render(
+                    {
+                        rows: this.collection.models,
+                        m: "cinfo"
+                    }
                 )
             );
 
