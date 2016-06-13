@@ -383,7 +383,7 @@ var ccheck;
             listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
             listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
             listTable.push('<td>');
-            if (ccheck.app.m_bCInfo == false) {
+            if (ccheck.app.m_bCInfo != true) {
                 listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
             }
             else {
@@ -499,7 +499,7 @@ var ccheck;
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_remove"].render(oCItem) + '</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
                 listTable.push('<td>');
-                if (ccheck.app.m_bCInfo == false) {
+                if (ccheck.app.m_bCInfo != true) {
                     listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
                 }
                 else {
@@ -632,17 +632,22 @@ var ccheck;
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_favo_append"].render(oCItem) + '</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_layout"].render(oCItem) + '</td>');
                 listTable.push('<td>');
-                listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
-                if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
-                    oCItem.owner = false;
-                    listTable.push('<small>');
-                    for (var nCI = 0; nCI < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
-                        var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI];
-                        listTable.push('<div>');
-                        listTable.push(ccheck.render_cinfo(oCItem, ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI]));
-                        listTable.push('</div>');
+                if (ccheck.app.m_bCInfo != true) {
+                    listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                }
+                else {
+                    listTable.push(this.m_dictTemplate["#id_tpl_circleinfo"].render(oCItem));
+                    if (oCItem.layout in ccheck.app.m_dictCircleInfoDB) {
+                        oCItem.owner = false;
+                        listTable.push('<small>');
+                        for (var nCI = 0; nCI < ccheck.app.m_dictCircleInfoDB[oCItem.layout].length; nCI++) {
+                            var oCCInfo = ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI];
+                            listTable.push('<div>');
+                            listTable.push(ccheck.render_cinfo(oCItem, ccheck.app.m_dictCircleInfoDB[oCItem.layout][nCI]));
+                            listTable.push('</div>');
+                        }
+                        listTable.push('</small>');
                     }
-                    listTable.push('</small>');
                 }
                 listTable.push('</td>');
                 listTable.push('<td>' + this.m_dictTemplate["#id_tpl_show_circle_desc_1"].render(oCItem) + '</td>');
