@@ -60,7 +60,8 @@
                         <li id="id_menu_prev" class="disabled"><a href="javascript:void(0);"><span class="glyphicon glyphicon-chevron-left"></span></a></li>
                         <li id="id_menu_next" class="disabled"><a href="javascript:void(0);"><span class="glyphicon glyphicon-chevron-right"></span></a></li>
                     </ul>
-                    <ul id="id_menu_auth_space" class="nav navbar-nav navbar-right">
+                    <ul id="id_menu_mode_space" class="nav navbar-nav navbar-right">
+                        a
                     </ul>
                 </div>
             </div>
@@ -427,6 +428,7 @@
                 <ul class="nav nav-tabs">
                     <li class="active"><a href="#id_tab_cfg_0" data-toggle="tab"><span class="glyphicon glyphicon-info-sign"></span>&nbsp;イベント一覧</a></li>
                     <li><a href="#id_tab_cfg_1" data-toggle="tab"><span class="glyphicon glyphicon-circle-arrow-down"></span>&nbsp;URL から読み込み</a></li>
+                    <li><a href="#id_tab_cfg_2" data-toggle="tab"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知の編集と認証</a></li>
                 </ul>
                 <div class="tab-content">
                     <p>
@@ -452,6 +454,22 @@
                                     </div>
                                 </div>
                             </form>
+                        </div>
+                        <div class="tab-pane fade" id="id_tab_cfg_2">
+                            <div class="panel panel-default">
+                                <div class="panel-body">
+                                    <div>
+                                        <dl class="dl-horizontal">
+                                            <dt>サークル情報（cinfo）</dt>
+                                            <dd>サークルからのお知らせが最大５件まで表示可能です。<br />アクセス権が設定されている場合は、サインイン後にサークルからの通知を追加・編集・削除する事が可能です。</dd>
+                                            <dt>サインイン</dt>
+                                            <dd>サインインはTwitterOAuthで行います。</dd>
+                                        </dl>
+                                    </div>
+                                </div>
+                            </div>
+                            <div id="id_menu_auth_space">
+                            </div>
                         </div>
                     </p>
                 </div>

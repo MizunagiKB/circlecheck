@@ -258,20 +258,33 @@ var ccheck;
             else {
                 $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes));
                 if (ccheck.app.m_bCInfo == true) {
-                    var strScreenName = "";
-                    var strBtn = "ログイン";
+                    var strHref = "index.html?jsdata=" + $("#jsdata").val();
+                    $("#id_menu_mode_space").html(''
+                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
+                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を無効</a>'
+                        + '</li>');
+                }
+                else {
+                    var strHref = "index.html?jsdata=" + $("#jsdata").val() + "&m=cinfo";
+                    $("#id_menu_mode_space").html(''
+                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
+                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を有効</a>'
+                        + '</li>');
+                }
+                if (ccheck.app.m_bCInfo == true) {
                     var strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    var strScreenName = "";
+                    var strBtn = "サインイン";
                     if (ccheck.app.m_dictAuth != null) {
                         if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
-                            strScreenName = "@" + ccheck.app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
-                            strBtn = "ログアウト";
+                            strScreenName = '<p class="text-right">現在&nbsp;<strong>@' + ccheck.app.m_dictAuth["twitter_screen_name"] + '</strong>&nbsp;でサインインしています。</p>';
+                            strBtn = "サインアウト";
                             strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
                         }
                     }
                     $("#id_menu_auth_space").html(''
-                        + '<li id="id_menu_auth" data-target-view="#id_menu_auth">'
-                        + '<a href="' + strHref + '">' + strScreenName + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
-                        + '</li>');
+                        + strScreenName
+                        + '<a class="btn btn-default btn-block" href="' + strHref + '">' + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>');
                 }
                 $("nav li").removeClass("disabled");
                 this.view_change("#id_menu_list");

@@ -417,6 +417,7 @@ module ccheck {
         render() {
             let strBaseAddress: string = window.location.href.split("?")[0];
 
+
             if (this.model.isValid() == false) {
 
                 $("#id_tpl_head").html(
@@ -436,25 +437,44 @@ module ccheck {
                 );
 
                 if (app.m_bCInfo == true) {
-                    let strScreenName: string = "";
-                    let strBtn: string = "ログイン";
+                    let strHref: string = "index.html?jsdata=" + $("#jsdata").val();
+                    $("#id_menu_mode_space").html(
+                        ''
+                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
+                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を無効</a>'
+                        + '</li>'
+                    );
+                } else {
+                    let strHref: string = "index.html?jsdata=" + $("#jsdata").val() + "&m=cinfo";
+                    $("#id_menu_mode_space").html(
+                        ''
+                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
+                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を有効</a>'
+                        + '</li>'
+                    );
+                }
+
+                if (app.m_bCInfo == true) {
                     let strHref: string = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                    let strScreenName: string = "";
+                    let strBtn: string = "サインイン";
 
                     if (app.m_dictAuth != null) {
                         if ("twitter_screen_name" in app.m_dictAuth) {
-                            strScreenName = "@" + app.m_dictAuth["twitter_screen_name"] + "&nbsp;";
-                            strBtn = "ログアウト";
+                            strScreenName = '<p class="text-right">現在&nbsp;<strong>@' + app.m_dictAuth["twitter_screen_name"] + '</strong>&nbsp;でサインインしています。</p>';
+                            strBtn = "サインアウト";
                             strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
                         }
                     }
 
                     $("#id_menu_auth_space").html(
                         ''
-                        + '<li id="id_menu_auth" data-target-view="#id_menu_auth">'
-                        + '<a href="' + strHref + '">' + strScreenName + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
-                        + '</li>'
+                        + strScreenName
+                        + '<a class="btn btn-default btn-block" href="' + strHref + '">' + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
                     );
                 }
+
+                //
 
                 $("nav li").removeClass("disabled");
 
