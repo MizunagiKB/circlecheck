@@ -148,9 +148,9 @@ module ccheck {
             let strTemplateName = "";
 
             if (app.m_bCInfo == true) {
-                strTemplateName ="#id_tpl_tbody_conf_0_m";
+                strTemplateName = "#id_tpl_tbody_conf_0_m";
             } else {
-                strTemplateName ="#id_tpl_tbody_conf_0";
+                strTemplateName = "#id_tpl_tbody_conf_0";
             }
 
             $("#id_tbl_conf_0").html(
@@ -216,7 +216,7 @@ module ccheck {
         }
 
         //
-        comparator(compare: model_CCircleFavo, to?: model_CCircleFavo): number {
+        comparator = function(compare: model_CCircleFavo, to?: model_CCircleFavo): number {
             if (compare.attributes.sortkey > to.attributes.sortkey) return (1);
             if (compare.attributes.sortkey < to.attributes.sortkey) return (-1);
             return (0);
@@ -282,8 +282,7 @@ module ccheck {
             return attributes.layout;
         }
 
-        //
-        comparator(compare: model_CCircleFavo, to?: model_CCircleFavo): number {
+        comparator = function(compare: model_CCircleFind, to?: model_CCircleFind): number {
             if (compare.attributes.sortkey > to.attributes.sortkey) return (1);
             if (compare.attributes.sortkey < to.attributes.sortkey) return (-1);
             return (0);

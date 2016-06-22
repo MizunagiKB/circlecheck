@@ -18,6 +18,8 @@
         "./ccheck_model.ts",
         "./ccheck.ts",
         "./DefinitelyTyped/backbone/backbone-global.d.ts",
+        "./DefinitelyTyped/backbone/backbone-tests.ts",
+        "./DefinitelyTyped/backbone/backbone-with-lodash-tests.ts",
         "./DefinitelyTyped/backbone/backbone.d.ts",
         "./DefinitelyTyped/bootstrap/bootstrap.d.ts",
         "./DefinitelyTyped/hogan/hogan.d.ts",

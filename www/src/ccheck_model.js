@@ -103,18 +103,18 @@ var ccheck;
         __extends(collection_CCircleFavo, _super);
         function collection_CCircleFavo(models, options) {
             _super.call(this, models, options);
+            this.comparator = function (compare, to) {
+                if (compare.attributes.sortkey > to.attributes.sortkey)
+                    return (1);
+                if (compare.attributes.sortkey < to.attributes.sortkey)
+                    return (-1);
+                return (0);
+            };
             this.on("add", this.evt_append);
             this.on("remove", this.evt_remove);
         }
         collection_CCircleFavo.prototype.modelId = function (attributes) {
             return attributes.layout;
-        };
-        collection_CCircleFavo.prototype.comparator = function (compare, to) {
-            if (compare.attributes.sortkey > to.attributes.sortkey)
-                return (1);
-            if (compare.attributes.sortkey < to.attributes.sortkey)
-                return (-1);
-            return (0);
         };
         collection_CCircleFavo.prototype.evt_append = function (oCItem) {
             var listTargetId = ["#id_row_list_", "#id_row_find_"];
@@ -155,16 +155,16 @@ var ccheck;
         __extends(collection_CCircleFind, _super);
         function collection_CCircleFind(models, options) {
             _super.call(this, models, options);
+            this.comparator = function (compare, to) {
+                if (compare.attributes.sortkey > to.attributes.sortkey)
+                    return (1);
+                if (compare.attributes.sortkey < to.attributes.sortkey)
+                    return (-1);
+                return (0);
+            };
         }
         collection_CCircleFind.prototype.modelId = function (attributes) {
             return attributes.layout;
-        };
-        collection_CCircleFind.prototype.comparator = function (compare, to) {
-            if (compare.attributes.sortkey > to.attributes.sortkey)
-                return (1);
-            if (compare.attributes.sortkey < to.attributes.sortkey)
-                return (-1);
-            return (0);
         };
         return collection_CCircleFind;
     }(Backbone.Collection));

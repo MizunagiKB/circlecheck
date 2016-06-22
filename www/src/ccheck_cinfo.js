@@ -335,7 +335,7 @@ var ccheck;
                 });
             }
         }
-        return "<span class=\"glyphicon glyphicon-comment\"></span>&nbsp;" + preview_text;
+        return "&nbsp;<span class=\"glyphicon glyphicon-comment\"></span>&nbsp;" + preview_text;
     }
     ccheck.render_cinfo = render_cinfo;
 })(ccheck || (ccheck = {}));

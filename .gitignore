@@ -3,11 +3,10 @@
 *.swp
 *.xml
 
+DefinitelyTyped/*/*.js
+
 util/source.*
 util/*.json
-
-www/circlecheck.js
-www/circlecheck.js.map
 
 www/app_config.php
 
