@@ -81,7 +81,7 @@ module ccheck {
                 "#id_tpl_tbody_conf_0",
                 "#id_tpl_tbody_conf_0_m"
             ];
-            let dictTemplate: { [key: string]: Array<ICIRCLE_LIST_DAT> } = {};
+            let dictTemplate: { [key: string]: Hogan.template } = {};
 
             for (let n: number = 0; n < listTemplate.length; n++) {
                 dictTemplate[listTemplate[n]] = Hogan.compile($(listTemplate[n]).html());

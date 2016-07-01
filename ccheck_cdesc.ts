@@ -80,7 +80,7 @@ module ccheck {
         //
         render() {
             const strBaseAddress: string = window.location.href.split("?")[0];
-            const oCTpl = Hogan.compile($("#id_tpl_circledesc_hist").html());
+            const oCTpl: Hogan.template = Hogan.compile($("#id_tpl_circledesc_hist").html());
             let listCDescHist: Array<ICIRCLE_DESC_HIST> = [];
 
             if (this.model.attributes && this.model.attributes.rows) {

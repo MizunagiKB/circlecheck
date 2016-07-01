@@ -57,7 +57,7 @@ module ccheck {
         cedit_rating: number;
     }
 
-    const TPL_OWNER_EDIT = Hogan.compile(
+    const TPL_OWNER_EDIT: Hogan.template = Hogan.compile(
         ''
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-info evt-edit-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"></span></a>'
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-danger evt-drop-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"></span></a>'
@@ -261,8 +261,7 @@ module ccheck {
             this.model.set("cedit_txt", $("#id_txt_circle_edit").val());
             this.model.set("cedit_url", $("#id_url_circle_edit").val());
 
-            if($("#id_check_circle_edit_r18").is(":checked") == true)
-            {
+            if ($("#id_check_circle_edit_r18").is(":checked") == true) {
                 this.model.set("cedit_rating", 1);
             } else {
                 this.model.set("cedit_rating", 0);
@@ -272,7 +271,7 @@ module ccheck {
         //
         ui_update(grp: number, idx: number, eEMode: E_EDIT_MODE) {
             let o: any;
-            let TPL_FOOTER: any = Hogan.compile(
+            let TPL_FOOTER: Hogan.template = Hogan.compile(
                 ''
                 + '<button id="{{id}}" class="{{class}}" data-grp="{{grp}}" data-idx="{{idx}}"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>'
                 + '<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>'
@@ -350,8 +349,7 @@ module ccheck {
                 default: $("#id_category_4").addClass("active"); break;
             }
 
-            if(this.model.get("cedit_rating") == 1)
-            {
+            if (this.model.get("cedit_rating") == 1) {
                 $("#id_check_circle_edit_r18").prop("checked", true);
             } else {
                 $("#id_check_circle_edit_r18").prop("checked", false);

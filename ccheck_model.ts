@@ -93,7 +93,7 @@ module ccheck {
     }
 
     interface ITEMPLATES {
-        [key: string]: any;
+        [key: string]: Hogan.template;
     }
 
     // --------------------------------------------------------------- enum(s)
