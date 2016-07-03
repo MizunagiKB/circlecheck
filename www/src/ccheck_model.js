@@ -239,12 +239,14 @@ var ccheck;
                     credentials: "AnFn8oGtujPjISREG74t6AjvDUiHBPJxXT0Dai0p2WlPyZtIB9FoBnFwyNGnKkFr",
                     center: new Microsoft.Maps.Location(this.model.attributes.EVENT_MAP_LOCATION.latitude, this.model.attributes.EVENT_MAP_LOCATION.longitude),
                     mapTypeId: Microsoft.Maps.MapTypeId.road,
-                    enableSearchLogo: false,
-                    enableClickableLogo: false,
-                    showDashboard: true,
                     zoom: 16
                 });
-                oCMap.entities.push(new Microsoft.Maps.Pushpin(oCMap.getCenter()));
+                oCMap.entities.push(new Microsoft.Maps.Pushpin(oCMap.getCenter(), {
+                    icon: "https://www.bingmapsportal.com/Content/images/poi_custom.png",
+                    anchor: new Microsoft.Maps.Point(12, 39)
+                }));
+                $("#id_bing_map").width("auto");
+                $("#id_bing_map").height("384px");
             }
         };
         view_CCatalogHead.prototype.render = function () {

@@ -399,16 +399,23 @@ module ccheck {
                             this.model.attributes.EVENT_MAP_LOCATION.longitude
                         ),
                         mapTypeId: Microsoft.Maps.MapTypeId.road,
-                        enableSearchLogo: false,
-                        enableClickableLogo: false,
-                        showDashboard: true,
                         zoom: 16
                     }
                 );
 
                 oCMap.entities.push(
-                    new Microsoft.Maps.Pushpin(oCMap.getCenter())
+                    new Microsoft.Maps.Pushpin(
+                        oCMap.getCenter(),
+                        {
+                            icon: "https://www.bingmapsportal.com/Content/images/poi_custom.png",
+                            anchor: new Microsoft.Maps.Point(12, 39)
+                        }
+                    )
                 );
+
+                // display: noneの場合はheightが0となるために改めて表示サイズを設定している。
+                $("#id_bing_map").width("auto");
+                $("#id_bing_map").height("384px");
             }
         }
 
