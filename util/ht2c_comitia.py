@@ -2,6 +2,8 @@
 import sys
 import re
 
+"""
+"""
 
 def circle_name(s):
 
@@ -55,8 +57,7 @@ def main():
     strBuffer = strBuffer.replace("\n", "")
 
     listTable = re.findall(
-        "<table width=\"500\" border=\"0\">(.*?)</table>",
-        # "(.*)",
+        "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;\">(.*?)</table>",
         strBuffer,
         re.I
     )
@@ -95,6 +96,9 @@ def main():
                     strPixiv = strUrl
                     strUrl = ""
                 if strUrl.find("https://twitter") >= 0:
+                    strTwitter = strUrl
+                    strUrl = ""
+                if strUrl.find("http://twitter") >= 0:
                     strTwitter = strUrl
                     strUrl = ""
 
