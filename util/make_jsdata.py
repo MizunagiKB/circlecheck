@@ -93,7 +93,8 @@ class GURUCOMI(object):
 class LOVELIVE(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    GROUP = [u"国", u"立", u"音", u"ノ", u"木", u"坂", u"学", u"院", u"ラブ", u"ライ", u"ブ", u"花", u"園"]
+    #GROUP = [u"国", u"立", u"音", u"ノ", u"木", u"坂", u"学", u"院", u"ラブ", u"ライ", u"ブ", u"花", u"園"]
+    GROUP = [u"や", u"ざ", u"わ", u"に", u"こ"]
     DELIMITER = ","
 
 class PUNIKET(object):
@@ -126,11 +127,11 @@ class PRDX(object):
     GROUP = [u"ブラック", u"アクア", u"マーメイド"]
     DELIMITER = ","
 
-class COMITIA_A(object):
+class COMITIA(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}")
-#    GROUP = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
-#    GROUP = u"あいうえおかきくけこさしすせそたちつ"
+#    GROUP = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹ"
+#    GROUP = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむ"
     GROUP = u"展"
     DELIMITER = "\t"
 
@@ -142,7 +143,7 @@ class DENEN(object):
 class HOURAIGEKISEN(object):
     LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    GROUP = u"ABCDEFGHIJKLMN"
+    GROUP = u"ABCDE"
     DELIMITER = "\t"
 
 class PUV(object):
@@ -163,7 +164,7 @@ class KOBE_KANCOLLE(object):
     GROUP = [u"企画", u"住吉", u"六甲道", u"灘", u"三ノ宮", u"元町", u"神戸", u"兵庫", u"鷹取", u"須磨", u"塩屋", u"垂水"]
     DELIMITER = ","
 
-CONF = TECHBOOKFEST
+CONF = COMITIA
 
 
 #def (dictLayout):
@@ -185,8 +186,8 @@ def circle_list(dictLayout):
         listBuffer = []
         nIndexLocal = 1
 
-        for o in listItem:
-#        for o in sorted(listItem, key=lambda obj: obj["layout"]):
+#        for o in listItem:
+        for o in sorted(listItem, key=lambda obj: obj["layout"]):
             listBuffer.append(
                 "            {\"layout\": \"%s\", \"sortkey\": \"%03d-%04d-%08d\",\n"
                 "                \"circle_list\": [\n"
