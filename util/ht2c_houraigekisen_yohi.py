@@ -2,6 +2,8 @@
 import sys
 import re
 
+import requests
+
 """
 """
 
@@ -72,7 +74,12 @@ def strip_href(s):
 #
 def main():
 
-    strBuffer = open(sys.argv[1], "rb").read()
+    if sys.argv[1].find("http") == 0:
+        r = requests.get(sys.argv[1])
+        strBuffer = r.content.decode("euc-jp").encode("utf-8")
+    else:
+        strBuffer = open(sys.argv[1], "rb").read()
+
     strBuffer = strBuffer.replace("\r", "")
     strBuffer = strBuffer.replace("\n", "")
 

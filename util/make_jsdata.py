@@ -36,10 +36,16 @@ TOBIMONO = [u"A", u"B", u"C", u"D", u"E", u"F", u"ETC"]
 
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
+class GRAKET(object):
+    LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
+    LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
+    GROUP = [u"グラ", u"海", u"城", u"花"]
+    DELIMITER = ","
+
 class KEY_POINT(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
-    GROUP = [u"K", u"e", u"y"]
+    GROUP = [u"K", u"e", u"y", u"車"]
     DELIMITER = "\t"
 
 class TECHBOOKFEST(object):
@@ -93,8 +99,8 @@ class GURUCOMI(object):
 class LOVELIVE(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    #GROUP = [u"国", u"立", u"音", u"ノ", u"木", u"坂", u"学", u"院", u"ラブ", u"ライ", u"ブ", u"花", u"園"]
-    GROUP = [u"や", u"ざ", u"わ", u"に", u"こ"]
+    GROUP = [u"音", u"ノ", u"木", u"坂", u"ラブ", u"ライ", u"ブ", u"サン", u"浦", u"星", u"女", u"ほ", u"ことり", u"梨子", u"ルビィ"]
+    #GROUP = [u"や", u"ざ", u"わ", u"に", u"こ"]
     DELIMITER = ","
 
 class PUNIKET(object):
@@ -118,7 +124,7 @@ class GAMEMARKET(object):
 class UTAHIME(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2},[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}")
-    GROUP = [u"歌姫", u"シ", u"ン", u"デ", u"レ", u"ラ", u"メモ", u"ミリ", u"セキ", u"恋風", u"ゆり"]
+    GROUP = [u"歌姫", u"シ", u"ン", u"デ", u"レ", u"ラ", u"ゆい", u"蘭子", u"幸子", u"周子", u"アナ"]
     DELIMITER = ","
 
 class PRDX(object):
@@ -149,7 +155,7 @@ class HOURAIGEKISEN(object):
 class PUV(object):
     LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    GROUP = u"ABCD"
+    GROUP = u"AQRVWXYZ"
     DELIMITER = "\t"
 
 class SUNRISE_C(object):
@@ -164,7 +170,30 @@ class KOBE_KANCOLLE(object):
     GROUP = [u"企画", u"住吉", u"六甲道", u"灘", u"三ノ宮", u"元町", u"神戸", u"兵庫", u"鷹取", u"須磨", u"塩屋", u"垂水"]
     DELIMITER = ","
 
-CONF = COMITIA
+class SOUGETSUSAI(object):
+    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+    GROUP = u"A"
+    DELIMITER = "\t"
+
+class MOUNANIMOKOWAKUNAI(object):
+    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+    GROUP = u"APU"
+    DELIMITER = "\t"
+
+class SHT(object):
+    LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2},[0-9]{1,2}")
+    LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}")
+    GROUP = [
+        u"円環", u"マミ", u"ほむ", u"探偵", u"うん", u"スト", u"キュア",
+        u"宝石", u"咲", u"ミク", u"電磁", u"プリ", u"ゆり",
+        u"戦", u"車", u"道", u"なの", u"長門", u"うさぎ", u"勇者", u"絶唱",
+        u"アイ", u"イリヤ", u"晴風", u"菓子", u"愛里寿", u"リル", u"鬼", u"SHT"
+    ]
+    DELIMITER = ","
+
+CONF = KEY_POINT
 
 
 #def (dictLayout):
@@ -173,16 +202,25 @@ def circle_list(dictLayout):
     nGrp = 0
     nIndex = 1
 
+    listGrp = []
     for s in CONF.GROUP:
-        strBuffer = '{"id": "%d", "name": "%s"}' % (nGrp, s)
-        print strBuffer.encode("utf-8")
+        listGrp.append(
+            '{"id": "%d", "name": "%s"}' % (nGrp, s)
+        )
         nGrp += 1
+
+    print ",\n".join(listGrp).encode("utf-8")
 
     nGrp  = 0
     for k in CONF.GROUP:
 
         #print dictLayout.keys()
-        listItem = dictLayout[k]
+        try:
+            listItem = dictLayout[k]
+        except KeyError:
+            print "KeyError", k
+            sys.exit(1)
+
         listBuffer = []
         nIndexLocal = 1
 
