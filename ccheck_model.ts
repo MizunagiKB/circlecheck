@@ -294,6 +294,7 @@ module ccheck {
      */
     export class view_CCatalogHead extends Backbone.View<model_CEventCatalog> {
         private m_dictTemplate: ITEMPLATES;
+        private m_bMapRendered: boolean;
 
         //
         constructor(options?: Backbone.ViewOptions<model_CEventCatalog>, dictTemplate?: any) {
@@ -302,6 +303,7 @@ module ccheck {
             this.on("view_change", this.view_change);
 
             this.m_dictTemplate = dictTemplate;
+            this.m_bMapRendered = false;
         }
 
         //
@@ -329,6 +331,13 @@ module ccheck {
 
             $(".cchack_view").hide();
             $($(strId).data("target-view")).fadeIn();
+
+            if (strId == "#id_menu_area") {
+                if (this.m_bMapRendered == false) {
+                    this.render_map();
+                    this.m_bMapRendered = true;
+                }
+            }
         }
 
         //
@@ -390,32 +399,24 @@ module ccheck {
         //
         render_map() {
             if (this.model.attributes.EVENT_MAP_LOCATION) {
-                let oCMap = new Microsoft.Maps.Map(
-                    document.getElementById("id_bing_map"),
+
+                let map = L.map("id_bing_map");
+
+                map.setView(
+                    [this.model.attributes.EVENT_MAP_LOCATION.latitude, this.model.attributes.EVENT_MAP_LOCATION.longitude],
+                    16
+                );
+
+                L.tileLayer(
+                    "http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
                     {
-                        credentials: "AnFn8oGtujPjISREG74t6AjvDUiHBPJxXT0Dai0p2WlPyZtIB9FoBnFwyNGnKkFr",
-                        center: new Microsoft.Maps.Location(
-                            this.model.attributes.EVENT_MAP_LOCATION.latitude,
-                            this.model.attributes.EVENT_MAP_LOCATION.longitude
-                        ),
-                        mapTypeId: Microsoft.Maps.MapTypeId.road,
-                        zoom: 16
+                        attribution: "<a href='http://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
                     }
-                );
+                ).addTo(map);
 
-                oCMap.entities.push(
-                    new Microsoft.Maps.Pushpin(
-                        oCMap.getCenter(),
-                        {
-                            icon: "https://www.bingmapsportal.com/Content/images/poi_custom.png",
-                            anchor: new Microsoft.Maps.Point(12, 39)
-                        }
-                    )
-                );
-
-                // display: noneの場合はheightが0となるために改めて表示サイズを設定している。
-                $("#id_bing_map").width("auto");
-                $("#id_bing_map").height("384px");
+                L.marker(
+                    [this.model.attributes.EVENT_MAP_LOCATION.latitude, this.model.attributes.EVENT_MAP_LOCATION.longitude]
+                ).addTo(map);
             }
         }
 
@@ -509,7 +510,6 @@ module ccheck {
                 }
 
                 this.render_notify_area();
-                this.render_map();
             }
 
             return this;

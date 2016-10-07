@@ -18,6 +18,8 @@
         <!-- Bootstrap DatePicker -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.1/css/bootstrap-datepicker3.min.css" />
 
+        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.1/dist/leaflet.css" />
+
         <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -32,6 +34,11 @@
             }
             #id_tpl_foot {
                 height: 60px;
+            }
+
+            #id_bing_map {
+                width: auto;
+                height: 384px;
             }
         </style>
 
@@ -488,7 +495,7 @@
             </div>
 
             <div id="id_view_area" class="cchack_view" style="display: none;">
-                <div id="id_bing_map" style="position: relative;"></div>
+                <div id="id_bing_map"></div>
             </div>
 
         </div>
@@ -533,8 +540,10 @@
         <!-- Hogan.js http://twitter.github.io/hogan.js/ -->
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/hogan.js/3.0.2/hogan.min.js"></script>
 
+        <script src="https://unpkg.com/leaflet@1.0.1/dist/leaflet.js"></script>
         <!-- Microsoft VirtualEarth -->
-        <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?branch=release"></script>
+        <!-- <script type="text/javascript" src="https://www.bing.com/api/maps/mapcontrol?branch=release"></script> -->
+
         <!-- circlecheck.js -->
         <script type="text/javascript" src="src/ccheck_model.js"></script>
         <script type="text/javascript" src="src/ccheck_cdesc.js"></script>
