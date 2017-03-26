@@ -36,11 +36,11 @@ TOBIMONO = [u"A", u"B", u"C", u"D", u"E", u"F", u"ETC"]
 
 
 #PRINCESS_FESTA = [u"あ", u"い", u"う", u"え", u"お", u"か", u"き", u"く", u"委託"]
-class GRAKET(object):
-    LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
+class COMICMARKET(object):
+    LAYOUT_PARSE_1 = re.compile(u"(\(.*?\)[東|西]).*?[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    GROUP = [u"グラ", u"海", u"城", u"花"]
-    DELIMITER = ","
+    GROUP = [u"(木)東", u"(木)西", u"(金)東", u"(土)東", u"(土)西"]
+    DELIMITER = "\t"
 
 class KEY_POINT(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
@@ -54,15 +54,13 @@ class TECHBOOKFEST(object):
     GROUP = [u"A", u"B", u"K", u"I"]
     DELIMITER = ","
 
+class PANZER(object):
+    LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-[0-9]{1,2}")
+    LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)-[0-9]{1,2}")
+    GROUP = u"ABCDEFGHIJKL"
+    DELIMITER = ","
+
 #KEY_POINT = [u"魔", u"伊", u"呂", u"波", u"つむぎ", u"ラブリー", u"フローラ", u"ブロッサム", u"オリヴィエ", u"タルト", u"パイン"]
-
-#COMITIA_A = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
-#COMITIA_B = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむ"
-#COMITIA_C = u"展"
-LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
-LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-
-
 
 #LYRICALMAGICAL = u"なのは"
 #CIRCLE = [u"アイ", u"カツ"]
@@ -80,8 +78,21 @@ class OMOJIN(object):
 class CREATION(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
-    GROUP = u"ABCDEFGHI"
-    GROUP = u"JKLMNOPQRS"
+    #GROUP = u"ABCDEFGHI"
+    #GROUP = u"JKLMNOPQR"
+    GROUP = u"アイウエオカキクケ"
+    DELIMITER = "\t"
+
+class COMICNEXT(object):
+    LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+    LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+    GROUP = u"ABCDEFG"
+    DELIMITER = "\t"
+
+class TREASURE(object):
+    LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+    LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
+    GROUP = u"アイウエオカキクケコサシスセソタチツテトナニヌネノ"
     DELIMITER = "\t"
 
 class GAMELEGEND(object):
@@ -99,14 +110,16 @@ class GURUCOMI(object):
 class LOVELIVE(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    GROUP = [u"音", u"ノ", u"木", u"坂", u"ラブ", u"ライ", u"ブ", u"サン", u"浦", u"星", u"女", u"ほ", u"ことり", u"梨子", u"ルビィ"]
+    GROUP = [u"ラブ", u"ライブ", u"花陽", u"凛花", u"ダイヤ"]
+#    GROUP = [u"国", u"立", u"音", u"ノ", u"木", u"坂", u"浦", u"星", u"サン", u"シャ", u"イン"]
+#    GROUP = [u"僕", u"ラ", u"ブ", u"沼", u"津"]
     #GROUP = [u"や", u"ざ", u"わ", u"に", u"こ"]
     DELIMITER = ","
 
 class PUNIKET(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    GROUP = [u"ドド", u"レレ", u"ミミ", u"プリ", u"アイ", u"晴風", u"キュア", u"みつご", u"なの"]
+    GROUP = [u"ドド", u"レレ", u"ミミ", u"プリ", u"アイ", u"駆逐", u"キュア"]
     DELIMITER = ","
 
 class LYRICALMAGICAL(object):
@@ -136,8 +149,8 @@ class PRDX(object):
 class COMITIA(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}")
-#    GROUP = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹ"
-#    GROUP = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむ"
+#    GROUP = u"ＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ"
+#    GROUP = u"あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめもやゆ"
     GROUP = u"展"
     DELIMITER = "\t"
 
@@ -147,10 +160,12 @@ class DENEN(object):
     GROUP = [u"田園"]
 
 class HOURAIGEKISEN(object):
-    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    GROUP = u"ABCDE"
-    DELIMITER = "\t"
+    LAYOUT_PARSE_1 = re.compile(u"(.*?)-[0-9]{1,2}.*")
+    LAYOUT_PARSE_2 = re.compile(u"(.*?)-[0-9]{1,2}.*")
+#    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+#    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+    GROUP = u"あいうえおかきくけこさしすせそたちつてとなにぬね"
+    DELIMITER = ","
 
 class PUV(object):
     LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
@@ -187,13 +202,14 @@ class SHT(object):
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}")
     GROUP = [
         u"円環", u"マミ", u"ほむ", u"探偵", u"うん", u"スト", u"キュア",
-        u"宝石", u"咲", u"ミク", u"電磁", u"プリ", u"ゆり",
-        u"戦", u"車", u"道", u"なの", u"長門", u"うさぎ", u"勇者", u"絶唱",
-        u"アイ", u"イリヤ", u"晴風", u"菓子", u"愛里寿", u"リル", u"鬼", u"SHT"
+        u"咲", u"ミク", u"電磁", u"プリ", u"戦車", u"愛里寿",
+        u"なの", u"うさぎ", u"勇者", u"絶唱",
+        u"アイ", u"晴風", u"リル", u"鬼", u"祝福", u"幼女", u"魔法", u"卓球", u"駄天", u"小林",
+        u"バンド", u"うらら", u"けもの", u"SHT"
     ]
     DELIMITER = ","
 
-CONF = KEY_POINT
+CONF = SHT
 
 
 #def (dictLayout):
