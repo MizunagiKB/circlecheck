@@ -4,6 +4,7 @@
 *.tsv
 *.swp
 *.xml
+*.numbers
 
 DefinitelyTyped/*/*.js
 

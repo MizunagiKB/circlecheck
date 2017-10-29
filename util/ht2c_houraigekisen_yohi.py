@@ -76,9 +76,9 @@ def main():
 
     if sys.argv[1].find("http") == 0:
         r = requests.get(sys.argv[1])
-        strBuffer = r.content.decode("euc-jp").encode("utf-8")
+        strBuffer = r.content.decode("euc-jp")
     else:
-        strBuffer = open(sys.argv[1], "rb").read()
+        strBuffer = open(sys.argv[1], "r").read()
 
     strBuffer = strBuffer.replace("\r", "")
     strBuffer = strBuffer.replace("\n", "")
@@ -125,7 +125,7 @@ def main():
                     strTwitter = strUrl
                     strUrl = ""
 
-                print "\t".join([strSpace, strCircle, strWriter, strUrl, strTwitter, strPixiv])
+                print("\t".join([strSpace, strCircle, strWriter, strUrl, strTwitter, strPixiv]))
 
 
 if(__name__ == "__main__"):
