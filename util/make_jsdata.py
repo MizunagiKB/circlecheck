@@ -6,6 +6,9 @@ import json
 import re
 import time
 import requests
+import couchdb
+
+import configure
 
 #
 #LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}・[0-9]{1,2}")
@@ -133,15 +136,16 @@ class PUNIKET(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
 #    GROUP = [u"ドド", u"レレ", u"ミミ", u"プリ", u"アイ", u"駆逐", u"キュア"]
-    GROUP = [u"ぷ", u"に", u"プリ", u"パラ", u"キュア", u"アイ", u"戦車", u"駆逐", u"グラ", u"FGO", u"けもの", u"なのは"]
+#    GROUP = [u"ぷ", u"に", u"プリ", u"パラ", u"キュア", u"アイ", u"戦車", u"駆逐", u"グラ", u"FGO", u"けもの", u"なのは"]
+    GROUP = [u"FGO", u"アズ", u"キュア", u"けもの", u"なの", u"ぷに", u"プリ", u"駆逐", u"戦車"]
     DELIMITER = ","
 
 class LYRICALMAGICAL(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-    GROUP = [u"リリマジテスト"]
+    GROUP = [u"なの"]
     #GROUP = [u"な", u"の", u"は"]
-    DELIMITER = ","
+    DELIMITER = "\t"
 
 class GAMEMARKET(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
@@ -309,46 +313,47 @@ def parse_layout(s):
     return(oCResult.group(1))
 
 
-def search_twitter_user_id(strTwitterURL):
-    """Twitter ID
+def search_twitter_screen_name(db_circlecheck_uinfo, screen_name):
 
-    Args:
-        strTwitterURL (str):
-    """
-
-    dict_result = {}
-
-    search_result = re.search(
-        "https?:\\/\\/twitter.com\\/(.*$)",
-        strTwitterURL
+    list_user = db_circlecheck_uinfo.view(
+        "user/screen_name",
+        wrapper=None,
+        reduce=False,
+        group=False,
+        descending=False,
+        include_docs=False,
+        start_key=[screen_name, ""],
+        end_key=[screen_name, "Z"]
     )
 
-    if search_result is not None:
-        screen_name = search_result.group(1).split("?")[0]
-
-        # print strTwitterURL, search_result.groups()
-        time.sleep(0.1)
-
-        req = requests.get(strTwitterURL)
-        if req.status_code in (200,):
-            strHtml = req.text.encode("utf-8").replace("\r", " ").replace("\n", " ")
-
-            search_result = re.search(
-                "<div class=\"user-actions btn-group not-following.*?\".*?data-user-id=\"(.*?)\".*?data-screen-name=\"" + screen_name + "\".*?data-name=\"(.*?)\".*?>",
-                strHtml
-            )
-
-            dict_result = {
-                "twitter_screen_name": screen_name,
-                "twitter_user_id": search_result.group(1)
+    if len(list_user) == 1:
+        for r in list_user:
+            return {
+                "twitter_screen_name": r.key[0].encode("utf-8"),
+                "twitter_user_id": r.key[1].encode("utf-8")
             }
 
-    return dict_result
+    return None
 
 
 def main():
 
+
+    # CouchDB
+    conn_couch = couchdb.Server(
+        "http://" + configure.COUCH_USER + ":" + configure.COUCH_PASS + "@" + configure.COUCH_HOST
+    )
+
+    # CouchDB get tweets
+    db_circlecheck_uinfo = conn_couch["circlecheck_uinfo"]
+
+    #
     dictLayout = {}
+
+#            dict_result = {
+#                "twitter_screen_name": screen_name,
+#                "twitter_user_id": search_result.group(1)
+#            }
 
     with open(sys.argv[1], "r") as hFile:
         oCReader = csv.reader(hFile, delimiter=CONF.DELIMITER)
@@ -365,10 +370,13 @@ def main():
                 s = r[idx].strip()
 
                 if s != u"　" and len(s) > 0:
-                    if re.search("https?:\\/\\/twitter.com\\/(?!\\?).+", s):
+                    o_re = re.search("https?:\\/\\/twitter.com\\/(.*)", s)
+                    if o_re is not None:
                         kwd = "twitter"
-                        #for k, v in search_twitter_user_id(s).items():
-                        #    dictRecord["circle_list"][k] = v
+                        dict_result = search_twitter_screen_name(db_circlecheck_uinfo, o_re.group(1))
+                        if dict_result is not None:
+                            for k, v in dict_result.items():
+                                dictRecord["circle_list"][k] = v
                     if re.search("https?:\\/\\/www.pixiv.net\\/member.php\\?.+", s):
                         kwd = "pixiv"
                     if re.search("https?:\\/\\/pixiv.me\\/(?!\\?).+", s):

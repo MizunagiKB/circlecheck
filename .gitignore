@@ -4,12 +4,14 @@
 *.tsv
 *.swp
 *.xml
+*.pyc
 *.numbers
 
 DefinitelyTyped/*/*.js
 
 util/source.*
 util/*.json
+util/configure.py
 
 www/app_config.php
 
