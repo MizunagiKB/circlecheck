@@ -51,7 +51,7 @@ class COMIC1(object):
 class KEY_POINT(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}")
     LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
-    GROUP = [u"K", u"e", u"y", u"車"]
+    GROUP = [u"K", u"e", u"y", u"P"]
     DELIMITER = "\t"
 
 class TECHBOOKFEST(object):
@@ -65,15 +65,6 @@ class PANZER(object):
     LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)-[0-9]{1,2}")
     GROUP = u"ABCDEFGHIJKL"
     DELIMITER = ","
-
-#KEY_POINT = [u"魔", u"伊", u"呂", u"波", u"つむぎ", u"ラブリー", u"フローラ", u"ブロッサム", u"オリヴィエ", u"タルト", u"パイン"]
-
-#LYRICALMAGICAL = u"なのは"
-#CIRCLE = [u"アイ", u"カツ"]
-LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
-LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
-#CIRCLE = u"ＡＣＤＥＦＧＩＪＫＬＭＮ"
-#CIRCLE = u"ＡＢＣＤＥＦＧＨ"
 
 class OMOJIN(object):
     LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-[0-9]{1,2}")
@@ -117,7 +108,8 @@ class LOVELIVE(object):
     LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
     LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
 #    GROUP = u"ABCDEFGHIJK"
-    GROUP = [u"音", u"ノ", u"木", u"サン", u"シャ", u"イン", u"ことり", u"梨子", u"ルビィ", u"穂乃果", u"千歌"]
+#    GROUP = [u"音", u"ノ", u"木", u"サン", u"シャ", u"イン", u"ことり", u"梨子", u"ルビィ", u"穂乃果", u"千歌"]
+    GROUP = [u"僕", u"ラ", u"ブ", u"ぬ", u"ま", u"づ", u"凛"]
 
 #    GROUP = [u"ラブ", u"ライブ", u"花陽", u"凛花", u"ダイヤ"]
 #    GROUP = [u"国", u"立", u"音", u"ノ", u"木", u"坂", u"浦", u"星", u"サン", u"シャ", u"イン"]
@@ -181,9 +173,11 @@ class DENEN(object):
 class HOURAIGEKISEN(object):
 #    LAYOUT_PARSE_1 = re.compile(u"(.*?)-[0-9]{1,2}.*")
 #    LAYOUT_PARSE_2 = re.compile(u"(.*?)-[0-9]{1,2}.*")
-    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
-    GROUP = u"あかきくけこさしすせそたぬねのはひふへほまみむめ"
+#    LAYOUT_PARSE_1 = re.compile(u"SP-No\\.(.*?)-[0-9]{1,2}.*")
+#    LAYOUT_PARSE_2 = re.compile(u"SP-No\\.外(.*?)-[0-9]{1,2}.*")
+    LAYOUT_PARSE_1 = re.compile(u"(.*?)[0-9]{1,2}.*")
+    LAYOUT_PARSE_2 = re.compile(u"(.*?)[0-9]{1,2}.*")
+    GROUP = [u"SP-No.", u"SP-No.外"]
     DELIMITER = "\t"
 
 class PUV(object):
@@ -235,7 +229,7 @@ class SHT(object):
     ]
     DELIMITER = ","
 
-CONF = LYRICALMAGICAL
+CONF = LOVELIVE
 
 
 def custom_sort(d):
@@ -307,7 +301,7 @@ def parse_layout(s):
     if oCResult is None:
         oCResult = CONF.LAYOUT_PARSE_2.search(s)
         if oCResult is None:
-            print("paser_layout error", s)
+            print("parser_layout error", s)
             sys.exit(-1)
 
     return(oCResult.group(1))

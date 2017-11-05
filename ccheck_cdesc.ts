@@ -26,9 +26,9 @@
  */
 // -------------------------------------------------------------- reference(s)
 // ------------------------------------------------ http://definitelytyped.org
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts"/>
-/// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
-/// <reference path="../DefinitelyTyped/backbone/backbone.d.ts"/>
+/// <reference path="./DefinitelyTyped/jquery/jquery.d.ts"/>
+/// <reference path="./DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
+/// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
 /// <reference path="./ccheck.ts"/>
 

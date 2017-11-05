@@ -30,6 +30,7 @@
 /// <reference path="./DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
 /// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
+/// <reference path="./DefinitelyTyped/leaflet/index.d.ts"/>
 /// <reference path="./ccheck.ts"/>
 /// <reference path="./ccheck_cinfo.ts"/>
 
@@ -48,6 +49,9 @@ module ccheck {
         writer?: string;
         icon?: string;
         url?: string;
+        twitter?: string;
+        twitter_user_id?: string;
+        twitter_screen_name?: string;
     }
 
     export interface ICIRCLE_LIST_DAT {

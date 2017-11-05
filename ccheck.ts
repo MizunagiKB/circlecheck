@@ -4,9 +4,9 @@
  * @author @MizunagiKB
  */
 // -------------------------------------------------------------- reference(s)
-/// <reference path="../DefinitelyTyped/jquery/jquery.d.ts"/>
-/// <reference path="../DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
-/// <reference path="../DefinitelyTyped/backbone/backbone.d.ts"/>
+/// <reference path="./DefinitelyTyped/jquery/jquery.d.ts"/>
+/// <reference path="./DefinitelyTyped/bootstrap/bootstrap.d.ts"/>
+/// <reference path="./DefinitelyTyped/backbone/backbone.d.ts"/>
 /// <reference path="./DefinitelyTyped/hogan/hogan.d.ts"/>
 /// <reference path="./ccheck_model.ts"/>
 /// <reference path="./ccheck_cdesc.ts"/>

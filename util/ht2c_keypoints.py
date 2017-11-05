@@ -57,7 +57,7 @@ def main():
     strBuffer = strBuffer.replace("\n", "")
 
     listTable = re.findall(
-        "<table summary=\"Key Points10 サークルリスト\">(.*?)</table>",
+        "<table summary=\"Key Points11 サークルリスト\">(.*?)</table>",
         strBuffer,
         re.I
     )

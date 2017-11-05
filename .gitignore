@@ -11,6 +11,7 @@ DefinitelyTyped/*/*.js
 
 util/source.*
 util/*.json
+util/*.html
 util/configure.py
 
 www/app_config.php

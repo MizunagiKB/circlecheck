@@ -276,7 +276,7 @@
             <div>
                 <span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>
                 &nbsp;{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}
-                {{#twitter}}&nbsp;/&nbsp;<a href="{{twitter}}" target="_blank">Twitter</a>{{/twitter}}
+                {{#twitter}}&nbsp;/&nbsp;<a href="{{twitter}}" target="_blank">Twitter&nbsp;{{#twitter_user_id}}{{#twitter_screen_name}}<small><span class="glyphicon glyphicon-link"></span></small>{{/twitter_screen_name}}{{/twitter_user_id}}</a>{{/twitter}}
                 {{#pixiv}}&nbsp;/&nbsp;<a href="{{pixiv}}" target="_blank">Pixiv</a>{{/pixiv}}
                 {{#writer}}<br /><small><span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}</small>{{/writer}}
             </div>
@@ -530,6 +530,10 @@
 
         <div id="id_tpl_foot">
             <div class="container">
+                <p class="text-right">
+                    <small>このページへのリンクやツイートによる共有はご自由にどうぞ</small>
+                    &nbsp;<a href="https://twitter.com/share?ref_src=twsrc%5Etfw" class="twitter-share-button" data-show-count="false">Tweet</a><script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+                </p>
                 <p class="text-right">Programming and Design&nbsp;<a href="https://twitter.com/MizunagiKB">@MizunagiKB</a></p>
                 <p class="text-right">GitHub&nbsp;<a href="https://github.com/MizunagiKB/circlecheck">MizunagiKB / circlecheck</a></p>
             </div>
