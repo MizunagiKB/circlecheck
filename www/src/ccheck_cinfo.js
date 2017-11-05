@@ -22,28 +22,33 @@
     id_view_conf .cchack_vie
     id_view_area .cchack_view
  */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var ccheck;
 (function (ccheck) {
+    var E_CIRCLE_INFO_CATEGORY;
     (function (E_CIRCLE_INFO_CATEGORY) {
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["MENU"] = 0] = "MENU";
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["NEW_ITEM"] = 1] = "NEW_ITEM";
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["INV_ITEM"] = 2] = "INV_ITEM";
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["INFO"] = 3] = "INFO";
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["ABSENT"] = 4] = "ABSENT";
-    })(ccheck.E_CIRCLE_INFO_CATEGORY || (ccheck.E_CIRCLE_INFO_CATEGORY = {}));
-    var E_CIRCLE_INFO_CATEGORY = ccheck.E_CIRCLE_INFO_CATEGORY;
+    })(E_CIRCLE_INFO_CATEGORY = ccheck.E_CIRCLE_INFO_CATEGORY || (ccheck.E_CIRCLE_INFO_CATEGORY = {}));
     var TPL_OWNER_EDIT = Hogan.compile(''
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-info evt-edit-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"></span></a>'
         + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-danger evt-drop-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"></span></a>');
     var model_CCircleInfo = (function (_super) {
         __extends(model_CCircleInfo, _super);
         function model_CCircleInfo(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         model_CCircleInfo.prototype.reset = function () {
             this.unset("_id");
@@ -62,8 +67,9 @@ var ccheck;
     var view_CCircleEdit = (function (_super) {
         __extends(view_CCircleEdit, _super);
         function view_CCircleEdit(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.model, "change", this.render);
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.model, "change", _this.render);
+            return _this;
         }
         view_CCircleEdit.prototype.events = function () {
             return {

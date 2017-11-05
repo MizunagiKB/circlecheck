@@ -4,12 +4,12 @@
  */
 var ccheck;
 (function (ccheck) {
+    var E_EDIT_MODE;
     (function (E_EDIT_MODE) {
         E_EDIT_MODE[E_EDIT_MODE["INSERT"] = 0] = "INSERT";
         E_EDIT_MODE[E_EDIT_MODE["UPDATE"] = 1] = "UPDATE";
         E_EDIT_MODE[E_EDIT_MODE["DELETE"] = 2] = "DELETE";
-    })(ccheck.E_EDIT_MODE || (ccheck.E_EDIT_MODE = {}));
-    var E_EDIT_MODE = ccheck.E_EDIT_MODE;
+    })(E_EDIT_MODE = ccheck.E_EDIT_MODE || (ccheck.E_EDIT_MODE = {}));
     ccheck.app = null;
     var DEMO = 0;
     var CApplication = (function () {

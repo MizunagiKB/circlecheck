@@ -23,17 +23,22 @@
     id_view_area .cchack_view
 
  */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var ccheck;
 (function (ccheck) {
     var model_CEventList = (function (_super) {
         __extends(model_CEventList, _super);
         function model_CEventList(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         return model_CEventList;
     }(Backbone.Model));
@@ -41,8 +46,9 @@ var ccheck;
     var collection_CEventList = (function (_super) {
         __extends(collection_CEventList, _super);
         function collection_CEventList(models, options) {
-            _super.call(this, models, options);
-            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
+            var _this = _super.call(this, models, options) || this;
+            _this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
+            return _this;
         }
         collection_CEventList.prototype.parse = function (response, options) {
             return response.rows;
@@ -53,9 +59,10 @@ var ccheck;
     var view_CEventList = (function (_super) {
         __extends(view_CEventList, _super);
         function view_CEventList(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.collection, "sync", this.render);
-            this.m_dictTemplate = dictTemplate;
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.collection, "sync", _this.render);
+            _this.m_dictTemplate = dictTemplate;
+            return _this;
         }
         view_CEventList.prototype.render = function () {
             var strTemplateName = "";
@@ -77,7 +84,7 @@ var ccheck;
     var model_CEventCatalog = (function (_super) {
         __extends(model_CEventCatalog, _super);
         function model_CEventCatalog(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         model_CEventCatalog.prototype.validate = function (attributes, options) {
             if (!attributes.DATA_SOURCE)
@@ -94,7 +101,7 @@ var ccheck;
     var model_CCircleFavo = (function (_super) {
         __extends(model_CCircleFavo, _super);
         function model_CCircleFavo(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         return model_CCircleFavo;
     }(Backbone.Model));
@@ -102,16 +109,17 @@ var ccheck;
     var collection_CCircleFavo = (function (_super) {
         __extends(collection_CCircleFavo, _super);
         function collection_CCircleFavo(models, options) {
-            _super.call(this, models, options);
-            this.comparator = function (compare, to) {
+            var _this = _super.call(this, models, options) || this;
+            _this.comparator = function (compare, to) {
                 if (compare.attributes.sortkey > to.attributes.sortkey)
                     return (1);
                 if (compare.attributes.sortkey < to.attributes.sortkey)
                     return (-1);
                 return (0);
             };
-            this.on("add", this.evt_append);
-            this.on("remove", this.evt_remove);
+            _this.on("add", _this.evt_append);
+            _this.on("remove", _this.evt_remove);
+            return _this;
         }
         collection_CCircleFavo.prototype.modelId = function (attributes) {
             return attributes.layout;
@@ -146,7 +154,7 @@ var ccheck;
     var model_CCircleFind = (function (_super) {
         __extends(model_CCircleFind, _super);
         function model_CCircleFind(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         return model_CCircleFind;
     }(Backbone.Model));
@@ -154,14 +162,15 @@ var ccheck;
     var collection_CCircleFind = (function (_super) {
         __extends(collection_CCircleFind, _super);
         function collection_CCircleFind(models, options) {
-            _super.call(this, models, options);
-            this.comparator = function (compare, to) {
+            var _this = _super.call(this, models, options) || this;
+            _this.comparator = function (compare, to) {
                 if (compare.attributes.sortkey > to.attributes.sortkey)
                     return (1);
                 if (compare.attributes.sortkey < to.attributes.sortkey)
                     return (-1);
                 return (0);
             };
+            return _this;
         }
         collection_CCircleFind.prototype.modelId = function (attributes) {
             return attributes.layout;
@@ -172,11 +181,12 @@ var ccheck;
     var view_CCatalogHead = (function (_super) {
         __extends(view_CCatalogHead, _super);
         function view_CCatalogHead(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.model, "change", this.render);
-            this.on("view_change", this.view_change);
-            this.m_dictTemplate = dictTemplate;
-            this.m_bMapRendered = false;
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.model, "change", _this.render);
+            _this.on("view_change", _this.view_change);
+            _this.m_dictTemplate = dictTemplate;
+            _this.m_bMapRendered = false;
+            return _this;
         }
         view_CCatalogHead.prototype.events = function () {
             return {
@@ -325,9 +335,10 @@ var ccheck;
     var view_CCatalogList = (function (_super) {
         __extends(view_CCatalogList, _super);
         function view_CCatalogList(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.model, "change", this.render);
-            this.m_dictTemplate = dictTemplate;
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.model, "change", _this.render);
+            _this.m_dictTemplate = dictTemplate;
+            return _this;
         }
         view_CCatalogList.prototype.events = function () {
             return {
@@ -461,10 +472,11 @@ var ccheck;
     var view_CCircleFavo = (function (_super) {
         __extends(view_CCircleFavo, _super);
         function view_CCircleFavo(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.collection, "add", this.render);
-            this.listenTo(this.collection, "remove", this.render);
-            this.m_dictTemplate = dictTemplate;
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.collection, "add", _this.render);
+            _this.listenTo(_this.collection, "remove", _this.render);
+            _this.m_dictTemplate = dictTemplate;
+            return _this;
         }
         view_CCircleFavo.prototype.events = function () {
             return {
@@ -547,10 +559,11 @@ var ccheck;
     var view_CCircleFind = (function (_super) {
         __extends(view_CCircleFind, _super);
         function view_CCircleFind(options, dictTemplate) {
-            _super.call(this, options);
-            this.m_hTimer = null;
-            this.m_strSearchKeyword = "";
-            this.m_dictTemplate = dictTemplate;
+            var _this = _super.call(this, options) || this;
+            _this.m_hTimer = null;
+            _this.m_strSearchKeyword = "";
+            _this.m_dictTemplate = dictTemplate;
+            return _this;
         }
         view_CCircleFind.prototype.events = function () {
             return {

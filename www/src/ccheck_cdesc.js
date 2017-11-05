@@ -23,17 +23,22 @@
     id_view_area .cchack_view
 
  */
-var __extends = (this && this.__extends) || function (d, b) {
-    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
-    function __() { this.constructor = d; }
-    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
-};
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = Object.setPrototypeOf ||
+        ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+        function (d, b) { for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p]; };
+    return function (d, b) {
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
 var ccheck;
 (function (ccheck) {
     var model_CCircleDesc_Hist = (function (_super) {
         __extends(model_CCircleDesc_Hist, _super);
         function model_CCircleDesc_Hist(attributes, options) {
-            _super.call(this, attributes, options);
+            return _super.call(this, attributes, options) || this;
         }
         return model_CCircleDesc_Hist;
     }(Backbone.Model));
@@ -41,8 +46,9 @@ var ccheck;
     var view_CCircleDesc_Hist = (function (_super) {
         __extends(view_CCircleDesc_Hist, _super);
         function view_CCircleDesc_Hist(options, dictTemplate) {
-            _super.call(this, options);
-            this.listenTo(this.model, "change", this.render);
+            var _this = _super.call(this, options) || this;
+            _this.listenTo(_this.model, "change", _this.render);
+            return _this;
         }
         view_CCircleDesc_Hist.prototype.events = function () {
             return {};
