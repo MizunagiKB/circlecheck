@@ -43,8 +43,8 @@ var ccheck;
         E_CIRCLE_INFO_CATEGORY[E_CIRCLE_INFO_CATEGORY["ABSENT"] = 4] = "ABSENT";
     })(E_CIRCLE_INFO_CATEGORY = ccheck.E_CIRCLE_INFO_CATEGORY || (ccheck.E_CIRCLE_INFO_CATEGORY = {}));
     var TPL_OWNER_EDIT = Hogan.compile(''
-        + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-info evt-edit-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-edit"></span></a>'
-        + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="text-danger evt-drop-circle" href="javascript:void(0);"><span class="glyphicon glyphicon-remove"></span></a>');
+        + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="evt-edit-circle" href="javascript:void(0);"><i class="edit icon"></i></a>'
+        + '&nbsp;&nbsp;<a data-grp="{{grp}}" data-idx="{{idx}}" data-id="{{_id}}" data-rev="{{_rev}}" data-layout="{{layout}}" class="evt-drop-circle" href="javascript:void(0);"><i class="close icon"></i></a>');
     var model_CCircleInfo = (function (_super) {
         __extends(model_CCircleInfo, _super);
         function model_CCircleInfo(attributes, options) {

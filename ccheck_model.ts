@@ -123,7 +123,6 @@ module ccheck {
         //
         constructor(models?: model_CCircleFavo[] | Object[], options?: any) {
             super(models, options);
-            this.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
         }
 
         //
@@ -313,11 +312,11 @@ module ccheck {
         //
         events(): Backbone.EventsHash {
             return {
-                "click li#id_menu_list": this.evt_view_change,
-                "click li#id_menu_favo": this.evt_view_change,
-                "click li#id_menu_find": this.evt_view_change,
-                "click li#id_menu_conf": this.evt_view_change,
-                "click li#id_menu_area": this.evt_view_change
+                "click a#id_menu_list": this.evt_view_change,
+                "click a#id_menu_favo": this.evt_view_change,
+                "click a#id_menu_find": this.evt_view_change,
+                "click a#id_menu_conf": this.evt_view_change,
+                "click a#id_menu_area": this.evt_view_change
             }
         }
 
@@ -329,12 +328,12 @@ module ccheck {
         //
         view_change(strId: string) {
 
-            $("nav li").removeClass("active");
+            $("div#id_tpl_head a").removeClass("active");
             $(strId).removeClass("disabled");
             $(strId).addClass("active");
 
-            $(".cchack_view").hide();
-            $($(strId).data("target-view")).fadeIn();
+            $(".ccheck_view").hide();
+            $($(strId).data("target-view")).show();
 
             if (strId == "#id_menu_area") {
                 if (this.m_bMapRendered == false) {
@@ -451,17 +450,13 @@ module ccheck {
                     let strHref: string = "index.html?jsdata=" + $("#jsdata").val();
                     $("#id_menu_mode_space").html(
                         ''
-                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
-                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を無効</a>'
-                        + '</li>'
+                        + '<a id="id_menu_cinfo" data-target-view="#id_menu_cinfo" class="item" href="' + strHref + '"><i class="comment icon"></i>&nbsp;サークル通知を無効</a>'
                     );
                 } else {
                     let strHref: string = "index.html?jsdata=" + $("#jsdata").val() + "&m=cinfo";
                     $("#id_menu_mode_space").html(
                         ''
-                        + '<li id="id_menu_cinfo" data-target-view="#id_menu_cinfo">'
-                        + '<a href="' + strHref + '"><span class="glyphicon glyphicon-comment"></span>&nbsp;サークル通知を有効</a>'
-                        + '</li>'
+                        + '<a id="id_menu_cinfo" data-target-view="#id_menu_cinfo" class="item" href="' + strHref + '"><i class="comment icon"></i>&nbsp;サークル通知を有効</a>'
                     );
                 }
 
@@ -494,9 +489,9 @@ module ccheck {
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_PREV) == true) {
                     const strPrev: string = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_PREV;
                     if (app.m_bCInfo == true) {
-                        $("#id_menu_prev a").attr("href", strPrev + "&m=cinfo");
+                        $("a#id_menu_prev").attr("href", strPrev + "&m=cinfo");
                     } else {
-                        $("#id_menu_prev a").attr("href", strPrev);
+                        $("a#id_menu_prev").attr("href", strPrev);
                     }
                 } else {
                     $("#id_menu_prev").addClass("disabled");
@@ -505,9 +500,9 @@ module ccheck {
                 if (this.is_valid_param(this.model.attributes.DATA_SOURCE_NEXT) == true) {
                     const strNext: string = strBaseAddress + "?jsdata=" + this.model.attributes.DATA_SOURCE_NEXT;
                     if (app.m_bCInfo == true) {
-                        $("#id_menu_next a").attr("href", strNext + "&m=cinfo");
+                        $("a#id_menu_next").attr("href", strNext + "&m=cinfo");
                     } else {
-                        $("#id_menu_next a").attr("href", strNext);
+                        $("a#id_menu_next").attr("href", strNext);
                     }
                 } else {
                     $("#id_menu_next").addClass("disabled");
@@ -686,6 +681,7 @@ module ccheck {
             if (this.model.isValid() == false) {
 
                 // 最新30件のイベントを取得
+                //app.m_collection_event_list.url = "./list_by_date";
                 app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list_by_date";
                 app.m_collection_event_list.fetch(
                     {
@@ -699,6 +695,7 @@ module ccheck {
             } else {
 
                 // 現在表示中のEVENT_SERIESから最新30件のイベントを取得
+                //app.m_collection_event_list.url = "list_by_date";
                 app.m_collection_event_list.url = "/db/circlecheck/_design/catalog/_view/list";
                 app.m_collection_event_list.fetch(
                     {
@@ -714,7 +711,8 @@ module ccheck {
                 this.render_table_tab();
                 this.render_table_dat();
 
-                $("#id_tab_circle_lst a:first").tab("show");
+                $(".menu .item").tab();
+                $(".menu .item").tab("change tab", "id_tab_0");
 
                 resume();
             }
@@ -775,7 +773,7 @@ module ccheck {
             let nIdx: number = $(oCEvt.currentTarget).data("idx");
             let oCItem: ICIRCLE_LIST_DAT = app.m_model_event_catalog.attributes.CIRCLE_LIST_DAT[nGrp][nIdx];
 
-            $("#id_row_favo_" + nGrp + "_" + nIdx).toggleClass("success");
+            $("#id_row_favo_" + nGrp + "_" + nIdx).toggleClass("positive");
         }
 
         //

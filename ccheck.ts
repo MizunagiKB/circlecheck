@@ -207,7 +207,8 @@ module ccheck {
             );
 
             this.m_model_circle_desc_hist.clear();
-            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
+            this.m_model_circle_desc_hist.url = "./circle_list";
+//            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
             this.m_model_circle_desc_hist.fetch(
                 {
                     data: {
@@ -355,8 +356,8 @@ module ccheck {
                 $.getJSON(strUrl)
             ).done(
                 function(dictEventCatalog: any) {
-                    //const URL_CIRCLE_INFO: string = "sample_01_circle_info.json";
-                    //const URL_AUTH: string = "sample_01_auth.json";
+                    //const URL_CIRCLE_INFO: string = "circle_information?";
+                    //const URL_AUTH: string = "sample_01_auth.json?";
                     const URL_CIRCLE_INFO: string = "/db/circlecheck_cinfo/_design/event/_view/circle_information?";
                     const URL_AUTH: string = "iface_auth.php?";
                     let listCParam: Array<string> = [
@@ -394,14 +395,14 @@ module ccheck {
                                 $("#jsdata").val(strUrl);
                                 app.m_model_event_catalog.set(dictEventCatalog);
                             }
-                            ).fail(
+                        ).fail(
                             function(deffered_cinfo: any, deffered_auth: any) {
                                 app.m_bCInfo = false;
 
                                 $("#jsdata").val(strUrl);
                                 app.m_model_event_catalog.set(dictEventCatalog);
                             }
-                            );
+                        );
                     } else {
                         app.m_bCInfo = false;
 
@@ -409,7 +410,7 @@ module ccheck {
                         app.m_model_event_catalog.set(dictEventCatalog);
                     }
                 }
-                );
+            );
         }
     }
 

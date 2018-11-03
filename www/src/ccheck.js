@@ -126,7 +126,7 @@ var ccheck;
                 "circle_desc_info": oCTpl.render(oCItem)
             }));
             this.m_model_circle_desc_hist.clear();
-            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
+            this.m_model_circle_desc_hist.url = "./circle_list";
             this.m_model_circle_desc_hist.fetch({
                 data: {
                     descending: true,
