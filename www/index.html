@@ -31,9 +31,13 @@
 
             .foot.container {
                 margin-top: 1em;
-                margin-bottom: 1em;
+                margin-bottom: 2em;
             }
 
+            #id_bing_map {
+                width: auto;
+                height: 384px;
+            }
         </style>
 
         <script>
@@ -48,19 +52,43 @@
 
     <body>
 
-        <div id="id_tpl_head" class="ui inverted top fixed menu" role="navigation">
-            <div class="header item">
-                <a class="navbar-brand" href="{{EVENT_URL}}">{{EVENT_NAME}}</a>
+        <div class="ui grid">
+            <div class="one column computer tablet only row">
+                <div class="column">
+                    <div class="ui inverted top fixed menu">
+                        <div id="id_event_header" class="header item">
+                            <a href="{{EVENT_URL}}">{{EVENT_NAME}}</a>
+                        </div>
+                        <a id="id_menu_list" data-target-view="#id_view_list" class="item cc_menu" href="javascript:void(0);"><i class="list icon"></i>&nbsp;配置</a>
+                        <a id="id_menu_favo" data-target-view="#id_view_favo" class="item cc_menu" href="javascript:void(0);"><i class="star icon"></i>&nbsp;お気に入り<span id="id_head_fav_count" class="ui blue left pointing label" style="display: none;"></span></a>
+                        <a id="id_menu_area" data-target-view="#id_view_area" class="item cc_menu" href="javascript:void(0);"><i class="map icon"></i></a>
+                        <a id="id_menu_find" data-target-view="#id_view_find" class="item cc_menu" href="javascript:void(0);"><i class="search icon"></i></a>
+                        <a id="id_menu_conf" data-target-view="#id_view_conf" class="item cc_menu" href="javascript:void(0);"><i class="cog icon"></i></a>
+                        <a id="id_menu_prev" class="item" href="javascript:void(0);"><i class="angle left icon"></i></a>
+                        <a id="id_menu_next" class="item" href="javascript:void(0);"><i class="angle right icon"></i></a>
+                        <div id="id_menu_mode_space" class="right menu">
+                            <!--<a class="item" href="javascript:void(0);"><i class="angle right icon"></i></a>-->
+                        </div>
+                    </div>
+                </div>
             </div>
-            <a id="id_menu_list" data-target-view="#id_view_list" class="item" href="javascript:void(0);"><i class="list icon"></i>&nbsp;配置</a>
-            <a id="id_menu_favo" data-target-view="#id_view_favo" class="item" href="javascript:void(0);"><i class="star icon"></i>&nbsp;お気に入り&nbsp;<span id="id_head_fav_count" class="ui blue label"></span></a>
-            <a id="id_menu_find" data-target-view="#id_view_find" class="item" href="javascript:void(0);"><i class="search icon"></i>&nbsp;検索</a>
-            <a id="id_menu_conf" data-target-view="#id_view_conf" class="item" href="javascript:void(0);"><i class="cog icon"></i>&nbsp;設定</a>
-            <a id="id_menu_area" data-target-view="#id_view_area" class="item" href="javascript:void(0);"><i class="map icon"></i></a>
-            <a id="id_menu_prev" class="item" href="javascript:void(0);"><i class="angle left icon"></i></a>
-            <a id="id_menu_next" class="item" href="javascript:void(0);"><i class="angle right icon"></i></a>
-            <div id="id_menu_mode_space" class="right menu">
-                <!--<a class="item" href="javascript:void(0);"><i class="angle right icon"></i></a>-->
+            <div class="one column mobile only row">
+                <div class="column">
+                    <div class="ui inverted top fixed menu">
+                        <a id="id_menu_list" data-target-view="#id_view_list" class="item cc_menu" href="javascript:void(0);"><i class="list icon"></i>&nbsp;配置</a>
+                        <a id="id_menu_favo" data-target-view="#id_view_favo" class="item cc_menu" href="javascript:void(0);"><i class="star icon"></i>&nbsp;お気に入り</a>
+                        <a id="id_menu_find" data-target-view="#id_view_find" class="item cc_menu" href="javascript:void(0);"><i class="search icon"></i></a>
+                        <div id="id_menu_mode_space" class="right menu">
+                            <a id="id_menu_conf" data-target-view="#id_view_conf" class="item cc_menu" href="javascript:void(0);"><i class="cog icon"></i></a>
+                        </div>
+                    </div>
+
+                    <div class="ui container">
+                        <h3 id="id_event_header_mobile" class="ui header">
+                            <a href="{{EVENT_URL}}">{{EVENT_NAME}}</a>
+                        </h3>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -71,8 +99,7 @@
                 <h4 class="modal-title" id="id_dlg_desc_caption">サークル情報</h4>
             </div>
             <div class="content">
-                <h2>配置場所&nbsp;<span class="label label-default">{{layout}}</span></h2>
-                <h5>参加情報</h5>
+                <h4>配置場所&nbsp;<span class="label label-default">{{layout}}</span></h4>
                 {{{circle_desc_info}}}
                 <h5>circlecheck内に登録されている参加イベント（最新5件）</h5>
                 <div id="id_circle_desc_hist"></div>
@@ -83,7 +110,7 @@
         </div>
 
         <script type="text/template" id="id_tpl_circledesc_hist">
-            <table class="ui striped selectable compact table">
+            <table class="ui striped selectable compact unstackable table">
                 <thead>
                     <tr>
                         <th>イベント名</th>
@@ -102,123 +129,96 @@
         </script>
 
         <!-- Template Dialog -->
-        <!--
-        <div id="id_tpl_circle_edit" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="id_dlg_circle_edit_caption">サークル通知情報の編集</h4>
-                    </div>
-                    <div class="modal-body">
+        <div id="id_tpl_circle_edit" class="ui modal">
+            <i class="close icon"></i>
+            <div class="header">
+                <h4 id="id_dlg_circle_edit_caption">サークル通知情報の編集</h4>
+            </div>
+            <div class="content">
+                <div id="id_circle_edit_notify_area"></div>
 
-                        <div id="id_circle_edit_notify_area">
+                <h5>表示サンプル&nbsp;<small>編集中の項目は以下のように表示されます</small></h5>
+                <div id="id_preview_circle_edit" class="ui message">
+                </div>
+
+                <form id="id_circle_edit_form">
+                    <div class="ui form">
+                        <div class="field">
+                            <label for="id_date_circle_edit">日付</label>
+                            <input type="text" class="form-control" id="id_date_circle_edit" placeholder="YYYY-MM-DD" />
                         </div>
 
-                        <h5>表示サンプル&nbsp;<small>編集中の項目は以下のように表示されます</small></h5>
-                        <div class="panel panel-primary">
-                            <div id="id_preview_circle_edit" class="panel-body"></div>
+                        <div class="ui five item menu">
+                            <a id="id_category_1" class="item">お品書き</a>
+                            <a id="id_category_2" class="item">新刊・新作</a>
+                            <a id="id_category_3" class="item">既刊・在庫</a>
+                            <a id="id_category_4" class="item">お知らせ</a>
+                            <a id="id_category_5" class="item">欠席</a>
                         </div>
 
-                        <form id="id_circle_edit_form">
-                            <div class="form-group">
-                                <label for="id_date_circle_edit">日付</label>
-                                <input type="text" class="form-control" id="id_date_circle_edit" placeholder="YYYY-MM-DD" />
-                            </div>
-
-                            <ul class="nav nav-tabs" role="tablist">
-                                <li id="id_category_1" role="presentation" class="active"><a href="#id_tab_circle_edit" aria-controls="id_tab_circle_edit" role="tab" data-toggle="tab">お品書き</a></li>
-                                <li id="id_category_2" role="presentation"><a href="#id_tab_circle_edit" aria-controls="id_tab_circle_edit" role="tab" data-toggle="tab">新刊・新作</a></li>
-                                <li id="id_category_3" role="presentation"><a href="#id_tab_circle_edit" aria-controls="id_tab_circle_edit" role="tab" data-toggle="tab">既刊・在庫</a></li>
-                                <li id="id_category_4" role="presentation"><a href="#id_tab_circle_edit" aria-controls="id_tab_circle_edit" role="tab" data-toggle="tab">お知らせ</a></li>
-                                <li id="id_category_5" role="presentation"><a href="#id_tab_circle_edit" aria-controls="id_tab_circle_edit" role="tab" data-toggle="tab">欠席</a></li>
-                            </ul>
-
-                            <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane active" id="id_tab_circle_edit">
-                                    <p>
-                                        <div class="form-group">
-                                            <label for="id_url_circle_edit">URL</label>
-                                            <input type="text" class="form-control" id="id_url_circle_edit" placeholder="" maxlength="192" />
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="id_txt_circle_edit">コメント</label>
-                                            <input type="text" class="form-control" id="id_txt_circle_edit" placeholder="" maxlength="96"  />
-                                        </div>
-                                    </p>
+                        <div class="ui container">
+                            <div id="id_tab_circle_edit">
+                                <div class="field">
+                                    <label for="id_url_circle_edit">URL</label>
+                                    <input type="text" class="form-control" id="id_url_circle_edit" placeholder="" maxlength="192" />
+                                </div>
+                                <div class="field">
+                                    <label for="id_txt_circle_edit">コメント</label>
+                                    <input type="text" class="form-control" id="id_txt_circle_edit" placeholder="" maxlength="96"  />
+                                </div>
+                                <div class="ui toggle checkbox">
+                                    <input id="id_check_circle_edit_r18" type="checkbox" name="public" />
+                                    <label>成人向け</label>
                                 </div>
                             </div>
-
-                            <div class="form-group">
-                                <div class="checkbox">
-                                    <label>
-                                        <input id="id_check_circle_edit_r18" type="checkbox" />成人向け
-                                    </label>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-                    <div id="id_circle_edit_footer" class="modal-footer">
-                    </div>
-                </div>
-            </div>
-        </div>
-    -->
-
-        <!-- Template Dialog -->
-        <!--
-        <div id="id_tpl_circle_drop" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">サークル通知情報の削除</h4>
-                    </div>
-                    <div class="modal-body">
-                        <h5>表示サンプル&nbsp;<small>編集中の項目は以下のように表示されます</small></h5>
-                        <div class="panel panel-primary">
-                            <div id="id_preview_circle_edit" class="panel-body"></div>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button id="id_btn_circle_info_drop" class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
-                        <button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>
-                    </div>
-                </div>
+                </form>
+            </div>
+            <div id="id_circle_edit_footer" class="actions">
             </div>
         </div>
-    -->
 
         <!-- Template Dialog -->
-        <!--
-        <div id="id_tpl_empty" class="modal fade" id="circle_desc" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                        <h4 class="modal-title" id="myModalLabel">通知</h4>
-                    </div>
-                    <div class="modal-body">
-                        データが存在しません
-                    </div>
-                    <div class="modal-footer">
-                        <button class="btn btn-primary" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
-                    </div>
+        <div id="id_tpl_circle_drop" class="ui modal">
+            <i class="close icon"></i>
+            <div class="header">
+                <h4>サークル通知情報の削除</h4>
+            </div>
+            <div class="content">
+                <div id="id_preview_circle_drop" class="ui message">
                 </div>
             </div>
+            <div class="actions">
+                <button id="id_btn_circle_info_drop" class="ui primary button" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
+                <div class="ui button">Cancel</div>
+            </div>
         </div>
-    -->
+
+        <!-- Template Dialog -->
+        <div id="id_tpl_empty" class="ui modal">
+            <i class="close icon"></i>
+            <div class="header">
+                <h4>通知</h4>
+            </div>
+            <div class="modal-body">
+                データが存在しません
+            </div>
+            <div class="actions">
+                <button class="ui primary button"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>
+            </div>
+        </div>
 
         <!-- サークルリスト・ヘッダ -->
         <script type="text/template" id="id_tpl_eventcatalog_list">
-            <div id="id_tab_circle_lst" class="ui top attached tabular menu">
+            <div id="id_tab_circle_lst" class="ui top attached stackable tabular menu">
                 {{#CIRCLE_LIST_TBL}}
                 <a class="item" data-tab="id_tab_{{id}}">{{name}}</a>
                 {{/CIRCLE_LIST_TBL}}
             </div>
             {{#CIRCLE_LIST_TBL}}
             <div class="ui bottom attached tab segment" data-tab="id_tab_{{id}}">
-                <table class="ui striped selectable table">
+                <table class="ui striped selectable unstackable table">
                     <thead>
                         <tr>
                             <th><i class="star icon"></i></th>
@@ -252,20 +252,18 @@
 
         <script type="text/template" id="id_tpl_circleinfo">
             {{#circle_list}}
-            <div>
                 <i class="{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}} icon"></i>
-                &nbsp;{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}
-                {{#twitter}}&nbsp;/&nbsp;<a href="{{twitter}}" target="_blank">Twitter&nbsp;{{#twitter_user_id}}{{#twitter_screen_name}}<small><i class="link icon"></></small>{{/twitter_screen_name}}{{/twitter_user_id}}</a>{{/twitter}}
-                {{#pixiv}}&nbsp;/&nbsp;<a href="{{pixiv}}" target="_blank">Pixiv</a>{{/pixiv}}
+                {{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}
+                {{#twitter}}/&nbsp;<a href="{{twitter}}" target="_blank">Twitter{{#twitter_user_id}}{{#twitter_screen_name}}&nbsp;<small><i class="linkify icon"></i></small>{{/twitter_screen_name}}{{/twitter_user_id}}</a>{{/twitter}}
+                {{#pixiv}}/&nbsp;<a href="{{pixiv}}" target="_blank">Pixiv</a>{{/pixiv}}
                 {{#writer}}<br /><small><i class="pencil icon"></i>&nbsp;{{writer}}</small>{{/writer}}
-            </div>
+                <br />
             {{/circle_list}}
             {{^circle_list}}
-            <div>
                 <i class="{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}} icon"></i>
                 &nbsp;{{#url}}<a href="{{url}}" target="_blank">{{/url}}{{circle}}{{#url}}</a>{{/url}}
                 {{#writer}}<br /><small><i class="pencil icon"></i>&nbsp;{{writer}}</small>{{/writer}}
-            </div>
+                <br />
             {{/circle_list}}
         </script>
 
@@ -348,12 +346,12 @@
             <div id="id_view_list" class="ccheck_view" style="display: none;"></div>
 
             <div id="id_view_favo" class="ccheck_view" style="display: none;">
-                <div id="id_tab_circle_lst" class="ui top attached tabular menu">
+                <div id="id_tab_circle_lst" class="ui top attached stackable tabular menu">
                     <a class="active item" data-tab="id_tab_fav_0"><i class="star icon"></i>&nbsp;お気に入り</a>
                 </div>
 
                 <div class="ui bottom attached active tab segment" data-tab="id_tab_fav_0">
-                    <table class="ui striped selectable table">
+                    <table class="ui striped selectable unstackable table">
                         <thead>
                             <tr>
                                 <th><i class="close icon"></i></th>
@@ -370,32 +368,30 @@
             </div>
 
             <div id="id_view_find" class="ccheck_view" style="display: none;">
-                <div class="ui top attached tabular menu">
+                <div class="ui top attached stackable tabular menu">
                     <a class="active item" data-tab="id_tab_fnd_0"><i class="search icon"></i>&nbsp;キーワード検索</a>
                 </div>
                 <div class="ui bottom attached active tab segment" data-tab="id_frm_fnd_0">
                     <div class="ui form">
                         <div class="field">
-                            <label for="keyword">キーワード</label>
+                            <label for="keyword">２文字以上のキーワードを入力して&nbsp;検索&nbsp;を押してください。</label>
                             <input id="id_input_keyword" type="text" class="form-control" placeholder="" />
                         </div>
-                        <button id="id_btn_search" class="ui blue button" type="button"><i class="search icon"></i>&nbsp;検索</button>
+                        <button id="id_btn_search" class="ui blue fluid button" type="button"><i class="search icon"></i>&nbsp;検索</button>
                     </div>
 
-                    <div class="ui progress">
+                    <div class="ui blue small progress">
                         <div id="id_search_progress" class="bar">
                             <div class="progress"></div>
                         </div>
                     </div>
 
-                    <div>
-                        <p class="text-center">２文字以上のキーワードを入力して&nbsp;<kbd>検索</kbd>&nbsp;を押してください。</p>
-                    </div>
+                    <div>&nbsp;</div>
 
                     <div id="id_search_result" class="ui message">
                     </div>
 
-                    <table class="ui striped selectable table">
+                    <table class="ui striped selectable unstackable table">
                         <thead>
                             <tr>
                                 <th><i class="star icon"></i></th>
@@ -411,51 +407,47 @@
             </div>
 
             <div id="id_view_conf" class="ccheck_view" style="display: none;">
-                <div class="ui top attached tabular menu">
+                <div class="ui top attached stackable tabular menu">
                     <a class="active item" data-tab="id_tab_cfg_0" ><i class="info circle icon"></i>&nbsp;イベント一覧</a>
                     <a class="item" data-tab="id_tab_cfg_1" ><i class="circle arrow down icon"></i>&nbsp;URL から読み込み</a>
                     <a class="item" data-tab="id_tab_cfg_2" ><i class="comment icon"></i>&nbsp;サークル通知について</a>
                 </div>
-                <div class="tab-content">
-                    <p>
-                        <div class="ui bottom attached active tab segment" data-tab="id_tab_cfg_0">
-                            <table class="ui striped selectable table">
-                                <thead>
-                                    <tr><th>#</th><th>名称</th><th>開催日</th></tr>
-                                </thead>
-                                <tbody id="id_tbl_conf_0">
-                                </tbody>
-                            </table>
-                            <a href="./" class="fluid ui primary button">最新のイベント30件を表示</a>
-                        </div>
+                <div class="ui bottom attached active tab segment" data-tab="id_tab_cfg_0">
+                    <table class="ui striped selectable unstackable table">
+                        <thead>
+                            <tr><th>#</th><th>名称</th><th>開催日</th></tr>
+                        </thead>
+                        <tbody id="id_tbl_conf_0">
+                        </tbody>
+                    </table>
+                    <a href="./" class="fluid ui primary button">最新のイベント30件を表示</a>
+                </div>
 
-                        <div class="ui bottom attached tab segment" data-tab="id_tab_cfg_1">
-                            <form method="get" action="#" class="ui form">
-                                <div class="field">
-                                    <label for="keyword">URL</label>
-                                    <input id="jsdata" type="text" class="form-control" placeholder="" />
-                                </div>
-                                <button id="id_btn_import_src" class="ui blue button" type="button"><i class="arrow down icon"></i>&nbsp;読込</button>
-                            </form>
+                <div class="ui bottom attached tab segment" data-tab="id_tab_cfg_1">
+                    <form method="get" action="#" class="ui form">
+                        <div class="field">
+                            <label for="keyword">URL</label>
+                            <input id="jsdata" type="text" class="form-control" placeholder="" />
                         </div>
+                        <button id="id_btn_import_src" class="ui blue button" type="button"><i class="arrow down icon"></i>&nbsp;読込</button>
+                    </form>
+                </div>
 
-                        <div class="ui bottom attached tab segment" data-tab="id_tab_cfg_2">
-                            <div class="panel panel-default">
-                                <div class="panel-body">
-                                    <div>
-                                        <dl class="dl-horizontal">
-                                            <dt>サークル通知（cinfo）</dt>
-                                            <dd>
-                                            サークル通知機能は、現在ツイート連動機能として実験中です。<br />連動された自分のツイートはサインインすることで編集出来ます。
-                                            </dd>
-                                        </dl>
-                                    </div>
-                                </div>
-                            </div>
-                            <div id="id_menu_auth_space">
+                <div class="ui bottom attached tab segment" data-tab="id_tab_cfg_2">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div>
+                                <dl class="dl-horizontal">
+                                    <dt>サークル通知（cinfo）</dt>
+                                    <dd>
+                                    サークル通知機能は、現在ツイート連動機能として実験中です。<br />連動された自分のツイートはサインインすることで編集出来ます。
+                                    </dd>
+                                </dl>
                             </div>
                         </div>
-                    </p>
+                    </div>
+                    <div id="id_menu_auth_space">
+                    </div>
                 </div>
             </div>
 
@@ -502,10 +494,10 @@
         <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.4/leaflet.js"></script>
 
         <!-- circlecheck.js -->
-        <script type="text/javascript" src="src/ccheck_model.js"></script>
-        <script type="text/javascript" src="src/ccheck_cdesc.js"></script>
-        <script type="text/javascript" src="src/ccheck_cinfo.js"></script>
-        <script type="text/javascript" src="src/ccheck.js"></script>
+        <script type="text/javascript" src="src/ccheck_model.js?20181104_130000"></script>
+        <script type="text/javascript" src="src/ccheck_cdesc.js?20181104_130000"></script>
+        <script type="text/javascript" src="src/ccheck_cinfo.js?20181104_130000"></script>
+        <script type="text/javascript" src="src/ccheck.js?20181104_130000"></script>
 
     </body>
 </html>

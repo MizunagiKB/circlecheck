@@ -73,11 +73,15 @@ var ccheck;
         }
         view_CCircleEdit.prototype.events = function () {
             return {
-                "click button#id_btn_circle_info_insert": this.evt_insert,
-                "click button#id_btn_circle_info_update": this.evt_update,
-                "click button#id_btn_circle_info_delete": this.evt_delete,
+                "click div#id_btn_circle_info_insert": this.evt_insert,
+                "click div#id_btn_circle_info_update": this.evt_update,
+                "click div#id_btn_circle_info_delete": this.evt_delete,
                 "changeDate #id_tpl_circle_edit input#id_date_circle_edit": this.evt_view_change,
-                "shown.bs.tab #id_tpl_circle_edit a[data-toggle=\"tab\"]": this.evt_view_change,
+                "click a#id_category_1": this.evt_menu_change,
+                "click a#id_category_2": this.evt_menu_change,
+                "click a#id_category_3": this.evt_menu_change,
+                "click a#id_category_4": this.evt_menu_change,
+                "click a#id_category_5": this.evt_menu_change,
                 "keyup #id_tpl_circle_edit input#id_txt_circle_edit": this.evt_view_change,
                 "keyup #id_tpl_circle_edit input#id_url_circle_edit": this.evt_view_change,
                 "change #id_tpl_circle_edit input#id_check_circle_edit_r18": this.evt_view_change,
@@ -175,6 +179,15 @@ var ccheck;
         view_CCircleEdit.prototype.evt_delete = function (oCEvt) {
             this.ajax_post(oCEvt, ccheck.E_EDIT_MODE.DELETE);
         };
+        view_CCircleEdit.prototype.evt_menu_change = function (oCEvt) {
+            $("#id_category_1").removeClass("active");
+            $("#id_category_2").removeClass("active");
+            $("#id_category_3").removeClass("active");
+            $("#id_category_4").removeClass("active");
+            $("#id_category_5").removeClass("active");
+            $("#" + oCEvt.currentTarget.id).addClass("active");
+            this.evt_view_change(oCEvt);
+        };
         view_CCircleEdit.prototype.evt_view_change = function (oCEvt) {
             this.model.set("cedit_date", $("#id_date_circle_edit").val());
             if ($("#id_category_1").hasClass("active") == true) {
@@ -207,8 +220,8 @@ var ccheck;
         view_CCircleEdit.prototype.ui_update = function (grp, idx, eEMode) {
             var o;
             var TPL_FOOTER = Hogan.compile(''
-                + '<button id="{{id}}" class="{{class}}" data-grp="{{grp}}" data-idx="{{idx}}"><span class="glyphicon glyphicon-ok"></span>&nbsp;OK</button>'
-                + '<button type="button" class="btn btn-default" data-dismiss="modal" aria-hidden="true">Cancel</button>');
+                + '<div id="{{id}}" class="{{class}}" data-grp="{{grp}}" data-idx="{{idx}}"><i class="check icon"></i>&nbsp;OK</div>'
+                + '<div class="ui cancel button">Cancel</div>');
             $("#id_circle_edit_notify_area").html("");
             switch (eEMode) {
                 case ccheck.E_EDIT_MODE.INSERT:
@@ -216,7 +229,7 @@ var ccheck;
                     $("#id_dlg_circle_edit_caption").html("サークル通知情報の追加");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({
                         "id": "id_btn_circle_info_insert",
-                        "class": "btn btn-primary",
+                        "class": "ui primary button",
                         "grp": grp,
                         "idx": idx
                     }));
@@ -226,7 +239,7 @@ var ccheck;
                     $("#id_dlg_circle_edit_caption").html("サークル通知情報の編集");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({
                         "id": "id_btn_circle_info_update",
-                        "class": "btn btn-primary",
+                        "class": "ui primary button",
                         "grp": grp,
                         "idx": idx
                     }));
@@ -236,7 +249,7 @@ var ccheck;
                     $("#id_dlg_circle_edit_caption").html("<span class=\"text-danger\">サークル通知情報の削除</span>");
                     $("#id_circle_edit_footer").html(TPL_FOOTER.render({
                         "id": "id_btn_circle_info_delete",
-                        "class": "btn btn-danger",
+                        "class": "ui red button",
                         "grp": grp,
                         "idx": idx
                     }));
@@ -244,7 +257,6 @@ var ccheck;
             }
             o = $("#id_date_circle_edit");
             o.val(this.model.get("cedit_date"));
-            o.datepicker("update", this.model.get("cedit_date"));
             $("#id_url_circle_edit").val(this.model.get("cedit_url"));
             $("#id_txt_circle_edit").val(this.model.get("cedit_txt"));
             $("#id_category_1").removeClass("active");
@@ -281,6 +293,7 @@ var ccheck;
         };
         view_CCircleEdit.prototype.render = function () {
             $("#id_preview_circle_edit").html(render_cinfo(null, this.model));
+            $("#id_preview_circle_drop").html(render_cinfo(null, this.model));
             return this;
         };
         return view_CCircleEdit;

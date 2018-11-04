@@ -233,7 +233,7 @@ module ccheck {
                 const strTargetId: string = listTargetId[n] + oCItem.attributes.grp + "_" + oCItem.attributes.idx;
 
                 $(strTargetId + " button.evt-favo-append").addClass("disabled");
-                $(strTargetId).addClass("info");
+                $(strTargetId).addClass("positive");
             }
 
             $("#id_head_fav_count").text(String(app.m_collection_circle_favo.length));
@@ -247,7 +247,7 @@ module ccheck {
             for (let n: number = 0; n < listTargetId.length; n++) {
                 const strTargetId: string = listTargetId[n] + oCItem.attributes.grp + "_" + oCItem.attributes.idx;
 
-                $(strTargetId).removeClass("info");
+                $(strTargetId).removeClass("positive");
                 $(strTargetId + " button.evt-favo-append").removeClass("disabled");
             }
 
@@ -328,7 +328,7 @@ module ccheck {
         //
         view_change(strId: string) {
 
-            $("div#id_tpl_head a").removeClass("active");
+            $("a.cc_menu").removeClass("active");
             $(strId).removeClass("disabled");
             $(strId).addClass("active");
 
@@ -411,9 +411,9 @@ module ccheck {
                 );
 
                 L.tileLayer(
-                    "http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
+                    "https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png",
                     {
-                        attribution: "<a href='http://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                        attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
                     }
                 ).addTo(map);
 
@@ -425,26 +425,26 @@ module ccheck {
 
         //
         render() {
+            const tpl_header = Hogan.compile('<a href="{{EVENT_URL}}">{{EVENT_NAME}}</a>');
             let strBaseAddress: string = window.location.href.split("?")[0];
 
 
             if (this.model.isValid() == false) {
 
-                $("#id_tpl_head").html(
-                    this.m_dictTemplate["#id_tpl_head"].render(
-                        {
-                            "EVENT_NAME": "イベント一覧"
-                        }
-                    )
+                console.log("DEBUG EVENT_NAME");
+
+                $("#id_event_header").html(
+                    tpl_header.render({"EVENT_URL": "", "EVENT_NAME": "イベント一覧"})
+                );
+                $("#id_event_header_mobile").html(
+                    tpl_header.render({"EVENT_URL": "", "EVENT_NAME": "イベント一覧"})
                 );
 
                 this.view_change("#id_menu_conf");
 
             } else {
-
-                $("#id_tpl_head").html(
-                    this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes)
-                );
+                $("#id_event_header").html(tpl_header.render(this.model.attributes));
+                $("#id_event_header_mobile").html(tpl_header.render(this.model.attributes));
 
                 if (app.m_bCInfo == true) {
                     let strHref: string = "index.html?jsdata=" + $("#jsdata").val();
@@ -476,7 +476,7 @@ module ccheck {
                     $("#id_menu_auth_space").html(
                         ''
                         + strScreenName
-                        + '<a class="btn btn-default btn-block" href="' + strHref + '">' + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>'
+                        + '<a class="ui primary fluid button" href="' + strHref + '">' + '<i class="user icon"></i>&nbsp;' + strBtn + '</a>'
                     );
                 }
 
@@ -1022,7 +1022,7 @@ module ccheck {
                 const strTargetId: string = "#id_row_find_" + oCItem.grp + "_" + oCItem.idx;
 
                 $(strTargetId + " button.evt-favo-append").addClass("disabled");
-                $(strTargetId).addClass("info");
+                $(strTargetId).addClass("positive");
             }
 
             if (this.collection.length > 0) {

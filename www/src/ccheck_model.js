@@ -127,7 +127,7 @@ var ccheck;
             for (var n = 0; n < listTargetId.length; n++) {
                 var strTargetId = listTargetId[n] + oCItem.attributes.grp + "_" + oCItem.attributes.idx;
                 $(strTargetId + " button.evt-favo-append").addClass("disabled");
-                $(strTargetId).addClass("info");
+                $(strTargetId).addClass("positive");
             }
             $("#id_head_fav_count").text(String(ccheck.app.m_collection_circle_favo.length));
             $("#id_head_fav_count").fadeIn();
@@ -136,7 +136,7 @@ var ccheck;
             var listTargetId = ["#id_row_list_", "#id_row_find_"];
             for (var n = 0; n < listTargetId.length; n++) {
                 var strTargetId = listTargetId[n] + oCItem.attributes.grp + "_" + oCItem.attributes.idx;
-                $(strTargetId).removeClass("info");
+                $(strTargetId).removeClass("positive");
                 $(strTargetId + " button.evt-favo-append").removeClass("disabled");
             }
             if (ccheck.app.m_collection_circle_favo.length > 0) {
@@ -199,7 +199,7 @@ var ccheck;
             this.view_change("#" + oCEvt.currentTarget.id);
         };
         view_CCatalogHead.prototype.view_change = function (strId) {
-            $("div#id_tpl_head a").removeClass("active");
+            $("a.cc_menu").removeClass("active");
             $(strId).removeClass("disabled");
             $(strId).addClass("active");
             $(".ccheck_view").hide();
@@ -252,22 +252,24 @@ var ccheck;
             if (this.model.attributes.EVENT_MAP_LOCATION) {
                 var map = L.map("id_bing_map");
                 map.setView([this.model.attributes.EVENT_MAP_LOCATION.latitude, this.model.attributes.EVENT_MAP_LOCATION.longitude], 16);
-                L.tileLayer("http://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
-                    attribution: "<a href='http://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
+                L.tileLayer("https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png", {
+                    attribution: "<a href='https://maps.gsi.go.jp/development/ichiran.html' target='_blank'>地理院タイル</a>"
                 }).addTo(map);
                 L.marker([this.model.attributes.EVENT_MAP_LOCATION.latitude, this.model.attributes.EVENT_MAP_LOCATION.longitude]).addTo(map);
             }
         };
         view_CCatalogHead.prototype.render = function () {
+            var tpl_header = Hogan.compile('<a href="{{EVENT_URL}}">{{EVENT_NAME}}</a>');
             var strBaseAddress = window.location.href.split("?")[0];
             if (this.model.isValid() == false) {
-                $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render({
-                    "EVENT_NAME": "イベント一覧"
-                }));
+                console.log("DEBUG EVENT_NAME");
+                $("#id_event_header").html(tpl_header.render({ "EVENT_URL": "", "EVENT_NAME": "イベント一覧" }));
+                $("#id_event_header_mobile").html(tpl_header.render({ "EVENT_URL": "", "EVENT_NAME": "イベント一覧" }));
                 this.view_change("#id_menu_conf");
             }
             else {
-                $("#id_tpl_head").html(this.m_dictTemplate["#id_tpl_head"].render(this.model.attributes));
+                $("#id_event_header").html(tpl_header.render(this.model.attributes));
+                $("#id_event_header_mobile").html(tpl_header.render(this.model.attributes));
                 if (ccheck.app.m_bCInfo == true) {
                     var strHref = "index.html?jsdata=" + $("#jsdata").val();
                     $("#id_menu_mode_space").html(''
@@ -291,7 +293,7 @@ var ccheck;
                     }
                     $("#id_menu_auth_space").html(''
                         + strScreenName
-                        + '<a class="btn btn-default btn-block" href="' + strHref + '">' + '<span class="glyphicon glyphicon-user"></span>&nbsp;' + strBtn + '</a>');
+                        + '<a class="ui primary fluid button" href="' + strHref + '">' + '<i class="user icon"></i>&nbsp;' + strBtn + '</a>');
                 }
                 $("nav li").removeClass("disabled");
                 this.view_change("#id_menu_list");
@@ -681,7 +683,7 @@ var ccheck;
                 var oCItem = ccheck.app.m_collection_circle_favo.at(n).attributes;
                 var strTargetId = "#id_row_find_" + oCItem.grp + "_" + oCItem.idx;
                 $(strTargetId + " button.evt-favo-append").addClass("disabled");
-                $(strTargetId).addClass("info");
+                $(strTargetId).addClass("positive");
             }
             if (this.collection.length > 0) {
                 $("#id_search_result").html('<p class="text-center">' + this.collection.length + ' 件 見つかりました。</p>');

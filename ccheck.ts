@@ -69,7 +69,6 @@ module ccheck {
          */
         constructor(strJSData: string, strMode: string) {
             const listTemplate = [
-                "#id_tpl_head",
                 "#id_tpl_eventcatalog_list",
                 "#id_tpl_favo_append",
                 "#id_tpl_favo_remove",
@@ -185,12 +184,12 @@ module ccheck {
                 + '<tr>'
                 + '<td>'
                 + '<div>'
-                + '<span class="glyphicon glyphicon-{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}}"></span>&nbsp;{{circle}}'
+                + '<i class="{{#icon}}{{icon}}{{/icon}}{{^icon}}home{{/icon}} icon"></i>&nbsp;{{circle}}'
                 + '{{#url}}<br /><a href="{{url}}" target="_blank">{{/url}}{{url}}{{#url}}</a>{{/url}}'
                 + '{{#twitter}}<br />Twitter&nbsp;<a href="{{url}}" target="_blank">{{twitter}}</a>{{/twitter}}'
                 + '{{#pixiv}}<br />Pixiv&nbsp;<a href="{{pixiv}}" target="_blank">{{pixiv}}</a>{{/pixiv}}'
                 + '</div>'
-                + '{{#writer}}<span class="glyphicon glyphicon-pencil"></span>&nbsp;{{writer}}{{/writer}}'
+                + '{{#writer}}<i class="pencil icon"></i>&nbsp;{{writer}}{{/writer}}'
                 + '</tr>'
                 + '{{/circle_list}}'
                 + '</tbody>'
@@ -207,8 +206,8 @@ module ccheck {
             );
 
             this.m_model_circle_desc_hist.clear();
-            this.m_model_circle_desc_hist.url = "./circle_list";
-//            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
+//            this.m_model_circle_desc_hist.url = "./circle_list";
+            this.m_model_circle_desc_hist.url = "/db/circlecheck/_design/catalog/_view/circle_list";
             this.m_model_circle_desc_hist.fetch(
                 {
                     data: {
