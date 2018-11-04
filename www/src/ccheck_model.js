@@ -271,29 +271,22 @@ var ccheck;
                 $("#id_event_header").html(tpl_header.render(this.model.attributes));
                 $("#id_event_header_mobile").html(tpl_header.render(this.model.attributes));
                 if (ccheck.app.m_bCInfo == true) {
-                    var strHref = "index.html?jsdata=" + $("#jsdata").val();
-                    $("#id_menu_mode_space").html(''
-                        + '<a id="id_menu_cinfo" data-target-view="#id_menu_cinfo" class="item" href="' + strHref + '"><i class="comment icon"></i>&nbsp;サークル通知を無効</a>');
-                }
-                else {
-                    var strHref = "index.html?jsdata=" + $("#jsdata").val() + "&m=cinfo";
-                    $("#id_menu_mode_space").html(''
-                        + '<a id="id_menu_cinfo" data-target-view="#id_menu_cinfo" class="item" href="' + strHref + '"><i class="comment icon"></i>&nbsp;サークル通知を有効</a>');
-                }
-                if (ccheck.app.m_bCInfo == true) {
-                    var strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
-                    var strScreenName = "";
-                    var strBtn = "サインイン";
-                    if (ccheck.app.m_dictAuth != null) {
-                        if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
-                            strScreenName = '<p class="text-right">現在&nbsp;<strong>@' + ccheck.app.m_dictAuth["twitter_screen_name"] + '</strong>&nbsp;でサインインしています。</p>';
-                            strBtn = "サインアウト";
-                            strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                    if (this.model.get("EVENT_SERIES") == "lyricalmagical") {
+                        var strHref = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                        var strScreenName = "";
+                        var strBtn = "サークルログイン";
+                        var strUser = '<i class="user outline icon"></i>';
+                        if (ccheck.app.m_dictAuth != null) {
+                            if ("twitter_screen_name" in ccheck.app.m_dictAuth) {
+                                strScreenName = '@' + ccheck.app.m_dictAuth["twitter_screen_name"];
+                                strBtn = "サークルログオフ";
+                                strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                                strUser = '<i class="user icon"></i>';
+                            }
                         }
+                        $("#id_menu_mode_space").html(''
+                            + '<a class="item" href="' + strHref + '">' + strScreenName + '&nbsp;' + strUser + strBtn + '</a>');
                     }
-                    $("#id_menu_auth_space").html(''
-                        + strScreenName
-                        + '<a class="ui primary fluid button" href="' + strHref + '">' + '<i class="user icon"></i>&nbsp;' + strBtn + '</a>');
                 }
                 $("nav li").removeClass("disabled");
                 this.view_change("#id_menu_list");

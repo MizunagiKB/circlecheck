@@ -72,7 +72,7 @@ module ccheck {
     interface IEVENT_CATALOG {
         EVENT_URL: string;
         EVENT_MAP_LOCATION: ICIRCLE_LIST_LOCATION;
-        DATA_SOURC: string;
+        DATA_SOURCE: string;
         DATA_SOURCE_PREV: string;
         DATA_SOURCE_NEXT: string;
 
@@ -434,10 +434,10 @@ module ccheck {
                 console.log("DEBUG EVENT_NAME");
 
                 $("#id_event_header").html(
-                    tpl_header.render({"EVENT_URL": "", "EVENT_NAME": "イベント一覧"})
+                    tpl_header.render({ "EVENT_URL": "", "EVENT_NAME": "イベント一覧" })
                 );
                 $("#id_event_header_mobile").html(
-                    tpl_header.render({"EVENT_URL": "", "EVENT_NAME": "イベント一覧"})
+                    tpl_header.render({ "EVENT_URL": "", "EVENT_NAME": "イベント一覧" })
                 );
 
                 this.view_change("#id_menu_conf");
@@ -446,6 +446,7 @@ module ccheck {
                 $("#id_event_header").html(tpl_header.render(this.model.attributes));
                 $("#id_event_header_mobile").html(tpl_header.render(this.model.attributes));
 
+                /*
                 if (app.m_bCInfo == true) {
                     let strHref: string = "index.html?jsdata=" + $("#jsdata").val();
                     $("#id_menu_mode_space").html(
@@ -459,25 +460,30 @@ module ccheck {
                         + '<a id="id_menu_cinfo" data-target-view="#id_menu_cinfo" class="item" href="' + strHref + '"><i class="comment icon"></i>&nbsp;サークル通知を有効</a>'
                     );
                 }
+                */
 
                 if (app.m_bCInfo == true) {
-                    let strHref: string = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
-                    let strScreenName: string = "";
-                    let strBtn: string = "サインイン";
+                    if(this.model.get("EVENT_SERIES") == "lyricalmagical")
+                    {
+                        let strHref: string = "iface_session.php?order=init&jsdata=" + $("#jsdata").val();
+                        let strScreenName: string = "";
+                        let strBtn: string = "サークルログイン";
+                        let strUser: string = '<i class="user outline icon"></i>';
 
-                    if (app.m_dictAuth != null) {
-                        if ("twitter_screen_name" in app.m_dictAuth) {
-                            strScreenName = '<p class="text-right">現在&nbsp;<strong>@' + app.m_dictAuth["twitter_screen_name"] + '</strong>&nbsp;でサインインしています。</p>';
-                            strBtn = "サインアウト";
-                            strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                        if (app.m_dictAuth != null) {
+                            if ("twitter_screen_name" in app.m_dictAuth) {
+                                strScreenName = '@' + app.m_dictAuth["twitter_screen_name"];
+                                strBtn = "サークルログオフ";
+                                strHref = "iface_session.php?order=term&jsdata=" + $("#jsdata").val();
+                                strUser = '<i class="user icon"></i>';
+                            }
                         }
-                    }
 
-                    $("#id_menu_auth_space").html(
-                        ''
-                        + strScreenName
-                        + '<a class="ui primary fluid button" href="' + strHref + '">' + '<i class="user icon"></i>&nbsp;' + strBtn + '</a>'
-                    );
+                        $("#id_menu_mode_space").html(
+                            ''
+                            + '<a class="item" href="' + strHref + '">' + strScreenName + '&nbsp;' + strUser + strBtn + '</a>'
+                        );
+                    }
                 }
 
                 //
