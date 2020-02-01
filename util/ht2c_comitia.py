@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 import sys
 import re
+"""
+"""
 
-"""
-"""
 
 def circle_name(s):
 
@@ -41,6 +41,7 @@ def circle_info(s):
 
     return strUrl, strCircle
 
+
 #
 def strip_href(s):
     oCRe = re.search("href='(.*?)'", s, re.I)
@@ -49,34 +50,25 @@ def strip_href(s):
     else:
         return ""
 
+
 #
 def main():
 
-    strBuffer = open(sys.argv[1], "rb").read()
+    strBuffer = open(sys.argv[1], "r").read()
     strBuffer = strBuffer.replace("\r", "")
     strBuffer = strBuffer.replace("\n", "")
 
     listTable = re.findall(
         "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" style=\"width:100%;\">(.*?)</table>",
-        strBuffer,
-        re.I
-    )
+        strBuffer, re.I)
 
     for strTableBody in listTable:
-        listCircle = re.findall(
-            "<tr.*?>(.*?)</tr>",
-            strTableBody,
-            re.I
-        )
+        listCircle = re.findall("<tr.*?>(.*?)</tr>", strTableBody, re.I)
 
         for strCircle in listCircle:
-            oCRe = re.search(
-                "<td.*?>(.*?)</td>"
-                ".*?"
-                "<td.*?>(.*?)</td>",
-                strCircle,
-                re.I
-            )
+            oCRe = re.search("<td.*?>(.*?)</td>"
+                             ".*?"
+                             "<td.*?>(.*?)</td>", strCircle, re.I)
 
             if oCRe != None:
 
@@ -85,12 +77,12 @@ def main():
                 strWriter = ""
                 strSpace = oCRe.group(1)
                 strUrl, strCircle = circle_info(oCRe.group(2))
-#                strWriter = oCRe.group(2)
-#                strCircle = oCRe.group(2)
-#                strWriter = oCRe.group(3)
-#                strUrl, strCircle = circle_info(strCircle)
-#                strPixiv = strip_href(oCRe.group(4))
-#                strTwitter = strip_href(oCRe.group(5))
+                #                strWriter = oCRe.group(2)
+                #                strCircle = oCRe.group(2)
+                #                strWriter = oCRe.group(3)
+                #                strUrl, strCircle = circle_info(strCircle)
+                #                strPixiv = strip_href(oCRe.group(4))
+                #                strTwitter = strip_href(oCRe.group(5))
 
                 if strUrl.find("http://www.pixiv") >= 0:
                     strPixiv = strUrl
@@ -102,9 +94,13 @@ def main():
                     strTwitter = strUrl
                     strUrl = ""
 
-                print "\t".join([strSpace, strCircle, strWriter, strUrl, strTwitter, strPixiv])
+                print("\t".join([
+                    strSpace, strCircle, strWriter, strUrl, strTwitter,
+                    strPixiv
+                ]))
+
+
 #                print oCRe.group(1)
 
-
-if(__name__ == "__main__"):
+if (__name__ == "__main__"):
     main()
