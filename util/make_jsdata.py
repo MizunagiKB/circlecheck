@@ -18,9 +18,14 @@ LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2},[0-9]{1,2}")
 LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
 GRAFES = [u"グ", u"ラ", u"ブ", u"ル", u"海", u"なの", u"戦", u"城", u"DMM"]
 
-LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-.*")
-LAYOUT_PARSE_2 = LAYOUT_PARSE_1
-CC = u"ABCDEFGHIJKLMNO"
+
+class COMIC_V_MARKET(object):
+    LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)-.*")
+    LAYOUT_PARSE_2 = LAYOUT_PARSE_1
+    # GROUP = u"ABCDEFGHIJKLMNOPQRS"
+    GROUP = u"Z"
+    DELIMITER = ","
+
 
 LAYOUT_PARSE_1 = re.compile(u"([^0-9]*)[0-9]{1,2}-[0-9]{1,2}")
 LAYOUT_PARSE_2 = re.compile(u"([^0-9]*)[0-9]{1,2}")
@@ -254,7 +259,7 @@ class SHT(object):
     DELIMITER = ","
 
 
-CONF = COMITIA
+CONF = COMIC_V_MARKET
 
 
 def custom_sort(d):
@@ -291,8 +296,8 @@ def circle_list(dictLayout):
         nIndexLocal = 1
 
         #        for o in listItem:
-        for o in sorted(listItem, key=lambda obj: obj["layout"]):
-            #        for o in sorted(listItem, key=custom_sort):
+        # for o in sorted(listItem, key=lambda obj: obj["layout"]):
+        for o in sorted(listItem, key=custom_sort):
             listBuffer.append(
                 "            {\"layout\": \"%s\", \"sortkey\": \"%03d-%04d-%08d\",\n"
                 "                \"circle_list\": [\n"
